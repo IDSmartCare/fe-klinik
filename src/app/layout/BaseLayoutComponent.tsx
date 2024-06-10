@@ -1,8 +1,10 @@
 'use client'
 
-import Image from "next/image"
-import { ReactNode } from "react"
+import { listMenu } from "@/setup/menu"
 import { Session } from "next-auth"
+import Image from "next/image"
+import Link from "next/link"
+import { ReactNode } from "react"
 
 const BaseLayoutComponent = ({ children, session }: { children: ReactNode, session: Session | null }) => {
     return (
@@ -16,44 +18,42 @@ const BaseLayoutComponent = ({ children, session }: { children: ReactNode, sessi
                     <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
                     <ul className="menu p-4 w-60 min-h-full lg:rounded bg-base-200 text-base-content">
                         <div className="flex justify-center mb-2">
-                            <Image src={`/logo.png`} priority
-                                width={100} height={100} className="w-8/10 h-auto"
-                                alt="logo klinik" />
+                            <Link href={"/klinik"}>
+                                <Image src={`/logo.png`} priority
+                                    width={150} height={100} className="w-50 h-8"
+                                    alt="logo klinik" />
+                            </Link>
                         </div>
                         <div className="divider m-0"></div>
-                        {/* {menus && <>
-                            {menus?.map((item: ListFetchResponse) => {
-                                if (item.data.sub_menus.length <= 0) {
-                                    return (
-                                        <li key={item.data.id_menu} className="m-1">
-                                            <Link href={item.data.url_menu}>
-                                                <Image src={`data:image/svg+xml;utf8,${item.data.icon_menu}`} alt="icon-sidebar" width={20} height={20} />
-                                                {item.data.nama_menu}
-                                            </Link>
-                                        </li>
-                                    )
-                                } else {
-                                    return (
-                                        <li key={item.data.id_menu}>
+                        {
+                            listMenu.map((item) => {
+                                return (
+                                    item.roles.includes(session?.user.role) &&
+                                    <li key={item.id}>
+                                        {item.submenu && item.submenu.length > 0 ?
                                             <details>
                                                 <summary>
-                                                    <Image src={`data:image/svg+xml;utf8,${item.data.icon_menu}`} alt="icon-sidebar" width={20} height={20} />
-                                                    {item.data.nama_menu}
+                                                    <Image src={`data:image/svg+xml;utf8,${item.icon}`} alt="icon-sidebar" width={20} height={20} />
+                                                    {item.menu}
                                                 </summary>
                                                 <ul>
-                                                    {item.data.sub_menus?.map((subMenus: SubMenusInterface) => {
+                                                    {item.submenu?.map((submenu) => {
                                                         return (
-                                                            <li className="m-1" key={subMenus.id_sub_menu}><Link href={subMenus.url_sub_menu}>{subMenus.nama_sub_menu}</Link></li>
+                                                            <li className="m-1" key={submenu.id}><Link href={submenu.url}>{submenu.title}</Link></li>
                                                         )
                                                     })}
                                                 </ul>
                                             </details>
-                                        </li>
-                                    )
-                                }
-                            })}
-                        </>
-                        } */}
+                                            :
+                                            <Link href={item.link}>
+                                                <Image src={`data:image/svg+xml;utf8,${item.icon}`} alt="icon-sidebar" width={20} height={20} />
+                                                {item.menu}
+                                            </Link>
+                                        }
+                                    </li>
+                                )
+                            })
+                        }
                     </ul>
                 </div>
             </div>

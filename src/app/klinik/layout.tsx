@@ -8,7 +8,7 @@ const LayoutKlinik = async ({ children }: { children: ReactNode }) => {
     const session = await getServerSession(authOption)
     return (
         <BaseLayoutComponent session={session}>
-            <NavbarLayoutComponent />
+            <NavbarLayoutComponent session={session} />
             {children}
         </BaseLayoutComponent>
     )
