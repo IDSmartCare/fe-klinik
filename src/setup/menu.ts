@@ -81,7 +81,7 @@ export const listMenu = [
             {
                 id: 1,
                 title: "Jadwal Dokter",
-                url: "/klinik/setting/jadwaldokter"
+                url: "/klinik/setting/paramedis/jadwaldokter"
             }
         ]
     },

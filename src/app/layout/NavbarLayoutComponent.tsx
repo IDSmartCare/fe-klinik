@@ -2,6 +2,7 @@
 
 import { Session } from "next-auth"
 import { signOut } from "next-auth/react"
+import Link from "next/link"
 
 const NavbarLayoutComponent = ({ session }: { session: Session | null }) => {
     const onClickLogout = () => {
@@ -17,14 +18,19 @@ const NavbarLayoutComponent = ({ session }: { session: Session | null }) => {
                 </label>
             </div>
             <div className="flex-none">
-                <div className="dropdown dropdown-end">
-                    <label tabIndex={0} className="btn btn-ghost">
-                        <p>{session?.user.name}</p>
-                    </label>
-                    <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                        <li><button onKeyDown={() => onClickLogout()} onClick={() => onClickLogout()}>Logout</button></li>
-                    </ul>
-                </div>
+                <ul className="menu menu-horizontal px-1">
+                    <li><Link href={"/"}>Home</Link></li>
+                    <li>
+                        <details>
+                            <summary>
+                                {session?.user.name}
+                            </summary>
+                            <ul className="p-2 bg-base-100 z-20 rounded-t-none">
+                                <li><button onKeyDown={() => onClickLogout()} onClick={() => onClickLogout()}>Logout</button></li>
+                            </ul>
+                        </details>
+                    </li>
+                </ul>
             </div>
         </div>
     )
