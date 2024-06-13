@@ -7,12 +7,13 @@ import { typeFormDokter } from "./interface/typeFormDokter";
 
 const prisma = new PrismaClient()
 export async function createDokter(form: typeFormDokter) {
+    const poliId: any = form.poliKlinikId
     try {
         const postData = await prisma.dokter.create({
             data: {
                 namaDokter: form.namaDokter,
                 kodeDokter: form.kodeDokter,
-                poliKlinikId: Number(form.poliKlinikId)
+                poliKlinikId: Number(poliId.value)
             }
         })
         revalidatePath("/klinik/setting/paramedis/dokter")
