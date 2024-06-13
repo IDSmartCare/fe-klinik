@@ -1,12 +1,12 @@
 'use client'
 import { createColumnHelper } from "@tanstack/table-core"
-import { typeFormPoliklinik } from "./interface/typeFormPoliklinik"
 import { ToastAlert } from "@/app/helper/ToastAlert"
+import { typeFormDokter } from "./interface/typeFormDokter"
 
-const columHelper = createColumnHelper<typeFormPoliklinik>()
+const columHelper = createColumnHelper<typeFormDokter>()
 const onChange = async (e: any, id: any) => {
     try {
-        const fetchBody = await fetch('/api/paramedis/updatepoli', {
+        const fetchBody = await fetch('/api/paramedis/updatedokter', {
             method: "POST",
             body: JSON.stringify({ status: e.target.checked, id }),
             headers: {
@@ -25,14 +25,18 @@ const onChange = async (e: any, id: any) => {
     }
 }
 
-const PoliTableColumn = [
-    columHelper.accessor(row => row.kodePoli, {
+const DokterTableColumn = [
+    columHelper.accessor(row => row.kodeDokter, {
         cell: info => info.getValue(),
-        header: "Kode Poli"
+        header: "Kode Dokter"
     }),
-    columHelper.accessor(row => row.namaPoli, {
+    columHelper.accessor(row => row.namaDokter, {
         cell: info => info.getValue(),
-        header: "Nama Poli"
+        header: "Nama Dokter"
+    }),
+    columHelper.accessor(row => row.poliKlinik?.namaPoli, {
+        cell: info => info.getValue(),
+        header: "Poliklinik"
     }),
     columHelper.accessor(row => [row.isAktif, row.id], {
         cell: info => <input type="checkbox" onChange={(e) => onChange(e, info.getValue()[1])} className="toggle toggle-primary" defaultChecked={info.getValue()[0] ? true : false} />,
@@ -40,4 +44,4 @@ const PoliTableColumn = [
     }),
 ]
 
-export default PoliTableColumn
+export default DokterTableColumn
