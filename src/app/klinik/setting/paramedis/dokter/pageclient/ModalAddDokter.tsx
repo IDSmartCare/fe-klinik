@@ -59,7 +59,7 @@ const ModalAddDokter = () => {
                     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2 mt-5">
                         <input type="text" placeholder="Nama Dokter" {...register("namaDokter", { required: "Tidak boleh kosong!" })} className="input input-sm nput-bordered input-primary w-full max-w-lg" />
                         <span className="label-text-alt text-error"> {errors.namaDokter && <span>{errors.namaDokter.message}</span>}</span>
-                        <input type="text" placeholder="Kode Poliklinik" {...register("kodeDokter", { required: "Tidak boleh kosong!" })} className="input input-sm input-bordered input-primary w-full max-w-lg" />
+                        <input type="text" placeholder="Kode Dokter" {...register("kodeDokter", { required: "Tidak boleh kosong!" })} className="input input-sm input-bordered input-primary w-full max-w-lg" />
                         <span className="label-text-alt text-error"> {errors.kodeDokter && <span>{errors.kodeDokter.message}</span>}</span>
                         <Controller
                             name="poliKlinikId"
