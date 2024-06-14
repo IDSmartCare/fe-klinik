@@ -22,9 +22,7 @@ const ModalAddDokter = () => {
 
     useEffect(() => {
         async function getListPoli() {
-            const getRes = await fetch(`/api/paramedis/findallpoli`, {
-                cache: 'no-cache'
-            })
+            const getRes = await fetch(`/api/paramedis/findallpoli`)
             if (!getRes.ok) {
                 setOption([])
                 return
@@ -55,6 +53,9 @@ const ModalAddDokter = () => {
             <ButtonModalComponent modalname="add-dokter" title="Dokter Baru" />
             <dialog id="add-dokter" className="modal">
                 <div className="modal-box w-4/12 max-w-lg">
+                    <form method="dialog">
+                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                    </form>
                     <h3 className="font-bold text-lg">Tambah Dokter Baru</h3>
                     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2 mt-5">
                         <input type="text" placeholder="Nama Dokter" {...register("namaDokter", { required: "Tidak boleh kosong!" })} className="input input-sm nput-bordered input-primary w-full max-w-lg" />
@@ -78,9 +79,6 @@ const ModalAddDokter = () => {
                         <SubmitButtonServer />
                     </form>
                 </div>
-                <form method="dialog" className="modal-backdrop">
-                    <button>close</button>
-                </form>
             </dialog>
         </div>
     )

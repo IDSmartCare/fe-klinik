@@ -29,6 +29,9 @@ const ModalAddPoli = () => {
             <ButtonModalComponent modalname="add-poli" title="Poli Baru" />
             <dialog id="add-poli" className="modal">
                 <div className="modal-box w-3/12 max-w-md">
+                    <form method="dialog">
+                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                    </form>
                     <h3 className="font-bold text-lg">Tambah Poliklinik Baru</h3>
                     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2 mt-5">
                         <input type="text" placeholder="Nama Poliklinik" {...register("namaPoli", { required: "Tidak boleh kosong!" })} className="input input-sm nput-bordered input-primary w-full max-w-xs" />
@@ -38,9 +41,7 @@ const ModalAddPoli = () => {
                         <SubmitButtonServer />
                     </form>
                 </div>
-                <form method="dialog" className="modal-backdrop">
-                    <button>close</button>
-                </form>
+
             </dialog>
         </div>
     )
