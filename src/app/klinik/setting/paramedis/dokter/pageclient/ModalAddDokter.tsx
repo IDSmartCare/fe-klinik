@@ -1,6 +1,6 @@
 'use client'
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
-import ButtonModalComponent from "../../components/ButtonModalComponent"
+import ButtonModalComponent from "../../../../../components/ButtonModalComponent"
 import { ToastAlert } from "@/app/helper/ToastAlert"
 import { SubmitButtonServer } from "@/app/components/SubmitButtonServerComponent"
 import { typeFormDokter } from "../interface/typeFormDokter"

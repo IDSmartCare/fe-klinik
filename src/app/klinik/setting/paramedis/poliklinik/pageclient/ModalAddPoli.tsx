@@ -1,6 +1,6 @@
 'use client'
 
-import ButtonModalComponent from "../../components/ButtonModalComponent"
+import ButtonModalComponent from "../../../../../components/ButtonModalComponent"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { typeFormPoliklinik } from "../interface/typeFormPoliklinik"
 import { createPoli } from "../action"
