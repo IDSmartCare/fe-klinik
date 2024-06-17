@@ -1,33 +1,33 @@
 model PoliKlinik {
-    id        Int      @id @default(autoincrement())
-    namaPoli  String   @db.VarChar(100)
-    kodePoli  String?  @db.VarChar(10)
-    isAktif   Boolean? @default(true)
-    dokter    Dokter[]
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  namaPoli  String   @db.VarChar(100)
+  kodePoli  String?  @db.VarChar(10)
+  isAktif   Boolean? @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  dokter    Dokter[]
 }
 
 model Dokter {
-    id            Int            @id @default(autoincrement())
-    namaDokter    String         @db.VarChar(200)
-    kodeDokter    String?        @db.VarChar(30)
-    isAktif       Boolean?       @default(true)
-    jadwalPraktek JadwalDokter[]
-    createdAt     DateTime       @default(now())
-    updatedAt     DateTime       @updatedAt
-    poliKlinik    PoliKlinik?    @relation(fields: [poliKlinikId], references: [id])
-    poliKlinikId  Int?
+  id            Int            @id @default(autoincrement())
+  namaDokter    String         @db.VarChar(200)
+  kodeDokter    String?        @db.VarChar(30)
+  isAktif       Boolean?       @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  poliKlinikId  Int?
+  poliKlinik    PoliKlinik?    @relation(fields: [poliKlinikId], references: [id])
+  jadwalPraktek JadwalDokter[]
 }
 
 model JadwalDokter {
-    id         Int      @id @default(autoincrement())
-    hari       String   @db.VarChar(10)
-    kodeHari   Int
-    jamPraktek String?  @db.VarChar(30)
-    dokter     Dokter   @relation(fields: [dokterId], references: [id])
-    dokterId   Int
-    isAktif    Boolean? @default(true)
-    createdAt  DateTime @default(now())
-    updatedAt  DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  hari       String   @db.VarChar(10)
+  kodeHari   Int
+  jamPraktek String?  @db.VarChar(30)
+  dokterId   Int
+  isAktif    Boolean? @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  dokter     Dokter   @relation(fields: [dokterId], references: [id])
 }

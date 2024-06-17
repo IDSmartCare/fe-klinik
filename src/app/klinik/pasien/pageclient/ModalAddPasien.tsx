@@ -7,6 +7,7 @@ import { typeFormPasienBaru } from "../interface/typeFormPasienBaru"
 import ButtonModalComponent from "../../../components/ButtonModalComponent"
 import Select from 'react-select'
 import { useEffect, useId, useState } from "react"
+import { createPasien } from "../action"
 
 const ModalAddPasien = () => {
     const uuid = useId()
@@ -50,13 +51,63 @@ const ModalAddPasien = () => {
         getProv()
     }, [])
     const onSubmit: SubmitHandler<typeFormPasienBaru> = async (data) => {
-        // const post = await createPoli(data)
-        // if (post.status) {
-        //     ToastAlert({ icon: 'success', title: post.message as string })
-        //     reset()
-        // } else {
-        //     ToastAlert({ icon: 'error', title: post.message as string })
-        // }
+
+        const alamat = {
+            provinsi: data.provinsi.label,
+            idProv: data.provinsi.value,
+            kota: data.kota.label,
+            idKota: data.kota.value,
+            kecamatan: data.kecamatan.label,
+            idKecamatan: data.kecamatan.value,
+            kelurahan: data.kelurahan.label,
+            idKelurahan: data.kelurahan.value,
+            rt: Number(data.rt),
+            rw: Number(data.rw),
+        }
+        const domisiliBody = {
+            alamatDomisili: data.alamat,
+            provinsiDomisili: alamat.provinsi,
+            kotaDomisili: alamat.kota,
+            kecamatanDomisili: alamat.kecamatan,
+            kelurahanDomisili: alamat.kelurahan,
+            idProvDomisili: alamat.idProv,
+            idKotaDomisili: alamat.idKota,
+            idKecamatanDomisili: alamat.idKecamatan,
+            idKelurahanDomisili: alamat.idKelurahan,
+            rtDomisili: alamat.rt,
+            rwDomisili: alamat.rw,
+            kodePosDomisili: data.kodePos
+        }
+        const convertObtDomisili = {
+            provinsiDomisili: data.provinsiDomisili?.label,
+            idProvDomisili: data.provinsiDomisili?.value,
+            kotaDomisili: data.kotaDomisili?.label,
+            idKotaDomisili: data.kotaDomisili?.value,
+            kecamatanDomisili: data.kecamatanDomisili?.label,
+            idKecamatanDomisili: data.kecamatanDomisili?.value,
+            kelurahanDomisili: data.kelurahanDomisili?.label,
+            idKelurahanDomisili: data.kelurahanDomisili?.value,
+            rtDomisili: Number(data.rtDomisili),
+            rwDomisili: Number(data.rwDomisili)
+        }
+        const bodyToPost = {
+            ...data,
+            agama: textAgamaLain || data.agama.value,
+            pendidikan: data.pendidikan.value,
+            pekerjaan: textPekerjaanLain || data.pekerjaan.value,
+            statusMenikah: data.statusMenikah.value,
+            ...alamat,
+            ...(domisili && domisiliBody),
+            ...(!domisili && convertObtDomisili)
+
+        }
+        const post = await createPasien(bodyToPost)
+        if (post.status) {
+            ToastAlert({ icon: 'success', title: post.message as string })
+            reset()
+        } else {
+            ToastAlert({ icon: 'error', title: post.message as string })
+        }
     }
 
 
@@ -198,7 +249,7 @@ const ModalAddPasien = () => {
                                 <div className="label">
                                     <span className="label-text">Nama Pasien</span>
                                 </div>
-                                <input type="text" {...register("namaPasien", { required: "*wajib di isi" })} className="input input-primary w-full input-sm max-w-xs" />
+                                <input type="text" {...register("namaPasien", { required: "*Tidak boleh kosong" })} className="input input-primary w-full input-sm max-w-xs" />
                                 {errors.namaPasien &&
                                     <label className="label">
                                         <span className="label-text-alt text-error">{errors.namaPasien.message}</span>
@@ -209,29 +260,13 @@ const ModalAddPasien = () => {
                                 <div className="label">
                                     <span className="label-text">NIK</span>
                                 </div>
-                                <input type="number" {...register("nik", {
-                                    required: "*jika kosong isi 9999999999999999",
-                                    validate: val => val.length !== 16 ? "*harus 16 digit" : true,
-                                })} className="input input-primary w-full input-sm max-w-xs" />
-                                {errors.nik &&
-                                    <label className="label">
-                                        <span className="label-text-alt text-error">{errors.nik.message}</span>
-                                    </label>
-                                }
+                                <input type="number" {...register("nik")} className="input input-primary w-full input-sm max-w-xs" />
                             </div>
                             <div className="form-control w-full max-w-xs">
                                 <div className="label">
                                     <span className="label-text">No. BPJS</span>
                                 </div>
-                                <input type="number" {...register("bpjs", {
-                                    required: "*jika kosong isi 9999999999999",
-                                    validate: val => val.length !== 13 ? "*harus 13 digit" : true
-                                })} className="input input-primary w-full input-sm max-w-xs" />
-                                {errors.bpjs &&
-                                    <label className="label">
-                                        <span className="label-text-alt text-error">{errors.bpjs.message}</span>
-                                    </label>
-                                }
+                                <input type="number" {...register("bpjs")} className="input input-primary w-full input-sm max-w-xs" />
                             </div>
                             <div className="form-control w-full max-w-xs">
                                 <div className="label">
@@ -249,27 +284,20 @@ const ModalAddPasien = () => {
                                 <div className="label">
                                     <span className="label-text">HP</span>
                                 </div>
-                                <input type="number" {...register("noHp", { required: "*wajib di isi" })} className="input input-primary w-full input-sm max-w-xs" />
+                                <input type="number" {...register("noHp", { required: "*Tidak boleh kosong" })} className="input input-primary w-full input-sm max-w-xs" />
                                 {errors.noHp &&
                                     <label className="label">
                                         <span className="label-text-alt text-error">{errors.noHp.message}</span>
                                     </label>
                                 }
                             </div>
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">No. Telp</span>
-                                </div>
-                                <input type="number" {...register("noTelp")} className="input input-primary w-full input-sm max-w-xs" />
-                            </div>
-
                         </div>
                         <div className="flex-1">
                             <div className="form-control w-full max-w-xs">
                                 <div className="label">
                                     <span className="label-text">Tempat Lahir</span>
                                 </div>
-                                <input type="text" {...register("tempatLahir", { required: "*wajib di isi" })} className="input input-primary w-full input-sm max-w-xs" />
+                                <input type="text" {...register("tempatLahir", { required: "*Tidak boleh kosong" })} className="input input-primary w-full input-sm max-w-xs" />
                                 {errors.tempatLahir &&
                                     <label className="label">
                                         <span className="label-text-alt text-error">{errors.tempatLahir.message}</span>
@@ -280,7 +308,7 @@ const ModalAddPasien = () => {
                                 <div className="label">
                                     <span className="label-text">Tgl. Lahir</span>
                                 </div>
-                                <input type="date" {...register("tanggalLahir", { required: "*wajib di isi" })} className="input input-primary w-full input-sm max-w-xs" />
+                                <input type="date" {...register("tanggalLahir", { required: "*Tidak boleh kosong" })} className="input input-primary w-full input-sm max-w-xs" />
                                 {errors.tanggalLahir &&
                                     <label className="label">
                                         <span className="label-text-alt text-error">{errors.tanggalLahir.message}</span>
@@ -293,9 +321,9 @@ const ModalAddPasien = () => {
                                 </div>
                                 <div className="flex gap-2 ml-2">
                                     <span className="label-text">Laki-Laki</span>
-                                    <input type="radio" {...register("jenisKelamin", { required: "*wajib di isi" })} value={"L"} className="radio radio-primary" />
+                                    <input type="radio" {...register("jenisKelamin", { required: "*Tidak boleh kosong" })} value={"L"} className="radio radio-primary" />
                                     <span className="label-text">Perempuan</span>
-                                    <input type="radio" {...register("jenisKelamin", { required: "*wajib di isi" })} value={"P"} className="radio radio-primary" />
+                                    <input type="radio" {...register("jenisKelamin", { required: "*Tidak boleh kosong" })} value={"P"} className="radio radio-primary" />
                                 </div>
                                 {errors.jenisKelamin &&
                                     <label className="label">
@@ -311,7 +339,7 @@ const ModalAddPasien = () => {
                                     name="statusMenikah"
                                     control={control}
                                     rules={{
-                                        required: "*wajib di isi"
+                                        required: "*Tidak boleh kosong"
                                     }}
                                     render={({ field }) => <Select
                                         {...field}
@@ -336,7 +364,7 @@ const ModalAddPasien = () => {
                                 <div className="label">
                                     <span className="label-text">Nama Ibu</span>
                                 </div>
-                                <input type="text" {...register("ibuKandung", { required: "*wajib di isi" })} className="input input-primary w-full input-sm max-w-xs" />
+                                <input type="text" {...register("ibuKandung", { required: "*Tidak boleh kosong" })} className="input input-primary w-full input-sm max-w-xs" />
                                 {errors.ibuKandung &&
                                     <label className="label">
                                         <span className="label-text-alt text-error">{errors.ibuKandung.message}</span>
@@ -353,7 +381,12 @@ const ModalAddPasien = () => {
                         </div>
                         <div className="flex-1">
 
-
+                            <div className="form-control w-full max-w-xs">
+                                <div className="label">
+                                    <span className="label-text">Warganegara</span>
+                                </div>
+                                <input type="text" {...register("wargaNegara")} className="input input-primary w-full input-sm max-w-xs" />
+                            </div>
                             <div className="form-control w-full max-w-xs">
                                 <div className="label">
                                     <span className="label-text">Pendidikan</span>
@@ -362,7 +395,7 @@ const ModalAddPasien = () => {
                                     name="pendidikan"
                                     control={control}
                                     rules={{
-                                        required: "*wajib di isi"
+                                        required: "*Tidak boleh kosong"
                                     }}
                                     render={({ field }) => <Select
                                         {...field}
@@ -395,7 +428,7 @@ const ModalAddPasien = () => {
                                     name="agama"
                                     control={control}
                                     rules={{
-                                        required: "*wajib di isi",
+                                        required: "*Tidak boleh kosong",
                                         onChange: (e) => onChangeAgama(e)
                                     }}
                                     render={({ field }) => <Select
@@ -435,7 +468,7 @@ const ModalAddPasien = () => {
                                     name="pekerjaan"
                                     control={control}
                                     rules={{
-                                        required: "*wajib di isi",
+                                        required: "*Tidak boleh kosong",
                                         onChange: (e) => onChangePekerjaan(e)
                                     }}
                                     render={({ field }) => <Select
@@ -472,7 +505,7 @@ const ModalAddPasien = () => {
                                 <div className="label">
                                     <span className="label-text">Alamat KTP</span>
                                 </div>
-                                <input type="text" {...register("alamat", { required: "*wajib di isi" })} className="input input-primary w-full input-sm max-w-xs" />
+                                <input type="text" {...register("alamat", { required: "*Tidak boleh kosong" })} className="input input-primary w-full input-sm max-w-xs" />
                                 {errors.alamat &&
                                     <label className="label">
                                         <span className="label-text-alt text-error">{errors.alamat.message}</span>
@@ -484,8 +517,8 @@ const ModalAddPasien = () => {
                                     <span className="label-text">RT / RW</span>
                                 </div>
                                 <div className="flex gap-2">
-                                    <input type="number" {...register("rt", { required: "*RT wajib di isi" })} className="input input-primary w-full input-sm max-w-xs" />
-                                    <input type="number" {...register("rw", { required: "*RW wajib di isi" })} className="input input-primary w-full input-sm max-w-xs" />
+                                    <input type="number" {...register("rt", { required: "*RT Tidak boleh kosong" })} className="input input-primary w-full input-sm max-w-xs" />
+                                    <input type="number" {...register("rw", { required: "*RW Tidak boleh kosong" })} className="input input-primary w-full input-sm max-w-xs" />
                                 </div>
                                 <div className="flex">
 
@@ -509,7 +542,7 @@ const ModalAddPasien = () => {
                                     name="provinsi"
                                     control={control}
                                     rules={{
-                                        required: "*wajib di isi",
+                                        required: "*Tidak boleh kosong",
                                         onChange: (e) => { onChangeProvinsi(e.target.value) }
                                     }}
                                     render={({ field }) => <Select
@@ -533,7 +566,7 @@ const ModalAddPasien = () => {
                                     name="kota"
                                     control={control}
                                     rules={{
-                                        required: "*wajib di isi",
+                                        required: "*Tidak boleh kosong",
                                         onChange: (e) => { onChangeKota(e.target.value) }
                                     }}
                                     render={({ field }) => <Select
@@ -557,7 +590,7 @@ const ModalAddPasien = () => {
                                     name="kecamatan"
                                     control={control}
                                     rules={{
-                                        required: "*wajib di isi",
+                                        required: "*Tidak boleh kosong",
                                         onChange: (e) => { onChangeKecamatan(e.target.value) }
                                     }}
                                     render={({ field }) => <Select
@@ -581,7 +614,7 @@ const ModalAddPasien = () => {
                                     name="kelurahan"
                                     control={control}
                                     rules={{
-                                        required: "*wajib di isi"
+                                        required: "*Tidak boleh kosong"
                                     }}
                                     render={({ field }) => <Select
                                         {...field}

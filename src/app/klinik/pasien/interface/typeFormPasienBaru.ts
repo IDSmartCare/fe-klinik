@@ -4,13 +4,12 @@ export type typeFormPasienBaru = {
     noRm?: string
     namaPasien: string
     wargaNegara?: any
-    nik: string
-    bpjs: string
+    nik?: string
+    bpjs?: string
     noAsuransi?: string
     paspor?: string
     bahasa?: string
     noHp: string
-    noTelp?: string
     tempatLahir: string
     tanggalLahir: string
     jenisKelamin: string
@@ -19,43 +18,29 @@ export type typeFormPasienBaru = {
     alamat: string
     ibuKandung: string
     provinsi: any
-    idProv: number
+    idProv: string
     kota: any
-    idKota: number
+    idKota: string
     kecamatan: any
-    idKecamatan: number
+    idKecamatan: string
     kelurahan: any
-    idKelurahan: number
+    idKelurahan: string
     pendidikan: any
     pekerjaan: any
     rt: number
     rw: number
-    kodePos: string
+    kodePos?: string
     alamatDomisili: string
     provinsiDomisili: any
     kotaDomisili: any
     kecamatanDomisili: any
     kelurahanDomisili: any
-    idProvinsiDomisili: string
+    idProvDomisili: string
     idKotaDomisili: string
     idKecamatanDomisili: string
     idKelurahanDomisili: string
     rtDomisili: number
     rwDomisili: number
-    kodePosDomisili: string
-}
-
-export interface FieldDomisiliInterface {
-    alamat_domisili: string
-    provinsi_domisili: string
-    kota_domisili: string
-    kecamatan_domisili: string
-    kelurahan_domisili: string
-    id_provinsi_domisili: string
-    id_kota_domisili: string
-    id_kecamatan_domisili: string
-    id_kelurahan_domisili: string
-    rt_domisili: number
-    rw_domisili: number
-    kode_pos_domisili: string
+    kodePosDomisili?: string
+    isAktif?: boolean
 }
