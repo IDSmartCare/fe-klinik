@@ -1,11 +1,10 @@
 'use server'
 
-import { PrismaClient } from "@prisma/client"
 import { revalidatePath } from "next/cache";
 import { typeFormDokter } from "./interface/typeFormDokter";
+import prisma from "@/db";
 
 
-const prisma = new PrismaClient()
 export async function createDokter(form: typeFormDokter) {
     const poliId: any = form.poliKlinikId
     try {

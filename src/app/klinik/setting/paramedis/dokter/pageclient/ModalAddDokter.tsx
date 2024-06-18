@@ -1,6 +1,6 @@
 'use client'
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
-import ButtonModalComponent from "../../../../../components/ButtonModalComponent"
+import ButtonModalComponent, { icon } from "../../../../../components/ButtonModalComponent"
 import { ToastAlert } from "@/app/helper/ToastAlert"
 import { SubmitButtonServer } from "@/app/components/SubmitButtonServerComponent"
 import { typeFormDokter } from "../interface/typeFormDokter"
@@ -50,7 +50,7 @@ const ModalAddDokter = () => {
     }
     return (
         <div className="self-end">
-            <ButtonModalComponent modalname="add-dokter" title="Dokter Baru" />
+            <ButtonModalComponent icon={icon.add} modalname="add-dokter" title="Dokter Baru" />
             <dialog id="add-dokter" className="modal">
                 <div className="modal-box w-4/12 max-w-lg">
                     <form method="dialog">

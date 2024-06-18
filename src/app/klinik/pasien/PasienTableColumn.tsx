@@ -3,6 +3,7 @@ import { createColumnHelper } from "@tanstack/table-core"
 import { ToastAlert } from "@/app/helper/ToastAlert"
 import { typeFormPasienBaru } from "./interface/typeFormPasienBaru"
 import { format } from "date-fns"
+import Link from "next/link"
 
 const columHelper = createColumnHelper<typeFormPasienBaru>()
 const onChange = async (e: any, id: any) => {
@@ -27,8 +28,10 @@ const onChange = async (e: any, id: any) => {
 }
 
 const PasienTableColumn = [
-    columHelper.accessor(row => row.noRm, {
-        cell: info => info.getValue(),
+    columHelper.accessor(row => [row.noRm, row.id], {
+        cell: info => <div className="tooltip" data-tip="Detail">
+            <Link className="btn btn-info btn-xs" href={`/klinik/pasien/detail/${info.getValue()[1]}`}>{info.getValue()[0]}</Link>
+        </div>,
         header: "RM"
     }),
     columHelper.accessor(row => row.namaPasien, {

@@ -1,12 +1,11 @@
 'use server'
 
-import { PrismaClient } from "@prisma/client"
 import { revalidatePath } from "next/cache";
 import { typeFormPasienBaru } from "./interface/typeFormPasienBaru";
 import { formatISO } from 'date-fns'
+import prisma from "@/db";
 
 
-const prisma = new PrismaClient()
 export async function createPasien(form: typeFormPasienBaru) {
     try {
         const today = new Date()
@@ -23,7 +22,7 @@ export async function createPasien(form: typeFormPasienBaru) {
                     ],
                 }
             })
-            const totalPasien = count.toString().padStart(4, "0")
+            const totalPasien = `${count + 1}`.toString().padStart(4, "0")
             const totalBulan = month.toString().padStart(2, "0")
             const rm = `${year.toString().slice(-2)}${totalBulan}${totalPasien}`
             const postData = await tx.pasien.create({

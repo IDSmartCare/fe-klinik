@@ -1,11 +1,10 @@
 'use server'
 
-import { PrismaClient } from "@prisma/client"
 import { revalidatePath } from "next/cache";
 import { typeFormJadwal } from "./interface/typeFormJadwal";
+import prisma from "@/db";
 
 
-const prisma = new PrismaClient()
 export async function createJadwal(form: typeFormJadwal) {
     const kodeHari: any = form.kodeHari.value
     const hari: any = form.kodeHari.label

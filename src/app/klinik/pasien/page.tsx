@@ -2,10 +2,9 @@ import TableFilterComponent from "@/app/components/TableFilterComponent"
 import AlertHeaderComponent from "../setting/paramedis/components/AlertHeaderComponent"
 // import FilterPasienComponent from "@/app/components/FilterPasienComponent"
 import ModalAddPasien from "./pageclient/ModalAddPasien"
-import { PrismaClient } from "@prisma/client"
 import PasienTableColumn from "./PasienTableColumn"
+import prisma from "@/db"
 
-const prisma = new PrismaClient()
 const getData = async () => {
     try {
         const getDb = await prisma.pasien.findMany({

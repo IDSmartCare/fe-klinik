@@ -4,7 +4,7 @@ import { useForm, SubmitHandler, Controller } from "react-hook-form"
 import { ToastAlert } from "@/app/helper/ToastAlert"
 import { SubmitButtonServer } from "@/app/components/SubmitButtonServerComponent"
 import { typeFormPasienBaru } from "../interface/typeFormPasienBaru"
-import ButtonModalComponent from "../../../components/ButtonModalComponent"
+import ButtonModalComponent, { icon } from "../../../components/ButtonModalComponent"
 import Select from 'react-select'
 import { useEffect, useId, useState } from "react"
 import { createPasien } from "../action"
@@ -236,7 +236,7 @@ const ModalAddPasien = () => {
     }
     return (
         <div className="self-end">
-            <ButtonModalComponent modalname="add-pasien" title="Pasien Baru" />
+            <ButtonModalComponent icon={icon.add} modalname="add-pasien" title="Pasien Baru" />
             <dialog id="add-pasien" className="modal">
                 <div className="modal-box w-11/12 max-w-6xl">
                     <form method="dialog">

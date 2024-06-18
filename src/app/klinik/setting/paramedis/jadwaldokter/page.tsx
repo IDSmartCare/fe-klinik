@@ -1,10 +1,9 @@
 import AlertHeaderComponent from "@/app/klinik/setting/paramedis/components/AlertHeaderComponent"
 import TableFilterComponent from "@/app/components/TableFilterComponent"
 import ModalAddJadwal from "./pageclient/ModalAddJadwal"
-import { PrismaClient } from "@prisma/client"
 import JadwalTableColumn from "./JadwalTableColumn"
+import prisma from "@/db"
 
-const prisma = new PrismaClient()
 const getData = async () => {
     try {
         const getDb = await prisma.jadwalDokter.findMany({

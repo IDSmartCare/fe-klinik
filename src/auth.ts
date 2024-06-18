@@ -1,8 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials"
-import { PrismaClient } from "@prisma/client"
+import prisma from "./db";
 
-const prisma = new PrismaClient()
 export const authOption: NextAuthOptions = {
     providers: [
         Credentials({

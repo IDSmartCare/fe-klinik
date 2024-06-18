@@ -1,6 +1,6 @@
 'use client'
 
-import ButtonModalComponent from "../../../../../components/ButtonModalComponent"
+import ButtonModalComponent, { icon } from "../../../../../components/ButtonModalComponent"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { typeFormPoliklinik } from "../interface/typeFormPoliklinik"
 import { createPoli } from "../action"
@@ -26,7 +26,7 @@ const ModalAddPoli = () => {
     }
     return (
         <div className="self-end">
-            <ButtonModalComponent modalname="add-poli" title="Poli Baru" />
+            <ButtonModalComponent icon={icon.add} modalname="add-poli" title="Poli Baru" />
             <dialog id="add-poli" className="modal">
                 <div className="modal-box w-3/12 max-w-md">
                     <form method="dialog">

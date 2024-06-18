@@ -1,10 +1,9 @@
 import TableFilterComponent from "@/app/components/TableFilterComponent"
 import AlertHeaderComponent from "../components/AlertHeaderComponent"
 import ModalAddPoli from "./pageclient/ModalAddPoli"
-import { PrismaClient } from "@prisma/client"
 import PoliTableColumn from "./PoliTableColumn"
+import prisma from "@/db"
 
-const prisma = new PrismaClient()
 const getDataPoli = async () => {
     try {
         const getDb = await prisma.poliKlinik.findMany()

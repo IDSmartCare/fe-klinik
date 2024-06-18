@@ -1,6 +1,5 @@
-import { PrismaClient } from "@prisma/client"
+import prisma from "@/db";
 
-const prisma = new PrismaClient()
 export async function GET() {
     const data = await prisma.dokter.findMany({
         where: {
