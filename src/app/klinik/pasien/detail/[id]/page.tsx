@@ -1,3 +1,4 @@
+import { calculateAge } from "@/app/helper/CalculateAge"
 import AlertHeaderComponent from "@/app/klinik/setting/paramedis/components/AlertHeaderComponent"
 import prisma from "@/db"
 import { format } from "date-fns"
@@ -18,9 +19,9 @@ const getData = async (id: string) => {
 }
 const PageDetailPasien = async ({ params }: { params: { id: string } }) => {
     const resApi = await getData(params.id)
-
+    const { years, months, days } = calculateAge(resApi?.tanggalLahir)
     return (
-        <div>
+        <>
             {
                 resApi ?
                     <div className="overflow-x-auto flex flex-col gap-2">
@@ -35,102 +36,104 @@ const PageDetailPasien = async ({ params }: { params: { id: string } }) => {
                             </li>
                         </ul>
                         <AlertHeaderComponent message="Detail Biodata Pasien" />
-                        <table className="table table-zebra">
+                        <table className="table table-xs table-zebra">
                             <tbody>
                                 <tr>
                                     <th colSpan={4} className="bg-info">Identitas</th>
                                 </tr>
                                 <tr>
-                                    <th>No RM</th>
-                                    <td>{resApi.noRm}</td>
-                                    <th>Nama</th>
-                                    <td>{resApi.namaPasien}</td>
+                                    <th>NO RM</th>
+                                    <td>: {resApi.noRm}</td>
+                                    <th>NAMA</th>
+                                    <td>: {resApi.namaPasien}</td>
                                 </tr>
                                 <tr>
                                     <th>NIK</th>
-                                    <td>{resApi.nik}</td>
+                                    <td>: {resApi.nik}</td>
                                     <th>BPJS</th>
-                                    <td>{resApi.bpjs}</td>
+                                    <td>: {resApi.bpjs}</td>
                                 </tr>
                                 <tr>
-                                    <th>Warganegara</th>
-                                    <td>{resApi.wargaNegara}</td>
-                                    <th>No Asuransi</th>
-                                    <td>{resApi.noAsuransi}</td>
+                                    <th>WARGANEGARA</th>
+                                    <td>: {resApi.wargaNegara}</td>
+                                    <th>No ASURANSI</th>
+                                    <td>: {resApi.noAsuransi}</td>
                                 </tr>
                                 <tr>
-                                    <th>Paspor</th>
-                                    <td>{resApi.paspor}</td>
-                                    <th>Bahasa</th>
-                                    <td>{resApi.bahasa}</td>
+                                    <th>PASPOR</th>
+                                    <td>: {resApi.paspor}</td>
+                                    <th>BAHASA</th>
+                                    <td>: {resApi.bahasa}</td>
                                 </tr>
                                 <tr>
                                     <th>TTL</th>
-                                    <td>{resApi.tempatLahir}, {format(resApi.tanggalLahir, 'dd/MM/yyyy')}</td>
+                                    <td>: {resApi.tempatLahir}, {format(resApi.tanggalLahir, 'dd/MM/yyyy')}</td>
+                                    <th>UMUR</th>
+                                    <td>: {`${years} Tahun ${months} Bulan ${days} Hari`}</td>
+                                </tr>
+                                <tr>
+                                    <th>STATUS</th>
+                                    <td>: {resApi.statusMenikah}</td>
+                                    <th>AGAMA</th>
+                                    <td>: {resApi.agama}</td>
+                                </tr>
+                                <tr>
+                                    <th>PENDIDIKAN</th>
+                                    <td>: {resApi.pendidikan}</td>
+                                    <th>PEKERJAAN</th>
+                                    <td>: {resApi.pekerjaan}</td>
+                                </tr>
+                                <tr>
+                                    <th>IBU KANDUNG</th>
+                                    <td>: {resApi.ibuKandung}</td>
                                     <th>JK</th>
-                                    <td>{resApi.jenisKelamin === "L" ? "LAKI-LAKI" : "PEREMPUAN"}</td>
+                                    <td>: {resApi.jenisKelamin === "L" ? "LAKI-LAKI" : "PEREMPUAN"}</td>
                                 </tr>
                                 <tr>
-                                    <th>Status</th>
-                                    <td>{resApi.statusMenikah}</td>
-                                    <th>Agama</th>
-                                    <td>{resApi.agama}</td>
+                                    <th colSpan={4} className="bg-info">ALAMAT KTP</th>
                                 </tr>
                                 <tr>
-                                    <th>Pendidikan</th>
-                                    <td>{resApi.pendidikan}</td>
-                                    <th>Pekerjaan</th>
-                                    <td>{resApi.pekerjaan}</td>
+                                    <th>ALAMAT</th>
+                                    <td colSpan={3}>: {resApi.alamat}</td>
                                 </tr>
                                 <tr>
-                                    <th>Ibu Kandung</th>
-                                    <td colSpan={3}>{resApi.ibuKandung}</td>
+                                    <th>KOTA / KAB</th>
+                                    <td>: {resApi.kota}</td>
+                                    <th>KECAMATAN</th>
+                                    <td>: {resApi.kecamatan}</td>
                                 </tr>
                                 <tr>
-                                    <th colSpan={4} className="bg-info">Alamat KTP</th>
-                                </tr>
-                                <tr>
-                                    <th>Alamat</th>
-                                    <td colSpan={3}>{resApi.alamat}</td>
-                                </tr>
-                                <tr>
-                                    <th>Kota / Kabupaten</th>
-                                    <td>{resApi.kota}</td>
-                                    <th>Kecamatan</th>
-                                    <td>{resApi.kecamatan}</td>
-                                </tr>
-                                <tr>
-                                    <th>Kelurahan</th>
-                                    <td>{resApi.kelurahan}</td>
+                                    <th>KELURAHAN</th>
+                                    <td>: {resApi.kelurahan}</td>
                                     <th>RT / RW</th>
-                                    <td>{resApi.rt}/{resApi.rw}</td>
+                                    <td>: {resApi.rt}/{resApi.rw}</td>
                                 </tr>
                                 <tr>
-                                    <th>Kode Pos</th>
-                                    <td colSpan={3}>{resApi.kodePos}</td>
+                                    <th>KODE POS</th>
+                                    <td colSpan={3}>: {resApi.kodePos}</td>
                                 </tr>
                                 <tr>
-                                    <th colSpan={4} className="bg-info">Alamat Domisili</th>
+                                    <th colSpan={4} className="bg-info">ALAMAT DOMISILI</th>
                                 </tr>
                                 <tr>
-                                    <th>Alamat</th>
-                                    <td colSpan={3}>{resApi.alamatDomisili}</td>
+                                    <th>ALAMAT</th>
+                                    <td colSpan={3}>: {resApi.alamatDomisili}</td>
                                 </tr>
                                 <tr>
-                                    <th>Kota / Kabupaten</th>
-                                    <td>{resApi.kotaDomisili}</td>
-                                    <th>Kecamatan</th>
-                                    <td>{resApi.kecamatan}</td>
+                                    <th>KOTA / KAB</th>
+                                    <td>: {resApi.kotaDomisili}</td>
+                                    <th>KECAMATAN</th>
+                                    <td>: {resApi.kecamatan}</td>
                                 </tr>
                                 <tr>
-                                    <th>Kelurahan</th>
-                                    <td>{resApi.kelurahan}</td>
+                                    <th>KELURAHAN</th>
+                                    <td>: {resApi.kelurahan}</td>
                                     <th>RT / RW</th>
-                                    <td>{resApi.rt}/{resApi.rw}</td>
+                                    <td>: {resApi.rt}/{resApi.rw}</td>
                                 </tr>
                                 <tr>
-                                    <th>Kode Pos</th>
-                                    <td colSpan={3}>{resApi.kodePos}</td>
+                                    <th>KODE POS DOMISILI</th>
+                                    <td colSpan={3}>: {resApi.kodePosDomisili}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -140,7 +143,7 @@ const PageDetailPasien = async ({ params }: { params: { id: string } }) => {
                         <span>Data tidak ditemukan!</span>
                     </div>
             }
-        </div>
+        </>
     )
 }
 

@@ -63,13 +63,13 @@ function TableFilterComponent({ rowsData, columnsData }: { readonly rowsData: an
                 onChange={value => setGlobalFilter(String(value))}
                 placeholder={`Cari dari total ${table.getPrePaginationRowModel().rows.length} data`}
             />
-            <table className='table text-center table-pin-cols'>
+            <table className='table table-xs text-center table-pin-cols'>
                 <thead>
                     {table.getHeaderGroups().map(headerGroup => (
                         <tr key={headerGroup.id}>
                             {headerGroup.headers.map(header => {
                                 return (
-                                    <th key={header.id} colSpan={header.colSpan}>
+                                    <th className='bg-base-200' key={header.id} colSpan={header.colSpan}>
                                         {header.isPlaceholder ? null : (
                                             <button
                                                 {...{

@@ -39,7 +39,7 @@ const DokterTableColumn = [
         header: "Poliklinik"
     }),
     columHelper.accessor(row => [row.isAktif, row.id], {
-        cell: info => <input type="checkbox" onChange={(e) => onChange(e, info.getValue()[1])} className="toggle toggle-primary" defaultChecked={info.getValue()[0] ? true : false} />,
+        cell: info => <input type="checkbox" onChange={(e) => onChange(e, info.getValue()[1])} className="toggle toggle-xs toggle-primary" defaultChecked={info.getValue()[0] ? true : false} />,
         header: "Status"
     }),
 ]
