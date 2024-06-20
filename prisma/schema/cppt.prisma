@@ -1,0 +1,19 @@
+model SOAP {
+    id             Int          @id @default(autoincrement())
+    profesi        String       @db.VarChar(50)
+    isDokter       Boolean?     @default(false)
+    subjective     String
+    objective      String
+    assesment      String
+    plan           String
+    instruksi      String
+    inputBy        String
+    resep          String?
+    isVerifDokter  Boolean?     @default(false)
+    jamVerifDokter DateTime?
+    isAktif        Boolean?     @default(true)
+    createdAt      DateTime     @default(now())
+    updatedAt      DateTime     @updatedAt
+    pendaftaran    Pendaftaran? @relation(fields: [pendaftaranId], references: [id])
+    pendaftaranId  Int?
+}
