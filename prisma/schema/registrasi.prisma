@@ -4,6 +4,8 @@ model Pendaftaran {
     jadwalDokterId       Int
     penjamin             String              @db.VarChar(50)
     namaAsuransi         String?             @db.VarChar(50)
+    isSoapPerawat        Boolean?            @default(false)
+    isSoapDokter         Boolean?            @default(false)
     isClose              Boolean?            @default(false)
     isAktif              Boolean?            @default(true)
     createdAt            DateTime            @default(now())

@@ -1,7 +1,9 @@
 import { calculateAge } from "@/app/helper/CalculateAge"
 import AlertHeaderComponent from "@/app/klinik/setting/paramedis/components/AlertHeaderComponent"
+import { authOption } from "@/auth"
 import prisma from "@/db"
 import { format } from "date-fns"
+import { getServerSession } from "next-auth"
 import Link from "next/link"
 
 const getData = async (id: string) => {
@@ -19,22 +21,26 @@ const getData = async (id: string) => {
 }
 const PageDetailPasien = async ({ params }: { params: { id: string } }) => {
     const resApi = await getData(params.id)
+    const session = await getServerSession(authOption)
     const { years, months, days } = calculateAge(resApi?.tanggalLahir)
     return (
         <>
             {
                 resApi ?
                     <div className="overflow-x-auto flex flex-col gap-2">
-                        <ul className="menu menu-xs menu-horizontal space-x-2 bg-base-300 rounded self-end">
-                            <li>
-                                <Link href={`/klinik/pasien/registrasi/${params.id}`} className="btn btn-xs">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
-                                        <path fillRule="evenodd" d="M11.013 2.513a1.75 1.75 0 0 1 2.475 2.474L6.226 12.25a2.751 2.751 0 0 1-.892.596l-2.047.848a.75.75 0 0 1-.98-.98l.848-2.047a2.75 2.75 0 0 1 .596-.892l7.262-7.261Z" clipRule="evenodd" />
-                                    </svg>
-                                    Registrasi
-                                </Link>
-                            </li>
-                        </ul>
+                        {session?.user.role === 'admin' || session?.user.role === 'admisi' ?
+                            <ul className="menu menu-xs menu-horizontal space-x-2 bg-base-300 rounded self-end">
+                                <li>
+                                    <Link href={`/klinik/pasien/registrasi/${params.id}`} className="btn btn-xs">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
+                                            <path fillRule="evenodd" d="M11.013 2.513a1.75 1.75 0 0 1 2.475 2.474L6.226 12.25a2.751 2.751 0 0 1-.892.596l-2.047.848a.75.75 0 0 1-.98-.98l.848-2.047a2.75 2.75 0 0 1 .596-.892l7.262-7.261Z" clipRule="evenodd" />
+                                        </svg>
+                                        Registrasi
+                                    </Link>
+                                </li>
+                            </ul>
+                            : ""
+                        }
                         <AlertHeaderComponent message="Detail Biodata Pasien" />
                         <table className="table table-sm table-zebra">
                             <tbody>
