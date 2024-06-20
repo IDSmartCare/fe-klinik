@@ -1,0 +1,24 @@
+model Pendaftaran {
+    id                   Int                 @id @default(autoincrement())
+    jadwal               JadwalDokter?       @relation(fields: [jadwalDokterId], references: [id])
+    jadwalDokterId       Int
+    penjamin             String              @db.VarChar(50)
+    namaAsuransi         String?             @db.VarChar(50)
+    isClose              Boolean?            @default(false)
+    isAktif              Boolean?            @default(true)
+    createdAt            DateTime            @default(now())
+    updatedAt            DateTime            @updatedAt
+    episodePendaftaran   EpisodePendaftaran? @relation(fields: [episodePendaftaranId], references: [id])
+    episodePendaftaranId Int?
+}
+
+model EpisodePendaftaran {
+    id          Int           @id @default(autoincrement())
+    episode     Int
+    pendaftaran Pendaftaran[]
+    isAktif     Boolean?      @default(true)
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @updatedAt
+    pasien      Pasien?       @relation(fields: [pasienId], references: [id])
+    pasienId    Int?
+}

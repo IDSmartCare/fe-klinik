@@ -1,6 +1,13 @@
 import { differenceInCalendarYears, differenceInDays, differenceInMonths } from "date-fns";
 
 export const calculateAge = (birthDate: any) => {
+    if (!birthDate) {
+        return {
+            years: "",
+            months: "",
+            days: ""
+        }
+    }
     const today = new Date();
 
     const ageInYears = differenceInCalendarYears(today, birthDate);

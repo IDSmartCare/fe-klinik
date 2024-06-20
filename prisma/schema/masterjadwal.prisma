@@ -21,13 +21,14 @@ model Dokter {
 }
 
 model JadwalDokter {
-  id         Int      @id @default(autoincrement())
-  hari       String   @db.VarChar(10)
+  id         Int           @id @default(autoincrement())
+  hari       String        @db.VarChar(10)
   kodeHari   Int
-  jamPraktek String?  @db.VarChar(30)
+  jamPraktek String?       @db.VarChar(30)
   dokterId   Int
-  isAktif    Boolean? @default(true)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  dokter     Dokter   @relation(fields: [dokterId], references: [id])
+  isAktif    Boolean?      @default(true)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  dokter     Dokter        @relation(fields: [dokterId], references: [id])
+  registrasi Pendaftaran[]
 }

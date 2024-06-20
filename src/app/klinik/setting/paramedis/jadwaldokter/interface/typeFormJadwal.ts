@@ -12,6 +12,7 @@ export type typeFormJadwal = {
         namaDokter: string,
         poliKlinik: {
             namaPoli: string
+            kodePoli?: string
         }
     }
 }

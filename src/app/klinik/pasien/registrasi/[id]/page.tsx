@@ -1,5 +1,6 @@
 import PasienIdentitasComponent from "@/app/components/PasienIdentitasComponent";
 import prisma from "@/db";
+import FormRegistrasi from "../../pageclient/FormRegistrasi";
 
 const getData = async (id: string) => {
     try {
@@ -18,8 +19,9 @@ const getData = async (id: string) => {
 const PageRegistrasi = async ({ params }: { params: { id: string } }) => {
     const resApi = await getData(params.id)
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-2">
             <PasienIdentitasComponent pasien={resApi} />
+            <FormRegistrasi idpasien={params.id} />
         </div>
     )
 }

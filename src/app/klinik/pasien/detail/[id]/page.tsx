@@ -36,10 +36,10 @@ const PageDetailPasien = async ({ params }: { params: { id: string } }) => {
                             </li>
                         </ul>
                         <AlertHeaderComponent message="Detail Biodata Pasien" />
-                        <table className="table table-xs table-zebra">
+                        <table className="table table-sm table-zebra">
                             <tbody>
                                 <tr>
-                                    <th colSpan={4} className="bg-info">Identitas</th>
+                                    <th colSpan={4} className="bg-info">IDENTITAS</th>
                                 </tr>
                                 <tr>
                                     <th>NO RM</th>
