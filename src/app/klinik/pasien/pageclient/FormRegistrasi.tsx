@@ -72,80 +72,71 @@ const FormRegistrasi = ({ idpasien }: { idpasien: string }) => {
 
     }
     return (
-        <div className="flex gap-2">
-            <div className='w-1/2' >
-                <AlertHeaderComponent message='Registrasi Baru' />
-                <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="form-control w-full">
+                <div className="label">
+                    <span className="label-text">Dokter Yang Tersedia Hari Ini</span>
+                </div>
+                <Controller
+                    name="jadwalDokterId"
+                    control={control}
+                    rules={{
+                        required: "*Silahkan pilih",
+                        onChange: (e) => onChangePenjamin(e)
+                    }}
+                    render={({ field }) => <Select
+                        {...field}
+                        isClearable
+                        instanceId={uuid}
+                        options={dokter}
+                    />}
+                />
+                {errors.jadwalDokterId &&
+                    <label className="label">
+                        <span className="label-text-alt text-error">{errors.jadwalDokterId.message?.toString()}</span>
+                    </label>
+                }
+            </div>
+            <div className="form-control w-full">
+                <div className="label">
+                    <span className="label-text">Penjamin</span>
+                </div>
+                <Controller
+                    name="penjamin"
+                    control={control}
+                    rules={{
+                        required: "*Silahkan pilih",
+                        onChange: (e) => onChangePenjamin(e)
+                    }}
+                    render={({ field }) => <Select
+                        {...field}
+                        isClearable
+                        instanceId={uuid}
+                        options={[
+                            { value: "BPJS", label: "BPJS" },
+                            { value: "PRIBADI", label: "PRIBADI" },
+                            { value: "ASURANSI", label: "ASURANSI" },
+                        ]}
+                    />}
+                />
+                {errors.penjamin &&
+                    <label className="label">
+                        <span className="label-text-alt text-error">{errors.penjamin.message?.toString()}</span>
+                    </label>
+                }
+                {ifAsuransi &&
                     <div className="form-control w-full">
                         <div className="label">
-                            <span className="label-text">Dokter Yang Tersedia Hari Ini</span>
+                            <span className="label-text">Nama Asuransi</span>
                         </div>
-                        <Controller
-                            name="jadwalDokterId"
-                            control={control}
-                            rules={{
-                                required: "*Silahkan pilih",
-                                onChange: (e) => onChangePenjamin(e)
-                            }}
-                            render={({ field }) => <Select
-                                {...field}
-                                isClearable
-                                instanceId={uuid}
-                                options={dokter}
-                            />}
-                        />
-                        {errors.jadwalDokterId &&
-                            <label className="label">
-                                <span className="label-text-alt text-error">{errors.jadwalDokterId.message?.toString()}</span>
-                            </label>
-                        }
+                        <input type="text" value={namaAsuransi} onChange={(e) => setNamaAsuransi(e.target.value)} className="input input-primary w-full input-sm" />
                     </div>
-                    <div className="form-control w-full">
-                        <div className="label">
-                            <span className="label-text">Penjamin</span>
-                        </div>
-                        <Controller
-                            name="penjamin"
-                            control={control}
-                            rules={{
-                                required: "*Silahkan pilih",
-                                onChange: (e) => onChangePenjamin(e)
-                            }}
-                            render={({ field }) => <Select
-                                {...field}
-                                isClearable
-                                instanceId={uuid}
-                                options={[
-                                    { value: "BPJS", label: "BPJS" },
-                                    { value: "PRIBADI", label: "PRIBADI" },
-                                    { value: "ASURANSI", label: "ASURANSI" },
-                                ]}
-                            />}
-                        />
-                        {errors.penjamin &&
-                            <label className="label">
-                                <span className="label-text-alt text-error">{errors.penjamin.message?.toString()}</span>
-                            </label>
-                        }
-                        {ifAsuransi &&
-                            <div className="form-control w-full">
-                                <div className="label">
-                                    <span className="label-text">Nama Asuransi</span>
-                                </div>
-                                <input type="text" value={namaAsuransi} onChange={(e) => setNamaAsuransi(e.target.value)} className="input input-primary w-full input-sm" />
-                            </div>
-                        }
-                    </div>
-                    <div className='mt-3'>
-                        <SubmitButtonServer />
-                    </div>
-                </form>
+                }
             </div>
-            <div className='w-1/2'>
-                <AlertHeaderComponent message='Riwayat registrasi pasien' />
+            <div className='mt-3'>
+                <SubmitButtonServer />
             </div>
-
-        </div>
+        </form>
     )
 }
 

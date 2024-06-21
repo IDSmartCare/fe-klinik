@@ -55,7 +55,7 @@ const PageCPPT = async ({ params }: { params: { id: any } }) => {
             <div className="overflow-x-auto">
                 <div className="overflow-y-auto h-96">
                     <table className="table table-sm table-zebra">
-                        <thead>
+                        <thead className="bg-base-200">
                             <tr>
                                 <th>No</th>
                                 <th>Tgl/Jam</th>

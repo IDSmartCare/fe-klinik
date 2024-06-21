@@ -4,10 +4,18 @@ import prisma from "@/db"
 import PerawatTableColumn from "./PerawatTableColumn"
 
 const getData = async () => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const tomorrow = new Date(today)
+    tomorrow.setDate(tomorrow.getDate() + 1)
     try {
         const getDb = await prisma.pendaftaran.findMany({
             where: {
-                isClose: false
+                isClose: false,
+                AND: [
+                    { createdAt: { gte: today } },
+                    { createdAt: { lt: tomorrow } },
+                ],
             },
             orderBy: {
                 id: 'desc',

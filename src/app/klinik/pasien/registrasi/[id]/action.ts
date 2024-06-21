@@ -2,6 +2,7 @@
 
 import prisma from "@/db";
 import { typeFormRegis } from "../../interface/typeFormRegistrasi";
+import { revalidatePath } from "next/cache";
 
 export async function createRegistrasi(form: typeFormRegis) {
     try {
@@ -78,6 +79,7 @@ export async function createRegistrasi(form: typeFormRegis) {
 
             }
         })
+        revalidatePath(`/klinik/pasien/registrasi/${form.pasienId}`)
         return {
             status: true,
             message: "Berhasil tersimpan",
