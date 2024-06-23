@@ -6,8 +6,9 @@ import { typeFormPoliklinik } from "../interface/typeFormPoliklinik"
 import { createPoli } from "../action"
 import { ToastAlert } from "@/app/helper/ToastAlert"
 import { SubmitButtonServer } from "@/app/components/SubmitButtonServerComponent"
+import { Session } from "next-auth"
 
-const ModalAddPoli = () => {
+const ModalAddPoli = ({ session }: { session: Session | null }) => {
     const {
         register,
         handleSubmit,
@@ -16,7 +17,7 @@ const ModalAddPoli = () => {
     } = useForm<typeFormPoliklinik>()
 
     const onSubmit: SubmitHandler<typeFormPoliklinik> = async (data) => {
-        const post = await createPoli(data)
+        const post = await createPoli(data, session?.user.idFasyankes)
         if (post.status) {
             ToastAlert({ icon: 'success', title: post.message as string })
             reset()

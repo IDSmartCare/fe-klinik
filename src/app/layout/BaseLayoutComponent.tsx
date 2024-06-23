@@ -18,7 +18,7 @@ const BaseLayoutComponent = ({ children, session }: { children: ReactNode, sessi
                     <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
                     <ul className="menu p-4 w-60 min-h-full lg:rounded bg-base-200 text-base-content">
                         <div className="flex justify-center mb-2">
-                            <Link href={"/"}>
+                            <Link href={"/klinik"}>
                                 <Image src={`/logo.png`} priority
                                     width={150} height={100} className="w-50 h-8"
                                     alt="logo klinik" />

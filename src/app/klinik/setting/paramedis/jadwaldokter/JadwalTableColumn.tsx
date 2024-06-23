@@ -30,11 +30,11 @@ const JadwalTableColumn = [
         cell: info => info.getValue(),
         header: "Hari"
     }),
-    columHelper.accessor(row => row.dokter?.namaDokter, {
+    columHelper.accessor(row => row.dokter?.namaLengkap, {
         cell: info => info.getValue(),
         header: "Dokter"
     }),
-    columHelper.accessor(row => row.dokter?.poliKlinik.namaPoli, {
+    columHelper.accessor(row => row.dokter?.poliklinik.namaPoli, {
         cell: info => info.getValue(),
         header: "Poli"
     }),

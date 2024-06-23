@@ -3,13 +3,18 @@ import AlertHeaderComponent from "../components/AlertHeaderComponent"
 import ModalAddDokter from "./pageclient/ModalAddDokter"
 import DokterTableColumn from "./DokterTableColumn"
 import prisma from "@/db"
+import { getServerSession } from "next-auth"
+import { authOption } from "@/auth"
 
-const getDataDokter = async () => {
+const getDataDokter = async (idFasyankes: string) => {
     try {
-        const getDb = await prisma.dokter.findMany(
+        const getDb = await prisma.profile.findMany(
             {
+                where: {
+                    idFasyankes
+                },
                 include: {
-                    poliKlinik: {
+                    poliklinik: {
                         select: {
                             namaPoli: true
                         }
@@ -23,11 +28,12 @@ const getDataDokter = async () => {
     }
 }
 const PageDokter = async () => {
-    const data = await getDataDokter()
+    const session = await getServerSession(authOption)
+    const data = await getDataDokter(session?.user.idFasyankes)
     return (
         <>
             <AlertHeaderComponent message="List dokter" />
-            <ModalAddDokter />
+            <ModalAddDokter session={session} />
             <TableFilterComponent rowsData={data} columnsData={DokterTableColumn} />
         </>
     )

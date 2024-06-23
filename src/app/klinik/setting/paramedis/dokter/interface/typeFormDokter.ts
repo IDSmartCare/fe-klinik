@@ -1,10 +1,11 @@
 export type typeFormDokter = {
     id?: number
-    namaDokter: string
+    namaLengkap: string
     kodeDokter: string
     isAktif: string
     poliKlinikId?: number
-    poliKlinik?: {
+    poliklinik?: {
         namaPoli: string
     }
+    userId?: number
 }

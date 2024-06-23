@@ -8,8 +8,9 @@ import { createDokter } from "../action"
 import Select from 'react-select'
 import { useEffect, useId, useState } from "react"
 import { typeFormPoliklinik } from "../../poliklinik/interface/typeFormPoliklinik"
+import { Session } from "next-auth"
 
-const ModalAddDokter = () => {
+const ModalAddDokter = ({ session }: { session: Session | null }) => {
     const {
         register,
         handleSubmit,
@@ -19,10 +20,11 @@ const ModalAddDokter = () => {
     } = useForm<typeFormDokter>()
     const uuid = useId()
     const [option, setOption] = useState<any[]>([])
+    const [optionUser, setOptionUser] = useState<any[]>([])
 
     useEffect(() => {
         async function getListPoli() {
-            const getRes = await fetch(`/api/paramedis/findallpoli`)
+            const getRes = await fetch(`/api/paramedis/findallpoli?idFasyankes=${session?.user.idFasyankes}`)
             if (!getRes.ok) {
                 setOption([])
                 return
@@ -37,10 +39,27 @@ const ModalAddDokter = () => {
             setOption([...newArr])
         }
         getListPoli()
+        async function getListUser() {
+            const getRes = await fetch(`/api/user/findalluser?idFasyankes=${session?.user.idFasyankes}`)
+            if (!getRes.ok) {
+                setOptionUser([])
+                return
+            }
+            const data = await getRes.json()
+            const newArr = data.map((item: any) => {
+                return {
+                    label: item.username,
+                    value: item.id
+                }
+            })
+            setOptionUser([...newArr])
+        }
+        getListPoli()
+        getListUser()
     }, [])
 
     const onSubmit: SubmitHandler<typeFormDokter> = async (data) => {
-        const post = await createDokter(data)
+        const post = await createDokter(data, session?.user.idFasyankes)
         if (post.status) {
             ToastAlert({ icon: 'success', title: post.message as string })
             reset()
@@ -58,8 +77,8 @@ const ModalAddDokter = () => {
                     </form>
                     <h3 className="font-bold text-lg">Tambah Dokter Baru</h3>
                     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2 mt-5">
-                        <input type="text" placeholder="Nama Dokter" {...register("namaDokter", { required: "Tidak boleh kosong!" })} className="input input-sm nput-bordered input-primary w-full max-w-lg" />
-                        <span className="label-text-alt text-error"> {errors.namaDokter && <span>{errors.namaDokter.message}</span>}</span>
+                        <input type="text" placeholder="Nama Dokter" {...register("namaLengkap", { required: "Tidak boleh kosong!" })} className="input input-sm nput-bordered input-primary w-full max-w-lg" />
+                        <span className="label-text-alt text-error"> {errors.namaLengkap && <span>{errors.namaLengkap.message}</span>}</span>
                         <input type="text" placeholder="Kode Dokter" {...register("kodeDokter", { required: "Tidak boleh kosong!" })} className="input input-sm input-bordered input-primary w-full max-w-lg" />
                         <span className="label-text-alt text-error"> {errors.kodeDokter && <span>{errors.kodeDokter.message}</span>}</span>
                         <Controller
@@ -71,11 +90,27 @@ const ModalAddDokter = () => {
                             render={({ field }) => <Select
                                 {...field}
                                 isClearable
+                                placeholder="Pilih poli dokter"
                                 instanceId={uuid}
                                 options={option}
                             />}
                         />
                         <span className="label-text-alt text-error"> {errors.poliKlinikId && <span>{errors.poliKlinikId.message}</span>}</span>
+                        <Controller
+                            name="userId"
+                            control={control}
+                            rules={{
+                                required: "Tidak boleh kosong!"
+                            }}
+                            render={({ field }) => <Select
+                                {...field}
+                                isClearable
+                                placeholder="Pilih username dokter"
+                                instanceId={uuid}
+                                options={optionUser}
+                            />}
+                        />
+                        <span className="label-text-alt text-error"> {errors.userId && <span>{errors.userId.message}</span>}</span>
                         <SubmitButtonServer />
                     </form>
                 </div>

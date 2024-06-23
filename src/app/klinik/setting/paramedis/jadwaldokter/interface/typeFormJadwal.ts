@@ -9,8 +9,8 @@ export type typeFormJadwal = {
     dokterId?: any
     isAktif?: boolean
     dokter?: {
-        namaDokter: string,
-        poliKlinik: {
+        namaLengkap: string,
+        poliklinik: {
             namaPoli: string
             kodePoli?: string
         }

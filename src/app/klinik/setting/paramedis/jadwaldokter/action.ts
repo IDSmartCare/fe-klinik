@@ -5,7 +5,7 @@ import { typeFormJadwal } from "./interface/typeFormJadwal";
 import prisma from "@/db";
 
 
-export async function createJadwal(form: typeFormJadwal) {
+export async function createJadwal(form: typeFormJadwal, idFasyankes: string) {
     const kodeHari: any = form.kodeHari.value
     const hari: any = form.kodeHari.label
     const dokterId: any = form.dokterId.value
@@ -16,7 +16,8 @@ export async function createJadwal(form: typeFormJadwal) {
                 hari,
                 kodeHari,
                 dokterId,
-                jamPraktek: `${form.jamDari}-${form.jamSampai}`
+                jamPraktek: `${form.jamDari}-${form.jamSampai}`,
+                idFasyankes
             }
         })
         revalidatePath("/klinik/setting/paramedis/jadwaldokter")

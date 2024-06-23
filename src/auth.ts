@@ -5,16 +5,26 @@ import prisma from "./db";
 export const authOption: NextAuthOptions = {
     providers: [
         Credentials({
-            name: "email",
+            name: "username",
             credentials: {
-                email: { label: "Email", type: "email" },
+                username: { label: "Username", type: "text" },
                 password: { label: "Password", type: "password" }
             },
             async authorize(credentials) {
                 const user: any = await prisma.user.findFirst({
                     where: {
-                        email: credentials?.email,
-                        password: credentials?.password
+                        username: credentials?.username,
+                        password: credentials?.password,
+                        isAktif: true
+                    },
+                    include: {
+                        profile: {
+                            select: {
+                                namaLengkap: true,
+                                profesi: true,
+                                unit: true
+                            }
+                        }
                     }
                 })
                 return user
@@ -29,11 +39,22 @@ export const authOption: NextAuthOptions = {
             if (user) {
                 token.id = user.id
                 token.role = user.role
+                token.idFasyankes = user.idFasyankes
+                token.username = user.username
+                token.name = user.profile?.namaLengkap ?? "Administrator"
+                token.unit = user.profile?.unit ?? "admin"
+                token.profesi = user.profile?.profesi ?? "Admin"
             }
             return token
         },
         async session({ session, token }) {
+            session.user.id = token.id
             session.user.role = token.role
+            session.user.idFasyankes = token.idFasyankes
+            session.user.username = token.username
+            session.user.name = token.name
+            session.user.unit = token.unit
+            session.user.profesi = token.profesi
             return session
         },
         async redirect() {

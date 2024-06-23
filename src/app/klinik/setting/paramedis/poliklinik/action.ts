@@ -5,12 +5,13 @@ import { typeFormPoliklinik } from "./interface/typeFormPoliklinik";
 import { revalidatePath } from "next/cache";
 
 
-export async function createPoli(form: typeFormPoliklinik) {
+export async function createPoli(form: typeFormPoliklinik, idFasyankes: string) {
     try {
         const postData = await prisma.poliKlinik.create({
             data: {
                 namaPoli: form.namaPoli,
-                kodePoli: form.kodePoli
+                kodePoli: form.kodePoli,
+                idFasyankes
             }
         })
         revalidatePath("/klinik/setting/paramedis/poliklinik")

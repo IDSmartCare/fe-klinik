@@ -5,14 +5,18 @@ import { typeFormDokter } from "./interface/typeFormDokter";
 import prisma from "@/db";
 
 
-export async function createDokter(form: typeFormDokter) {
+export async function createDokter(form: typeFormDokter, idFasyankes: string) {
     const poliId: any = form.poliKlinikId
+    const userId: any = form.userId
     try {
-        const postData = await prisma.dokter.create({
+        const postData = await prisma.profile.create({
             data: {
-                namaDokter: form.namaDokter,
+                namaLengkap: form.namaLengkap,
+                profesi: "Dokter",
                 kodeDokter: form.kodeDokter,
-                poliKlinikId: Number(poliId.value)
+                poliKlinikId: Number(poliId.value),
+                userId: Number(userId.value),
+                idFasyankes,
             }
         })
         revalidatePath("/klinik/setting/paramedis/dokter")

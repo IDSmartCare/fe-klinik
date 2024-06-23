@@ -8,8 +8,9 @@ import { useEffect, useId, useState } from "react"
 import { typeFormDokter } from "../../dokter/interface/typeFormDokter"
 import Select from 'react-select'
 import { createJadwal } from "../action"
+import { Session } from "next-auth"
 
-const ModalAddJadwal = () => {
+const ModalAddJadwal = ({ session }: { session: Session | null }) => {
     const {
         register,
         handleSubmit,
@@ -21,7 +22,7 @@ const ModalAddJadwal = () => {
 
     useEffect(() => {
         async function getDokter() {
-            const getApi = await fetch(`/api/paramedis/findalldokter`)
+            const getApi = await fetch(`/api/paramedis/findalldokter?idFasyankes=${session?.user.idFasyankes}`)
             if (!getApi.ok) {
                 setListDokter([])
                 return
@@ -29,7 +30,7 @@ const ModalAddJadwal = () => {
             const data = await getApi.json()
             const newData = data.map((item: typeFormDokter) => {
                 return {
-                    label: item.namaDokter,
+                    label: item.namaLengkap,
                     value: item.id
                 }
             })
@@ -39,7 +40,7 @@ const ModalAddJadwal = () => {
     }, [])
 
     const onSubmit: SubmitHandler<typeFormJadwal> = async (data) => {
-        const post = await createJadwal(data)
+        const post = await createJadwal(data, session?.user.idFasyankes)
         if (post.status) {
             ToastAlert({ icon: 'success', title: post.message as string })
             reset()

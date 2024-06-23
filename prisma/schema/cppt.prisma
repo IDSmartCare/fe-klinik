@@ -7,7 +7,6 @@ model SOAP {
     assesment      String
     plan           String
     instruksi      String
-    inputBy        String
     resep          String?
     isVerifDokter  Boolean?     @default(false)
     jamVerifDokter DateTime?
@@ -16,4 +15,7 @@ model SOAP {
     updatedAt      DateTime     @updatedAt
     pendaftaran    Pendaftaran? @relation(fields: [pendaftaranId], references: [id])
     pendaftaranId  Int?
+    idFasyankes    String?      @db.VarChar(30)
+    inputBy        Profile?     @relation(fields: [profileId], references: [id])
+    profileId      Int?
 }

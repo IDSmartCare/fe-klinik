@@ -30,11 +30,11 @@ const DokterTableColumn = [
         cell: info => info.getValue(),
         header: "Kode Dokter"
     }),
-    columHelper.accessor(row => row.namaDokter, {
+    columHelper.accessor(row => row.namaLengkap, {
         cell: info => info.getValue(),
         header: "Nama Dokter"
     }),
-    columHelper.accessor(row => row.poliKlinik?.namaPoli, {
+    columHelper.accessor(row => row.poliklinik?.namaPoli, {
         cell: info => info.getValue(),
         header: "Poliklinik"
     }),

@@ -3,17 +3,22 @@ import TableFilterComponent from "@/app/components/TableFilterComponent"
 import ModalAddJadwal from "./pageclient/ModalAddJadwal"
 import JadwalTableColumn from "./JadwalTableColumn"
 import prisma from "@/db"
+import { getServerSession } from "next-auth"
+import { authOption } from "@/auth"
 
-const getData = async () => {
+const getData = async (idFasyankes: string) => {
     try {
         const getDb = await prisma.jadwalDokter.findMany({
+            where: {
+                idFasyankes
+            },
             include: {
                 dokter: {
-                    select: {
-                        namaDokter: true,
-                        poliKlinik: {
+                    include: {
+                        poliklinik: {
                             select: {
-                                namaPoli: true
+                                namaPoli: true,
+                                kodePoli: true
                             }
                         }
                     }
@@ -27,11 +32,12 @@ const getData = async () => {
 }
 
 const PageMasterJadwalDokter = async () => {
-    const data = await getData()
+    const session = await getServerSession(authOption)
+    const data = await getData(session?.user.idFasyankes)
     return (
         <>
             <AlertHeaderComponent message="List jadwal dokter" />
-            <ModalAddJadwal />
+            <ModalAddJadwal session={session} />
             <TableFilterComponent rowsData={data} columnsData={JadwalTableColumn} />
         </>
     )

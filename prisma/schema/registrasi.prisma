@@ -13,6 +13,7 @@ model Pendaftaran {
     episodePendaftaran   EpisodePendaftaran? @relation(fields: [episodePendaftaranId], references: [id])
     episodePendaftaranId Int?
     soap                 SOAP[]
+    idFasyankes          String?             @db.VarChar(30)
 }
 
 model EpisodePendaftaran {
@@ -24,4 +25,5 @@ model EpisodePendaftaran {
     updatedAt   DateTime      @updatedAt
     pasien      Pasien?       @relation(fields: [pasienId], references: [id])
     pasienId    Int?
+    idFasyankes String?       @db.VarChar(30)
 }
