@@ -6,11 +6,12 @@ import { format } from "date-fns"
 import { getServerSession } from "next-auth"
 import Link from "next/link"
 
-const getData = async (id: string) => {
+const getData = async (id: string, idFasyankes: string) => {
     try {
         const getDb = await prisma.pasien.findFirst({
             where: {
-                id: Number(id)
+                id: Number(id),
+                idFasyankes,
             }
         })
         return getDb
@@ -20,8 +21,8 @@ const getData = async (id: string) => {
     }
 }
 const PageDetailPasien = async ({ params }: { params: { id: string } }) => {
-    const resApi = await getData(params.id)
     const session = await getServerSession(authOption)
+    const resApi = await getData(params.id, session?.user.idFasyankes)
     const { years, months, days } = calculateAge(resApi?.tanggalLahir)
     return (
         <>

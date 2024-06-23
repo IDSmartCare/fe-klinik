@@ -4,7 +4,7 @@ export type typeListTerdaftar = {
     createdAt: Date
     jadwal: {
         dokter: {
-            namaDokter: string
+            namaLengkap: string
         }
     },
     episodePendaftaran: {

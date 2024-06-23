@@ -8,8 +8,9 @@ import ButtonModalComponent, { icon } from "../../../components/ButtonModalCompo
 import Select from 'react-select'
 import { useEffect, useId, useState } from "react"
 import { createPasien } from "../action"
+import { Session } from "next-auth"
 
-const ModalAddPasien = () => {
+const ModalAddPasien = ({ session }: { session: Session | null }) => {
     const uuid = useId()
     const {
         register,
@@ -101,7 +102,7 @@ const ModalAddPasien = () => {
             ...(!domisili && convertObtDomisili)
 
         }
-        const post = await createPasien(bodyToPost)
+        const post = await createPasien(bodyToPost, session?.user.idFasyankes)
         if (post.status) {
             ToastAlert({ icon: 'success', title: post.message as string })
             reset()

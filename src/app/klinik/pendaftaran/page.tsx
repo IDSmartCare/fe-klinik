@@ -2,8 +2,10 @@ import TableFilterComponent from "@/app/components/TableFilterComponent"
 import AlertHeaderComponent from "../setting/paramedis/components/AlertHeaderComponent"
 import prisma from "@/db"
 import PendaftaranTableCoulumn from "./PendaftaranTableColumn"
+import { getServerSession } from "next-auth"
+import { authOption } from "@/auth"
 
-const getData = async () => {
+const getData = async (idFasyankes: string) => {
     try {
         const today = new Date()
         today.setHours(0, 0, 0, 0)
@@ -16,6 +18,7 @@ const getData = async () => {
                     { createdAt: { gte: today } },
                     { createdAt: { lt: tomorrow } },
                 ],
+                idFasyankes
             },
             orderBy: {
                 id: 'desc',
@@ -49,7 +52,8 @@ const getData = async () => {
 }
 
 const PagePendaftaran = async () => {
-    const data = await getData()
+    const session = await getServerSession(authOption)
+    const data = await getData(session?.user.idFasyankes)
     return (
         <>
             <AlertHeaderComponent message="Pasien terdaftar hari ini" />

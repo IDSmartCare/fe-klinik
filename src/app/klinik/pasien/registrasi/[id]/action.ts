@@ -4,7 +4,7 @@ import prisma from "@/db";
 import { typeFormRegis } from "../../interface/typeFormRegistrasi";
 import { revalidatePath } from "next/cache";
 
-export async function createRegistrasi(form: typeFormRegis) {
+export async function createRegistrasi(form: typeFormRegis, idFasyankes: string) {
     try {
         const today = new Date()
         today.setHours(0, 0, 0, 0)
@@ -14,6 +14,7 @@ export async function createRegistrasi(form: typeFormRegis) {
             const lastEpisode = await tx.episodePendaftaran.findMany({
                 where: {
                     pasienId: form.pasienId,
+                    idFasyankes,
                 },
                 orderBy: {
                     id: "desc",
@@ -25,7 +26,8 @@ export async function createRegistrasi(form: typeFormRegis) {
                 const episodeBaru = await tx.episodePendaftaran.create({
                     data: {
                         pasienId: form.pasienId,
-                        episode: 1
+                        episode: 1,
+                        idFasyankes
                     }
                 })
                 const registrasi = await tx.pendaftaran.create({
@@ -34,6 +36,7 @@ export async function createRegistrasi(form: typeFormRegis) {
                         jadwalDokterId: form.jadwalDokterId,
                         penjamin: form.penjamin,
                         namaAsuransi: form.namaAsuransi,
+                        idFasyankes,
                     }
                 })
                 return registrasi
@@ -46,6 +49,7 @@ export async function createRegistrasi(form: typeFormRegis) {
                             { createdAt: { lt: tomorrow } },
                         ],
                         episodePendaftaranId: lastEpisode[0].id,
+                        idFasyankes,
                     },
                 })
                 if (count > 0) {
@@ -55,6 +59,7 @@ export async function createRegistrasi(form: typeFormRegis) {
                             jadwalDokterId: form.jadwalDokterId,
                             penjamin: form.penjamin,
                             namaAsuransi: form.namaAsuransi,
+                            idFasyankes
                         }
                     })
                     return registrasi
@@ -63,7 +68,8 @@ export async function createRegistrasi(form: typeFormRegis) {
                     const episodeBaru = await tx.episodePendaftaran.create({
                         data: {
                             pasienId: form.pasienId,
-                            episode: lastEpisode[0].episode + 1
+                            episode: lastEpisode[0].episode + 1,
+                            idFasyankes,
                         }
                     })
                     const registrasi = await tx.pendaftaran.create({
@@ -72,6 +78,7 @@ export async function createRegistrasi(form: typeFormRegis) {
                             jadwalDokterId: form.jadwalDokterId,
                             penjamin: form.penjamin,
                             namaAsuransi: form.namaAsuransi,
+                            idFasyankes
                         }
                     })
                     return registrasi

@@ -6,7 +6,7 @@ import { formatISO } from 'date-fns'
 import prisma from "@/db";
 
 
-export async function createPasien(form: typeFormPasienBaru) {
+export async function createPasien(form: typeFormPasienBaru, idFasyankes: string) {
     try {
         const today = new Date()
         const year = today.getFullYear()
@@ -67,7 +67,8 @@ export async function createPasien(form: typeFormPasienBaru) {
                     idKelurahanDomisili: form.idKelurahanDomisili,
                     rtDomisili: form.rtDomisili,
                     rwDomisili: form.rwDomisili,
-                    kodePosDomisili: form.kodePosDomisili
+                    kodePosDomisili: form.kodePosDomisili,
+                    idFasyankes,
                 }
             })
             return postData

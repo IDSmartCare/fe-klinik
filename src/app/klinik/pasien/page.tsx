@@ -4,10 +4,15 @@ import AlertHeaderComponent from "../setting/paramedis/components/AlertHeaderCom
 import ModalAddPasien from "./pageclient/ModalAddPasien"
 import PasienTableColumn from "./PasienTableColumn"
 import prisma from "@/db"
+import { getServerSession } from "next-auth"
+import { authOption } from "@/auth"
 
-const getData = async () => {
+const getData = async (idFasyankes: string) => {
     try {
         const getDb = await prisma.pasien.findMany({
+            where: {
+                idFasyankes
+            },
             orderBy: {
                 id: 'desc'
             },
@@ -20,12 +25,13 @@ const getData = async () => {
     }
 }
 const PagePasien = async () => {
-    const data = await getData()
+    const session = await getServerSession(authOption)
+    const data = await getData(session?.user.idFasyankes)
     return (
         <>
             {/* <FilterPasienComponent /> */}
             <AlertHeaderComponent message="List 150 pasien terakhir" />
-            <ModalAddPasien />
+            <ModalAddPasien session={session} />
             <TableFilterComponent rowsData={data} columnsData={PasienTableColumn} />
         </>
     )

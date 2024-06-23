@@ -3,12 +3,15 @@ import prisma from "@/db";
 import FormRegistrasi from "../../pageclient/FormRegistrasi";
 import AlertHeaderComponent from "@/app/klinik/setting/paramedis/components/AlertHeaderComponent";
 import { format } from "date-fns";
+import { getServerSession } from "next-auth";
+import { authOption } from "@/auth";
 
-const getData = async (id: string) => {
+const getData = async (id: string, idFasyankes: string) => {
     try {
         const getDb = await prisma.pasien.findFirst({
             where: {
-                id: Number(id)
+                id: Number(id),
+                idFasyankes
             }
         })
         return getDb
@@ -17,11 +20,12 @@ const getData = async (id: string) => {
         return null
     }
 }
-const getRegistrasi = async (id: string) => {
+const getRegistrasi = async (id: string, idFasyankes: string) => {
     try {
         const getDb = await prisma.episodePendaftaran.findMany({
             where: {
-                pasienId: Number(id)
+                pasienId: Number(id),
+                idFasyankes
             },
             include: {
                 pendaftaran: {
@@ -33,7 +37,7 @@ const getRegistrasi = async (id: string) => {
                             include: {
                                 dokter: {
                                     include: {
-                                        poliKlinik: {
+                                        poliklinik: {
                                             select: {
                                                 namaPoli: true
                                             }
@@ -54,15 +58,16 @@ const getRegistrasi = async (id: string) => {
 }
 
 const PageRegistrasi = async ({ params }: { params: { id: string } }) => {
-    const resApi = await getData(params.id)
-    const regisTrasi = await getRegistrasi(params.id)
+    const session = await getServerSession(authOption)
+    const resApi = await getData(params.id, session?.user.idFasyankes)
+    const regisTrasi = await getRegistrasi(params.id, session?.user.idFasyankes)
     return (
         <div className="flex flex-col gap-2">
             <PasienIdentitasComponent pasien={resApi} />
             <div className="flex gap-2">
                 <div className='w-1/2' >
                     <AlertHeaderComponent message='Registrasi Baru' />
-                    <FormRegistrasi idpasien={params.id} />
+                    <FormRegistrasi idpasien={params.id} session={session} />
                 </div>
                 <div className='w-1/2 space-y-2'>
                     <AlertHeaderComponent message='Riwayat registrasi pasien' />
@@ -84,8 +89,8 @@ const PageRegistrasi = async ({ params }: { params: { id: string } }) => {
                                                             <div className="divider m-0" />
                                                             <p key={reg.id}>ID Regis ({reg.id}) / Penjamin ({reg.penjamin})</p>
                                                             <p>Tgl Regis ({format(reg.createdAt, 'dd/MM/yyyy HH:mm')})</p>
-                                                            <p>Dokter ({reg.jadwal?.dokter.namaDokter})</p>
-                                                            <p>Poli ({reg.jadwal?.dokter.poliKlinik?.namaPoli})</p>
+                                                            <p>Dokter ({reg.jadwal?.dokter.namaLengkap})</p>
+                                                            <p>Poli ({reg.jadwal?.dokter.poliklinik?.namaPoli})</p>
                                                         </div>
                                                     )
                                                 })}

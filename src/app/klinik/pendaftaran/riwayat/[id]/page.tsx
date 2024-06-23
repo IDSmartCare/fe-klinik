@@ -1,12 +1,15 @@
 import PasienIdentitasComponent from "@/app/components/PasienIdentitasComponent";
+import { authOption } from "@/auth";
 import prisma from "@/db";
 import { format } from "date-fns";
+import { getServerSession } from "next-auth";
 
-const getData = async (id: string) => {
+const getData = async (id: string, idFasyankes: string) => {
     try {
         const getDb = await prisma.pasien.findFirst({
             where: {
-                id: Number(id)
+                id: Number(id),
+                idFasyankes
             }
         })
         return getDb
@@ -16,11 +19,12 @@ const getData = async (id: string) => {
     }
 }
 
-const getRegistrasi = async (id: string) => {
+const getRegistrasi = async (id: string, idFasyankes: string) => {
     try {
         const getDb = await prisma.episodePendaftaran.findMany({
             where: {
-                pasienId: Number(id)
+                pasienId: Number(id),
+                idFasyankes
             },
             include: {
                 pendaftaran: {
@@ -34,7 +38,7 @@ const getRegistrasi = async (id: string) => {
                             include: {
                                 dokter: {
                                     include: {
-                                        poliKlinik: {
+                                        poliklinik: {
                                             select: {
                                                 namaPoli: true
                                             }
@@ -54,8 +58,9 @@ const getRegistrasi = async (id: string) => {
     }
 }
 const PageRiwayatPendaftaran = async ({ params }: { params: { id: string } }) => {
-    const resApi = await getData(params.id)
-    const regisTrasi = await getRegistrasi(params.id)
+    const session = await getServerSession(authOption)
+    const resApi = await getData(params.id, session?.user.idFasyankes)
+    const regisTrasi = await getRegistrasi(params.id, session?.user.idFasyankes)
 
     return (
         <div className="flex flex-col gap-2">
@@ -90,8 +95,8 @@ const PageRiwayatPendaftaran = async ({ params }: { params: { id: string } }) =>
                                                             <p>: {reg.id}</p>
                                                             <p>: {format(reg.createdAt, 'dd/MM/yyyy HH:mm')}</p>
                                                             <p>: {reg.jadwal?.hari}</p>
-                                                            <p>: {reg.jadwal?.dokter.namaDokter}</p>
-                                                            <p>: {reg.jadwal?.dokter.poliKlinik?.namaPoli}</p>
+                                                            <p>: {reg.jadwal?.dokter.namaLengkap}</p>
+                                                            <p>: {reg.jadwal?.dokter.poliklinik?.namaPoli}</p>
                                                             <p>: {reg.jadwal?.jamPraktek}</p>
                                                             <p>: {reg.penjamin}</p>
                                                             <p>: {reg.namaAsuransi}</p>

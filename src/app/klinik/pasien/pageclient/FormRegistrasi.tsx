@@ -1,6 +1,5 @@
 'use client'
 import Select from 'react-select'
-import AlertHeaderComponent from '../../setting/paramedis/components/AlertHeaderComponent'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { typeFormRegis } from '../interface/typeFormRegistrasi'
 import { useEffect, useId, useState } from 'react'
@@ -8,7 +7,8 @@ import { SubmitButtonServer } from '@/app/components/SubmitButtonServerComponent
 import { typeFormJadwal } from '../../setting/paramedis/jadwaldokter/interface/typeFormJadwal'
 import { createRegistrasi } from '../registrasi/[id]/action'
 import { ToastAlert } from '@/app/helper/ToastAlert'
-const FormRegistrasi = ({ idpasien }: { idpasien: string }) => {
+import { Session } from 'next-auth'
+const FormRegistrasi = ({ idpasien, session }: { idpasien: string, session: Session | null }) => {
     const [ifAsuransi, setIfAsuransi] = useState(false)
     const [namaAsuransi, setNamaAsuransi] = useState("")
 
@@ -25,7 +25,7 @@ const FormRegistrasi = ({ idpasien }: { idpasien: string }) => {
     useEffect(() => {
         const getDokter = async () => {
             const hari = new Date().getDay()
-            const resDokter = await fetch(`/api/paramedis/getjadwaldokter?hari=${hari}`)
+            const resDokter = await fetch(`/api/paramedis/getjadwaldokter?hari=${hari}&idFasyankes=${session?.user.idFasyankes}`)
             if (!resDokter.ok) {
                 setDokter([])
                 return
@@ -49,7 +49,7 @@ const FormRegistrasi = ({ idpasien }: { idpasien: string }) => {
             penjamin: data.penjamin.value,
             namaAsuransi: namaAsuransi.length > 0 ? namaAsuransi : null
         }
-        const post = await createRegistrasi(bodyPost)
+        const post = await createRegistrasi(bodyPost, session?.user.idFasyankes)
         if (post.status) {
             ToastAlert({ icon: 'success', title: post.message as string })
             reset()

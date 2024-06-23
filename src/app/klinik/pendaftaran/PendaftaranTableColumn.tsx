@@ -22,7 +22,7 @@ const PendaftaranTableCoulumn = [
         cell: info => info.getValue(),
         header: "Penjamin"
     }),
-    columHelper.accessor(row => row.jadwal.dokter.namaDokter, {
+    columHelper.accessor(row => row.jadwal.dokter.namaLengkap, {
         cell: info => info.getValue(),
         header: "Dokter"
     }),
