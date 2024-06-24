@@ -5,7 +5,7 @@ import prisma from "@/db";
 import { typeFormCppt } from "../interface/typeFormCppt";
 
 
-export async function createCppt(form: typeFormCppt, idpasien: string) {
+export async function createCppt(form: typeFormCppt, idpasien: string, idFasyankes: string) {
     try {
         const postDb = await prisma.sOAP.create({
             data: {
@@ -15,7 +15,8 @@ export async function createCppt(form: typeFormCppt, idpasien: string) {
                 assesment: form.assesment,
                 plan: form.plan,
                 instruksi: form.instruksi,
-                inputBy: form.inputBy,
+                profileId: form.profileId,
+                idFasyankes,
                 pendaftaranId: form.pendaftaranId
             }
         })

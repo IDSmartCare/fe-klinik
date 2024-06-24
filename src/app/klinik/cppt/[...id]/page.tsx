@@ -3,12 +3,15 @@ import prisma from "@/db"
 import AlertHeaderComponent from "../../setting/paramedis/components/AlertHeaderComponent"
 import FormAddCppt from "../pageclient/FormAddCppt"
 import { format } from "date-fns"
+import { getServerSession } from "next-auth"
+import { authOption } from "@/auth"
 
-const getData = async (id: string) => {
+const getData = async (id: string, idFasyankes: string) => {
     try {
         const getDb = await prisma.pasien.findFirst({
             where: {
-                id: Number(id)
+                id: Number(id),
+                idFasyankes
             }
         })
         return getDb
@@ -17,7 +20,7 @@ const getData = async (id: string) => {
         return null
     }
 }
-const getCppt = async (id: string) => {
+const getCppt = async (id: string, idFasyankes: string) => {
     const totalRows = await prisma.sOAP.count();
     const rowsToSkip = totalRows > 10 ? totalRows - 10 : 0;
     try {
@@ -27,13 +30,21 @@ const getCppt = async (id: string) => {
             orderBy: {
                 id: 'asc'
             },
+            include: {
+                inputBy: {
+                    select: {
+                        namaLengkap: true
+                    }
+                }
+            },
             where: {
+                idFasyankes,
                 pendaftaran: {
                     episodePendaftaran: {
                         pasienId: Number(id)
                     }
                 }
-            }
+            },
         })
         return getDb
     } catch (error) {
@@ -44,9 +55,10 @@ const getCppt = async (id: string) => {
 const PageCPPT = async ({ params }: { params: { id: any } }) => {
     const idRegis = params.id[0]
     const idPasien = params.id[1]
+    const session = await getServerSession(authOption)
 
-    const resApi = await getData(idPasien)
-    const getcppt = await getCppt(idPasien)
+    const resApi = await getData(idPasien, session?.user.idFasyankes)
+    const getcppt = await getCppt(idPasien, session?.user.idFasyankes)
 
     return (
         <div className="flex flex-col gap-2">
@@ -77,7 +89,7 @@ const PageCPPT = async ({ params }: { params: { id: any } }) => {
                                             <p>Objective : {item.objective}</p>
                                             <p>Assesment : {item.assesment}</p>
                                             <p>Plan : {item.plan}</p>
-                                            <p className="mt-5 font-bold">Input by : {item.inputBy}</p>
+                                            <p className="mt-5 font-bold">Input by : {item.inputBy?.namaLengkap}</p>
                                         </td>
                                         <td>{item.instruksi}</td>
                                         <td></td>
@@ -90,7 +102,7 @@ const PageCPPT = async ({ params }: { params: { id: any } }) => {
                 </div>
             </div>
             <AlertHeaderComponent message="Tambah catatan baru" />
-            <FormAddCppt idregis={idRegis} idpasien={idPasien} />
+            <FormAddCppt idregis={idRegis} idpasien={idPasien} session={session} />
         </div>
     )
 }

@@ -6,7 +6,8 @@ export type typeFormCppt = {
     assesment: string
     plan: string
     instruksi: string
-    inputBy: string
+    profileId: number
+    idFasyankes?: string
     resep?: string
     pendaftaranId?: number
 }

@@ -20,6 +20,7 @@ export const authOption: NextAuthOptions = {
                     include: {
                         profile: {
                             select: {
+                                id: true,
                                 namaLengkap: true,
                                 profesi: true,
                                 unit: true
@@ -44,6 +45,7 @@ export const authOption: NextAuthOptions = {
                 token.name = user.profile?.namaLengkap ?? "Administrator"
                 token.unit = user.profile?.unit ?? "admin"
                 token.profesi = user.profile?.profesi ?? "Admin"
+                token.idProfile = user.profile?.id
             }
             return token
         },
@@ -55,6 +57,7 @@ export const authOption: NextAuthOptions = {
             session.user.name = token.name
             session.user.unit = token.unit
             session.user.profesi = token.profesi
+            session.user.idProfile = token.idProfile
             return session
         },
         async redirect() {

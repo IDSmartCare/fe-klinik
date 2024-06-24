@@ -5,25 +5,24 @@ import { SubmitHandler, useForm } from "react-hook-form"
 import { typeFormCppt } from "../interface/typeFormCppt"
 import { createCppt } from "../[...id]/actionAddCppt"
 import { ToastAlert } from "@/app/helper/ToastAlert"
-import { useSession } from "next-auth/react"
+import { Session } from "next-auth"
 
-const FormAddCppt = ({ idregis, idpasien }: { idregis: string, idpasien: string }) => {
+const FormAddCppt = ({ idregis, idpasien, session }: { idregis: string, idpasien: string, session: Session | null }) => {
     const {
         register,
         handleSubmit,
         formState: { errors },
         reset,
     } = useForm<typeFormCppt>()
-    const { data } = useSession()
 
     const onSubmit: SubmitHandler<typeFormCppt> = async (form) => {
         const body = {
             ...form,
             pendaftaranId: Number(idregis),
-            profesi: data?.user.role,
-            inputBy: data?.user.name,
+            profesi: session?.user.profesi,
+            profileId: session?.user.idProfile,
         }
-        const post = await createCppt(body, idpasien)
+        const post = await createCppt(body, idpasien, session?.user.idFasyankes)
         if (post.status) {
             ToastAlert({ icon: 'success', title: post.message as string })
             reset()

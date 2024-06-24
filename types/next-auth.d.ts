@@ -6,6 +6,7 @@ declare module "next-auth" {
         username: string
         idFasyankes?: string
         profile?: {
+            id: number
             namaLengkap: string
             profesi: string
             unit?: string
@@ -19,6 +20,7 @@ declare module "next-auth" {
             username: string
             idFasyankes?: string
             profile?: {
+                id: number
                 namaLengkap: string
                 profesi: string
                 unit?: string

@@ -6,7 +6,8 @@ export async function GET(req: Request) {
     const data = await prisma.user.findMany({
         where: {
             isAktif: true,
-            idFasyankes
+            idFasyankes,
+            role: 'dokter'
         }
     })
     return Response.json(data)

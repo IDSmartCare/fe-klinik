@@ -2,8 +2,10 @@ import TableFilterComponent from "@/app/components/TableFilterComponent"
 import AlertHeaderComponent from "../setting/paramedis/components/AlertHeaderComponent"
 import prisma from "@/db"
 import PerawatTableColumn from "./PerawatTableColumn"
+import { getServerSession } from "next-auth"
+import { authOption } from "@/auth"
 
-const getData = async () => {
+const getData = async (idFasyankes: string) => {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
     const tomorrow = new Date(today)
@@ -12,6 +14,7 @@ const getData = async () => {
         const getDb = await prisma.pendaftaran.findMany({
             where: {
                 isClose: false,
+                idFasyankes,
                 AND: [
                     { createdAt: { gte: today } },
                     { createdAt: { lt: tomorrow } },
@@ -48,7 +51,8 @@ const getData = async () => {
     }
 }
 const PagePerawat = async () => {
-    const data = await getData()
+    const session = await getServerSession(authOption)
+    const data = await getData(session?.user.idFasyankes)
     return (
         <>
             <AlertHeaderComponent message="Pasien terdaftar hari ini" />
