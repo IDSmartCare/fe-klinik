@@ -11,7 +11,8 @@ const getDataDokter = async (idFasyankes: string) => {
         const getDb = await prisma.profile.findMany(
             {
                 where: {
-                    idFasyankes
+                    idFasyankes,
+                    profesi: 'Dokter'
                 },
                 include: {
                     poliklinik: {
