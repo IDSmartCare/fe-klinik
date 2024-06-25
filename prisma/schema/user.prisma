@@ -2,8 +2,8 @@ model User {
   id          Int      @id @default(autoincrement())
   username    String   @unique @db.VarChar(200)
   password    String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  updatedAt   DateTime @updatedAt @db.Timestamptz
   role        Role
   profile     Profile?
   idFasyankes String?  @db.VarChar(30)
@@ -18,8 +18,8 @@ model Profile {
   kodeDokter    String?        @db.VarChar(30)
   idFasyankes   String?        @db.VarChar(30)
   isAktif       Boolean?       @default(true)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  createdAt     DateTime       @default(now()) @db.Timestamptz
+  updatedAt     DateTime       @updatedAt @db.Timestamptz
   user          User           @relation(fields: [userId], references: [id])
   userId        Int            @unique
   jadwalPraktek JadwalDokter[]
