@@ -41,7 +41,7 @@ const FormRegistrasi = ({ idpasien, session }: { idpasien: string, session: Sess
         }
         getDokter()
 
-    }, [])
+    }, [session?.user.idFasyankes])
     const onSubmit: SubmitHandler<typeFormRegis> = async (data) => {
         const bodyPost = {
             pasienId: Number(idpasien),

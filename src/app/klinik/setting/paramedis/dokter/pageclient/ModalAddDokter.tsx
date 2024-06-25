@@ -56,7 +56,7 @@ const ModalAddDokter = ({ session }: { session: Session | null }) => {
         }
         getListPoli()
         getListUser()
-    }, [])
+    }, [session?.user.idFasyankes])
 
     const onSubmit: SubmitHandler<typeFormDokter> = async (data) => {
         const post = await createDokter(data, session?.user.idFasyankes)

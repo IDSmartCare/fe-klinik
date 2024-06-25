@@ -37,7 +37,7 @@ const ModalAddJadwal = ({ session }: { session: Session | null }) => {
             setListDokter([...newData])
         }
         getDokter()
-    }, [])
+    }, [session?.user.idFasyankes])
 
     const onSubmit: SubmitHandler<typeFormJadwal> = async (data) => {
         const post = await createJadwal(data, session?.user.idFasyankes)
