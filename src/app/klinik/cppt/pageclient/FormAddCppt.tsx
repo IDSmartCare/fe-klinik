@@ -21,6 +21,9 @@ const FormAddCppt = ({ idregis, idpasien, session }: { idregis: string, idpasien
             pendaftaranId: Number(idregis),
             profesi: session?.user.profesi,
             profileId: session?.user.idProfile,
+            isDokter: session?.user.role === "dokter" || false,
+            isVerifDokter: session?.user.role === "dokter" || false,
+            jamVerifDokter: session?.user.role === "dokter" ? new Date() : null
         }
         const post = await createCppt(body, idpasien, session?.user.idFasyankes)
         if (post.status) {

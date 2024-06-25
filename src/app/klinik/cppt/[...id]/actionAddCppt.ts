@@ -17,7 +17,11 @@ export async function createCppt(form: typeFormCppt, idpasien: string, idFasyank
                 instruksi: form.instruksi,
                 profileId: form.profileId,
                 idFasyankes,
-                pendaftaranId: form.pendaftaranId
+                pendaftaranId: form.pendaftaranId,
+                isDokter: form.isDokter,
+                isVerifDokter: form.isVerifDokter,
+                jamVerifDokter: form.jamVerifDokter
+
             }
         })
         revalidatePath(`/klinik/cppt/${form.pendaftaranId}/${idpasien}`)

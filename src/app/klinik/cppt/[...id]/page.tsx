@@ -5,6 +5,7 @@ import FormAddCppt from "../pageclient/FormAddCppt"
 import { format } from "date-fns"
 import { getServerSession } from "next-auth"
 import { authOption } from "@/auth"
+import QRCode from "react-qr-code";
 
 const getData = async (id: string, idFasyankes: string) => {
     try {
@@ -33,6 +34,7 @@ const getCppt = async (id: string, idFasyankes: string) => {
             include: {
                 inputBy: {
                     select: {
+                        id: true,
                         namaLengkap: true
                     }
                 }
@@ -74,7 +76,7 @@ const PageCPPT = async ({ params }: { params: { id: any } }) => {
                                 <th>Profesi</th>
                                 <th>Catatan Pasien Saat Ini</th>
                                 <th>Instruksi</th>
-                                <th>Verifikasi DPJP</th>
+                                <th className="text-center">Verifikasi DPJP</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -89,10 +91,21 @@ const PageCPPT = async ({ params }: { params: { id: any } }) => {
                                             <p>Objective : {item.objective}</p>
                                             <p>Assesment : {item.assesment}</p>
                                             <p>Plan : {item.plan}</p>
-                                            <p className="mt-5 font-bold">Input by : {item.inputBy?.namaLengkap}</p>
+                                            {item.profesi !== "Dokter" && <p className="mt-5 font-bold">Input by : {item.inputBy?.namaLengkap}</p>}
                                         </td>
                                         <td>{item.instruksi}</td>
-                                        <td></td>
+                                        <td>
+                                            {item.isVerifDokter &&
+                                                <div className="flex flex-col items-center">
+                                                    <QRCode
+                                                        size={60}
+                                                        value={`${item.inputBy?.id}`}
+                                                    />
+                                                    <p>{item.inputBy?.namaLengkap}</p>
+                                                    <p>{item.jamVerifDokter && format(item.jamVerifDokter, 'dd/MM/yyyy HH:mm')}</p>
+                                                </div>
+                                            }
+                                        </td>
                                     </tr>
                                 )
                             })}

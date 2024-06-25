@@ -10,4 +10,7 @@ export type typeFormCppt = {
     idFasyankes?: string
     resep?: string
     pendaftaranId?: number
+    isVerifDokter: boolean | null
+    isDokter: boolean | null
+    jamVerifDokter?: any
 }
