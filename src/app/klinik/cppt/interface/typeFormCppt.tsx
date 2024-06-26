@@ -8,7 +8,7 @@ export type typeFormCppt = {
     instruksi: string
     profileId: number
     idFasyankes?: string
-    resep?: string
+    resep: any[]
     pendaftaranId?: number
     isVerifDokter: boolean | null
     isDokter: boolean | null

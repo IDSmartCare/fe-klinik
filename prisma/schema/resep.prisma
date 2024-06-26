@@ -1,0 +1,8 @@
+model ResepDokter {
+    id        Int      @id @default(autoincrement())
+    resep     String?
+    SOAP      SOAP?    @relation(fields: [sOAPId], references: [id])
+    sOAPId    Int?
+    createdAt DateTime @default(now()) @db.Timestamptz
+    updatedAt DateTime @updatedAt @db.Timestamptz
+}

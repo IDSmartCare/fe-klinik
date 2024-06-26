@@ -7,7 +7,7 @@ import { typeListTerdaftar } from "../perawat/interface/typeListTerdaftar"
 const columHelper = createColumnHelper<typeListTerdaftar>()
 
 const ListPasienDokter = [
-    columHelper.accessor(row => row.penjamin, {
+    columHelper.accessor(row => row.episodePendaftaran.pasien.noRm, {
         cell: info => info.getValue(),
         header: "RM"
     }),

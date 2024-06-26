@@ -37,6 +37,12 @@ const getCppt = async (id: string, idFasyankes: string) => {
                         id: true,
                         namaLengkap: true
                     }
+                },
+                resep: {
+                    select: {
+                        id: true,
+                        resep: true
+                    }
                 }
             },
             where: {
@@ -92,6 +98,12 @@ const PageCPPT = async ({ params }: { params: { id: any } }) => {
                                             <p>Assesment : {item.assesment}</p>
                                             <p>Plan : {item.plan}</p>
                                             {item.profesi !== "Dokter" && <p className="mt-5 font-bold">Input by : {item.inputBy?.namaLengkap}</p>}
+                                            {item.resep.length > 0 && <p className="font-bold mt-5">RESEP DOKTER</p>}
+                                            {item.resep.map((i) => {
+                                                return (
+                                                    <p className="italic" key={i.id}>R/ {i.resep}</p>
+                                                )
+                                            })}
                                         </td>
                                         <td>{item.instruksi}</td>
                                         <td>
