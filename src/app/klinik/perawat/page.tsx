@@ -4,6 +4,7 @@ import prisma from "@/db"
 import PerawatTableColumn from "./PerawatTableColumn"
 import { getServerSession } from "next-auth"
 import { authOption } from "@/auth"
+import FilterPasienComponent from "@/app/components/FilterPasienComponent"
 
 const getData = async (idFasyankes: string) => {
     const today = new Date()
@@ -55,6 +56,7 @@ const PagePerawat = async () => {
     const data = await getData(session?.user.idFasyankes)
     return (
         <>
+            <FilterPasienComponent />
             <AlertHeaderComponent message="Pasien terdaftar hari ini" />
             <TableFilterComponent rowsData={data} columnsData={PerawatTableColumn} />
         </>

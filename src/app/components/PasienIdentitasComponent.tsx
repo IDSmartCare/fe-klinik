@@ -2,7 +2,7 @@ import { format } from "date-fns"
 import { calculateAge } from "../helper/CalculateAge"
 
 const PasienIdentitasComponent = ({ pasien }: { pasien: any }) => {
-    const { years, months, days } = calculateAge(pasien?.tanggalLahir)
+    const { years, months, days } = calculateAge(new Date(pasien?.tanggalLahir))
     return (
         <div className="card text-info-content border">
             <div className="card-body">

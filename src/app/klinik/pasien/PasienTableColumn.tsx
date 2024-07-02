@@ -45,6 +45,11 @@ const PasienTableColumn = [
         header: "JK"
     }),
 
+    columHelper.accessor(row => row.noHp, {
+        cell: info => info.getValue(),
+        header: "HP"
+    }),
+
     columHelper.accessor(row => row.nik, {
         cell: info => info.getValue(),
         header: "NIK"

@@ -1,6 +1,6 @@
 import TableFilterComponent from "@/app/components/TableFilterComponent"
 import AlertHeaderComponent from "../setting/paramedis/components/AlertHeaderComponent"
-// import FilterPasienComponent from "@/app/components/FilterPasienComponent"
+import FilterPasienComponent from "@/app/components/FilterPasienComponent"
 import ModalAddPasien from "./pageclient/ModalAddPasien"
 import PasienTableColumn from "./PasienTableColumn"
 import prisma from "@/db"
@@ -29,7 +29,7 @@ const PagePasien = async () => {
     const data = await getData(session?.user.idFasyankes)
     return (
         <>
-            {/* <FilterPasienComponent /> */}
+            <FilterPasienComponent />
             <AlertHeaderComponent message="List 150 pasien terakhir" />
             <ModalAddPasien session={session} />
             <TableFilterComponent rowsData={data} columnsData={PasienTableColumn} />

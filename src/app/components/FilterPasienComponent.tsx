@@ -2,14 +2,13 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-// import { typeFormPasienBaru } from "../interface/typeFormPasienBaru";
-// import { getData } from "@/app/service/endpoint";
-// import SweetAlert from "@/helpers/AlertHelper";
-import { Session } from "next-auth";
-// import DetailPasienComponent from "../pasien/table/DetailPasienComponent";
-// import AlertHeaderComponent from "@/components/AlertHeaderComponent";
-// import { calculateAge } from "@/helpers/GetAgeHelper";
-// import LinkDaftarPasienComponent from "./LinkDaftarPasienComponent";
+import { ToastAlert } from "../helper/ToastAlert";
+import { useSession } from "next-auth/react";
+import AlertHeaderComponent from "../klinik/setting/paramedis/components/AlertHeaderComponent";
+import { typeFormPasienBaru } from "../klinik/pasien/interface/typeFormPasienBaru";
+import { calculateAge } from "../helper/CalculateAge";
+import PasienIdentitasComponent from "./PasienIdentitasComponent";
+import SubMenuPasien from "../klinik/pasien/components/SubMenuPasien";
 
 export type typeCariPasien = {
     input: string
@@ -19,38 +18,40 @@ export type typeCariPasien = {
 const FilterPasienComponent = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<typeCariPasien>();
     const [load, setLoad] = useState(false)
-    // const [resObject, setResObject] = useState<typeFormPasienBaru>()
-    // const [resArr, setResArr] = useState<typeFormPasienBaru[]>()
+    const { data } = useSession()
+    const [resObject, setResObject] = useState<typeFormPasienBaru>()
+    const [resArr, setResArr] = useState<typeFormPasienBaru[]>()
 
     const cariPasien = handleSubmit(async (body) => {
         setLoad(true)
         try {
-            switch (body.type) {
-                case "namapasien": {
-                    // const resList = await getData(`human/pasien/getmanyby/${body.type}/${body.input}`, session?.user.token)
-                    // setResArr([...resList.data])
-                    // const doc: any = document.getElementById("modal-pasien-name")
-                    // doc?.showModal()
-                    break;
+            const getData = await fetch(`/api/pasien/findby`, {
+                method: "POST",
+                body: JSON.stringify({
+                    findBy: body.type,
+                    idFasyankes: data?.user.idFasyankes,
+                    value: body.input
+                }),
+                headers: {
+                    "Content-Type": "application/json"
                 }
-                case "nohp": {
-                    // const resListHp = await getData(`human/pasien/getmanyby/${body.type}/${body.input}`, session?.user.token)
-                    // setResArr([...resListHp.data])
-                    // const docHp: any = document.getElementById("modal-pasien-name")
-                    // docHp?.showModal()
-                    break;
-                }
-                default: {
-                    // const res = await getData(`human/pasien/getoneby/${body.type}/${body.input}`, session?.user.token)
-                    // setResObject(res.data)
-                    // const docObj: any = document.getElementById("modal-pasien-obj")
-                    // docObj?.showModal()
-                    break;
-                }
+            })
+            const res = await getData.json()
+            if (!res || res.length === 0) {
+                ToastAlert({ icon: 'error', title: "Data tidak ditemukan!" })
+            } else if (res.length > 0) {
+                setResArr([...res])
+                const openWindow: any = document.getElementById("modal-pasien-list")
+                openWindow.showModal()
+            } else {
+                setResObject(res)
+                const openWindow: any = document.getElementById("modal-pasien-satuan")
+                openWindow.showModal()
             }
+
         } catch (error: any) {
-            // SweetAlert(error.message, 'error')
-            // console.log(error.message);
+            ToastAlert({ icon: 'error', title: error.message })
+            console.log(error.message);
         }
         setLoad(false)
     })
@@ -92,56 +93,50 @@ const FilterPasienComponent = () => {
                 </div>
             </form>
             {/* Modal list array */}
-            <dialog id="modal-pasien-name" className="modal">
+            <dialog id="modal-pasien-list" className="modal">
                 <div className="modal-box w-11/12 max-w-5xl">
                     <form method="dialog">
                         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
-                    {/* <AlertHeaderComponent message="List Pasien Ditemukan" />
+                    <div className="mt-3">
+                        <AlertHeaderComponent message="List Pasien Ditemukan" />
+                    </div>
                     <div className="flex flex-col gap-2 mt-2">
                         {resArr?.map((item) => {
                             return (
-                                <div key={item._id} className="collapse collapse-arrow bg-base-200">
+                                <div key={item.id} className="collapse collapse-arrow bg-base-200">
                                     <input type="checkbox" />
                                     <div className="collapse-title text-xl font-medium">
-                                        {item.nama_pasien} ({item.jenis_kelamin}) / {item.no_rm} / {calculateAge(new Date(item.tanggal_lahir)).years} Th, {calculateAge(new Date(item.tanggal_lahir)).months} Bln, {calculateAge(new Date(item.tanggal_lahir)).days} Hari
+                                        {item.namaPasien} ({item.jenisKelamin}) / {item.noRm} / {calculateAge(new Date(item?.tanggalLahir)).years} Tahun
                                     </div>
-                                    <div className="collapse-content">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <LinkDaftarPasienComponent _id={item._id} />
-                                            <div className="join">
-                                                <button className="btn btn-xs join-item btn-success">EP</button>
-                                                <button className="btn btn-xs join-item btn-info">Edit</button>
-                                            </div>
+                                    <div className="collapse-content flex flex-col gap-2">
+                                        <div className="self-end">
+                                            <SubMenuPasien session={data} params={{ id: item.id?.toString() }} />
                                         </div>
-                                        <DetailPasienComponent item={item} />
+                                        <PasienIdentitasComponent pasien={item} />
                                     </div>
                                 </div>
                             )
                         })}
-                    </div> */}
+                    </div>
                 </div>
             </dialog>
             {/* Modal pasien obj */}
-            <dialog id="modal-pasien-obj" className="modal">
+            <dialog id="modal-pasien-satuan" className="modal">
                 <div className="modal-box w-11/12 max-w-5xl">
                     <form method="dialog">
                         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
-                    {/* <AlertHeaderComponent message="List Pasien Ditemukan" />
-                    <div className="bg-base-200 mt-2 justify-between flex items-center text-xl font-medium p-2">
-                        <p>
-                            {resObject?.nama_pasien} ({resObject?.jenis_kelamin}) / {resObject?.no_rm} / {resObject?.tanggal_lahir && calculateAge(new Date(resObject.tanggal_lahir)).years} Th, {resObject?.tanggal_lahir && calculateAge(new Date(resObject.tanggal_lahir)).months} Bln, {resObject?.tanggal_lahir && calculateAge(new Date(resObject.tanggal_lahir)).days} Hari
-                        </p>
-                        <div className="flex items-center gap-2">
-                            <LinkDaftarPasienComponent _id={resObject?._id} />
-                            <div className="join">
-                                <button className="btn btn-xs join-item btn-success">EP</button>
-                                <button className="btn btn-xs join-item btn-info">Edit</button>
-                            </div>
-                        </div>
+                    <div className="mt-3">
+                        <AlertHeaderComponent message="List Pasien Ditemukan" />
                     </div>
-                    <DetailPasienComponent item={resObject} /> */}
+                    <p className="bg-base-200 mt-2 rounded text-xl mb-2 font-medium p-3">
+                        {resObject?.namaPasien} ({resObject?.jenisKelamin}) / {resObject?.noRm} / {resObject?.tanggalLahir && calculateAge(new Date(resObject.tanggalLahir)).years} Tahun
+                    </p>
+                    <div className="self-end mb-2 flex flex-col">
+                        <SubMenuPasien session={data} params={{ id: resObject?.id?.toString() }} />
+                    </div>
+                    <PasienIdentitasComponent pasien={resObject} />
                 </div>
             </dialog >
         </div >
