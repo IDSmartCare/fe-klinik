@@ -30,7 +30,7 @@ const onChange = async (e: any, id: any) => {
 const PasienTableColumn = [
     columHelper.accessor(row => row.noRm, {
         cell: info => info.getValue(),
-        header: "RM"
+        header: "No. Rekam Medis"
     }),
     columHelper.accessor(row => row.namaPasien, {
         cell: info => info.getValue(),
@@ -38,11 +38,11 @@ const PasienTableColumn = [
     }),
     columHelper.accessor(row => [row.tempatLahir, row.tanggalLahir], {
         cell: info => <p>{info.getValue()[0]}, {format(new Date(info.getValue()[1]), 'dd/MM/yyyy')}</p>,
-        header: "TTL"
+        header: "Tempat, Tanggal Lahir"
     }),
     columHelper.accessor(row => row.jenisKelamin, {
         cell: info => info.getValue(),
-        header: "JK"
+        header: "Jenis Kelamin"
     }),
 
     columHelper.accessor(row => row.noHp, {

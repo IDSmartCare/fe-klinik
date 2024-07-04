@@ -78,7 +78,7 @@ const PageCPPT = async ({ params }: { params: { id: any } }) => {
                         <thead className="bg-base-200">
                             <tr>
                                 <th>No</th>
-                                <th>Tgl/Jam</th>
+                                <th>Tanggal / Jam</th>
                                 <th>Profesi</th>
                                 <th>Catatan Pasien Saat Ini</th>
                                 <th>Instruksi</th>
@@ -90,7 +90,7 @@ const PageCPPT = async ({ params }: { params: { id: any } }) => {
                                 return (
                                     <tr key={item.id}>
                                         <td>{index + 1}</td>
-                                        <td>{format(item.createdAt, 'dd/MM/yyyy HH:mm')}</td>
+                                        <td>{format(item.createdAt, 'dd/MM/yyyy-HH:mm')}</td>
                                         <td>{item.profesi}</td>
                                         <td>
                                             <p>Subjective : {item.subjective}</p>

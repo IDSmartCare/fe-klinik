@@ -14,7 +14,7 @@ const PasienIdentitasComponent = ({ pasien }: { pasien: any }) => {
                     </thead>
                     <tbody>
                         <tr>
-                            <th>TTL</th>
+                            <th>TEMPAT TANGGAL LAHIR</th>
                             <td>: {pasien?.tempatLahir}, {pasien?.tanggalLahir && format(pasien?.tanggalLahir, 'dd/MM/yyyy')} </td>
                             <th>UMUR</th>
                             <td>: {`${years} Tahun ${months} Bulan ${days} Hari`}</td>
@@ -22,18 +22,18 @@ const PasienIdentitasComponent = ({ pasien }: { pasien: any }) => {
                         <tr>
                             <th>NIK</th>
                             <td>: {pasien?.nik}</td>
-                            <th>BPJS</th>
+                            <th>NO. BPJS</th>
                             <td>: {pasien?.bpjs}</td>
                         </tr>
                         <tr>
-                            <th>STATUS</th>
-                            <td>: {pasien?.statusMenikah}</td>
+                            <th>STATUS PERNIKAHAN</th>
+                            <td>: {pasien?.statusMenikah.replace("_", " ")}</td>
                             <th>AGAMA</th>
                             <td>: {pasien?.agama}</td>
                         </tr>
                         <tr>
                             <th>PEKERJAAN</th>
-                            <td>: {pasien?.pekerjaan}</td>
+                            <td>: {pasien?.pekerjaan.replace("_", " ")}</td>
                             <th>KOTA</th>
                             <td>: {pasien?.kota}</td>
                         </tr>
