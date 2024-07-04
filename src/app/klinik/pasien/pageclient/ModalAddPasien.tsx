@@ -250,7 +250,12 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                 <div className="label">
                                     <span className="label-text">Nama Pasien</span>
                                 </div>
-                                <input type="text" {...register("namaPasien", { required: "*Tidak boleh kosong" })} className="input input-primary w-full input-sm max-w-xs" />
+                                <input type="text" {...register("namaPasien", {
+                                    required: "*Tidak boleh kosong", pattern: {
+                                        value: /^[a-zA-Z]+$/,
+                                        message: 'Nama tidak valid'
+                                    }
+                                })} className="input input-primary w-full input-sm max-w-xs" />
                                 {errors.namaPasien &&
                                     <label className="label">
                                         <span className="label-text-alt text-error">{errors.namaPasien.message}</span>
@@ -261,8 +266,16 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                 <div className="label">
                                     <span className="label-text">NIK</span>
                                 </div>
-                                <input type="number" {...register("nik")} className="input input-primary w-full input-sm max-w-xs" />
+                                <input type="number" {...register("nik", {
+                                    minLength: { value: 16, message: "Harus 16 digit" },
+                                    maxLength: { value: 16, message: "Harus 16 digit" },
+                                })} className="input input-primary w-full input-sm max-w-xs" />
                             </div>
+                            {errors.nik &&
+                                <label className="label">
+                                    <span className="label-text-alt text-error">{errors.nik.message}</span>
+                                </label>
+                            }
                             <div className="form-control w-full max-w-xs">
                                 <div className="label">
                                     <span className="label-text">No. BPJS</span>
@@ -365,7 +378,12 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                 <div className="label">
                                     <span className="label-text">Nama Ibu</span>
                                 </div>
-                                <input type="text" {...register("ibuKandung", { required: "*Tidak boleh kosong" })} className="input input-primary w-full input-sm max-w-xs" />
+                                <input type="text" {...register("ibuKandung", {
+                                    required: "*Tidak boleh kosong", pattern: {
+                                        value: /^[a-zA-Z]+$/,
+                                        message: 'Nama tidak valid'
+                                    }
+                                })} className="input input-primary w-full input-sm max-w-xs" />
                                 {errors.ibuKandung &&
                                     <label className="label">
                                         <span className="label-text-alt text-error">{errors.ibuKandung.message}</span>
@@ -634,8 +652,16 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                 <div className="label">
                                     <span className="label-text">Kode Pos</span>
                                 </div>
-                                <input type="text" {...register("kodePos")} className="input input-primary w-full input-sm max-w-xs" />
+                                <input type="number" {...register("kodePos", {
+                                    required: "*Tidak boleh kosong",
+                                    maxLength: { value: 6, message: "Max 6 digit" }
+                                })} className="input input-primary w-full input-sm max-w-xs" />
                             </div>
+                            {errors.kodePos &&
+                                <label className="label">
+                                    <span className="label-text-alt text-error">{errors.kodePos.message?.toString()}</span>
+                                </label>
+                            }
                         </div>
                         <div className="flex-1">
                             <label className="label cursor-pointer">

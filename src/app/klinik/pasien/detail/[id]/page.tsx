@@ -61,14 +61,14 @@ const PageDetailPasien = async ({ params }: { params: { id: string } }) => {
                                     <td>: {resApi.bahasa}</td>
                                 </tr>
                                 <tr>
-                                    <th>TTL</th>
+                                    <th>TEMPAT, TANGGAL LAHIR</th>
                                     <td>: {resApi.tempatLahir}, {format(resApi.tanggalLahir, 'dd/MM/yyyy')}</td>
                                     <th>UMUR</th>
                                     <td>: {`${years} Tahun ${months} Bulan ${days} Hari`}</td>
                                 </tr>
                                 <tr>
-                                    <th>STATUS</th>
-                                    <td>: {resApi.statusMenikah}</td>
+                                    <th>STATUS PERNIKAHAN</th>
+                                    <td>: {resApi.statusMenikah.replace("_", " ")}</td>
                                     <th>AGAMA</th>
                                     <td>: {resApi.agama}</td>
                                 </tr>
@@ -76,12 +76,12 @@ const PageDetailPasien = async ({ params }: { params: { id: string } }) => {
                                     <th>PENDIDIKAN</th>
                                     <td>: {resApi.pendidikan}</td>
                                     <th>PEKERJAAN</th>
-                                    <td>: {resApi.pekerjaan}</td>
+                                    <td>: {resApi.pekerjaan.replace("_", " ")}</td>
                                 </tr>
                                 <tr>
                                     <th>IBU KANDUNG</th>
                                     <td>: {resApi.ibuKandung}</td>
-                                    <th>JK</th>
+                                    <th>JENIS KELAMIN</th>
                                     <td>: {resApi.jenisKelamin === "L" ? "LAKI-LAKI" : "PEREMPUAN"}</td>
                                 </tr>
                                 <tr>
