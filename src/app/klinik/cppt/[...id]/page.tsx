@@ -22,7 +22,11 @@ const getData = async (id: string, idFasyankes: string) => {
     }
 }
 const getCppt = async (id: string, idFasyankes: string) => {
-    const totalRows = await prisma.sOAP.count();
+    const totalRows = await prisma.sOAP.count({
+        where: {
+            idFasyankes
+        }
+    });
     const rowsToSkip = totalRows > 10 ? totalRows - 10 : 0;
     try {
         const getDb = await prisma.sOAP.findMany({
@@ -91,7 +95,7 @@ const PageCPPT = async ({ params }: { params: { id: any } }) => {
                                     <tr key={item.id}>
                                         <td>{index + 1}</td>
                                         <td>{format(item.createdAt, 'dd/MM/yyyy-HH:mm')}</td>
-                                        <td>{item.profesi}</td>
+                                        <td>{item.profesi.toUpperCase()}</td>
                                         <td>
                                             <p>Subjective : {item.subjective}</p>
                                             <p>Objective : {item.objective}</p>

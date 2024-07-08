@@ -23,7 +23,7 @@ const NavbarLayoutComponent = ({ session }: { session: Session | null }) => {
                     <li>
                         <details>
                             <summary>
-                                {session?.user.name}
+                                {session?.user.username}
                             </summary>
                             <ul className="p-2 bg-base-100 z-20 rounded-t-none">
                                 <li><button onKeyDown={() => onClickLogout()} onClick={() => onClickLogout()}>Logout</button></li>

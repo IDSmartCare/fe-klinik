@@ -1,6 +1,5 @@
 import { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials"
-import prisma from "./db";
 
 export const authOption: NextAuthOptions = {
     providers: [
@@ -11,24 +10,23 @@ export const authOption: NextAuthOptions = {
                 password: { label: "Password", type: "password" }
             },
             async authorize(credentials) {
-                const user: any = await prisma.user.findFirst({
-                    where: {
+                const user: any = await fetch(`${process.env.NEXT_PUBLIC_URL_BO}/access-fasyankes`, {
+                    method: "POST",
+                    body: JSON.stringify({
                         username: credentials?.username,
-                        password: credentials?.password,
-                        isAktif: true
-                    },
-                    include: {
-                        profile: {
-                            select: {
-                                id: true,
-                                namaLengkap: true,
-                                profesi: true,
-                                unit: true
-                            }
-                        }
+                        password: credentials?.password
+                    }),
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `${process.env.NEXT_PUBLIC_TOKEN_BO}`
                     }
+
                 })
-                return user
+                if (!user.ok) {
+                    return null
+                }
+                const res = await user.json()
+                return res.data
             }
         })
     ],
@@ -38,25 +36,19 @@ export const authOption: NextAuthOptions = {
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
-                token.id = user.id
                 token.role = user.role
-                token.idFasyankes = user.idFasyankes
+                token.idFasyankes = String(user.fasyankes.fasyankesId)
                 token.username = user.username
-                token.name = user.profile?.namaLengkap ?? "Administrator"
-                token.unit = user.profile?.unit ?? "admin"
-                token.profesi = user.profile?.profesi ?? "Admin"
-                token.idProfile = user.profile?.id
+                token.wfid = user.wfid
+                token.idProfile = user.id_profile
             }
             return token
         },
         async session({ session, token }) {
-            session.user.id = token.id
             session.user.role = token.role
             session.user.idFasyankes = token.idFasyankes
             session.user.username = token.username
-            session.user.name = token.name
-            session.user.unit = token.unit
-            session.user.profesi = token.profesi
+            session.user.wfid = token.wfid
             session.user.idProfile = token.idProfile
             return session
         },

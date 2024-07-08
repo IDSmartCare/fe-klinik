@@ -22,8 +22,8 @@ const FormAddCppt = ({ idregis, idpasien, session }: { idregis: string, idpasien
         const body = {
             ...form,
             pendaftaranId: Number(idregis),
-            profesi: session?.user.profesi,
-            profileId: session?.user.idProfile,
+            profesi: session?.user.role,
+            profileId: Number(session?.user.idProfile),
             isDokter: session?.user.role === "dokter" || false,
             isVerifDokter: session?.user.role === "dokter" || false,
             jamVerifDokter: session?.user.role === "dokter" ? new Date() : null,
