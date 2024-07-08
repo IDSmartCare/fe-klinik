@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth"
 import { authOption } from "@/auth"
 import ListPasienDokter from "./ListPasienDokter"
 import FilterPasienComponent from "@/app/components/FilterPasienComponent"
+import ErrorHeaderComponent from "@/app/components/ErrorHeaderComponent"
 
 const getData = async (idFasyankes: string, idProfile: number) => {
     const today = new Date()
@@ -63,8 +64,14 @@ const PageDokter = async () => {
     return (
         <>
             <FilterPasienComponent />
-            <AlertHeaderComponent message="Pasien terdaftar hari ini" />
-            <TableFilterComponent rowsData={data} columnsData={ListPasienDokter} />
+            {session?.user.role !== 'dokter' ?
+                <ErrorHeaderComponent message="Anda bukan dokter!" />
+                :
+                <>
+                    <AlertHeaderComponent message="Pasien terdaftar hari ini" />
+                    <TableFilterComponent rowsData={data} columnsData={ListPasienDokter} />
+                </>
+            }
         </>
     )
 }

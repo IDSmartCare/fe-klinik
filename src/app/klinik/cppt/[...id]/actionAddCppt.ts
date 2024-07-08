@@ -37,6 +37,26 @@ export async function createCppt(form: typeFormCppt, idpasien: string, idFasyank
                     data: resepDokter
                 })
             }
+            if (form.profesi === "dokter") {
+
+                await tx.pendaftaran.update({
+                    where: {
+                        id: Number(form.pendaftaranId)
+                    },
+                    data: {
+                        isSoapDokter: true
+                    }
+                })
+            } else {
+                await tx.pendaftaran.update({
+                    where: {
+                        id: Number(form.pendaftaranId)
+                    },
+                    data: {
+                        isSoapPerawat: true
+                    }
+                })
+            }
             return simpanSoap
 
         })

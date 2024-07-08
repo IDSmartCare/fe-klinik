@@ -2,6 +2,8 @@ export type typeListTerdaftar = {
     id?: number
     penjamin: string
     createdAt: Date
+    isSoapPerawat?: boolean
+    isSoapDokter?: boolean
     jadwal: {
         dokter: {
             namaLengkap: string
