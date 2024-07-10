@@ -34,7 +34,7 @@ const JadwalTableColumn = [
         cell: info => info.getValue(),
         header: "Dokter"
     }),
-    columHelper.accessor(row => row.dokter?.poliklinik.namaPoli, {
+    columHelper.accessor(row => row.dokter?.poliklinik?.namaPoli, {
         cell: info => info.getValue(),
         header: "Poli"
     }),
