@@ -1,15 +1,3 @@
-model User {
-  id          Int      @id @default(autoincrement())
-  username    String   @unique @db.VarChar(200)
-  password    String
-  createdAt   DateTime @default(now()) @db.Timestamptz
-  updatedAt   DateTime @updatedAt @db.Timestamptz
-  role        Role
-  profile     Profile?
-  idFasyankes String?  @db.VarChar(30)
-  isAktif     Boolean? @default(true)
-}
-
 model Profile {
   id            Int            @id @default(autoincrement())
   namaLengkap   String         @db.VarChar(200)
@@ -20,19 +8,8 @@ model Profile {
   isAktif       Boolean?       @default(true)
   createdAt     DateTime       @default(now()) @db.Timestamptz
   updatedAt     DateTime       @updatedAt @db.Timestamptz
-  user          User           @relation(fields: [userId], references: [id])
-  userId        Int            @unique
   jadwalPraktek JadwalDokter[]
   poliklinik    PoliKlinik?    @relation(fields: [poliKlinikId], references: [id])
   poliKlinikId  Int?
   cppt          SOAP[]
-}
-
-enum Role {
-  admin
-  admisi
-  perawat
-  dokter
-  farmasi
-  gudang
 }
