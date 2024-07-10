@@ -32,7 +32,7 @@ const FarmasiTableColumn = [
         header: "Jam Regis"
     }),
 
-    columHelper.accessor(row => row.isSoapPerawat, {
+    columHelper.accessor(row => row.isSoapDokter, {
         cell: info => info.getValue() &&
             <div className="flex justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
@@ -40,12 +40,12 @@ const FarmasiTableColumn = [
                 </svg>
             </div>
         ,
-        header: "SOAP"
+        header: "SOAP Dokter"
     }),
 
     columHelper.accessor(row => [row.id, row.episodePendaftaran.pasien.id], {
         cell: info => <div className="flex gap-1 justify-center">
-            <div className="tooltip" data-tip="Riwayat Pendaftaran">
+            {/* <div className="tooltip" data-tip="Riwayat Pendaftaran">
                 <Link className="btn btn-outline btn-success btn-circle btn-xs" href={`/klinik/pendaftaran/riwayat/${info.getValue()[1]}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
                         <path d="M2 3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3Z" />
@@ -54,7 +54,7 @@ const FarmasiTableColumn = [
 
 
                 </Link>
-            </div>
+            </div> */}
             <div className="tooltip" data-tip="Detail Pasien">
                 <Link className="btn btn-outline btn-info btn-circle btn-xs" href={`/klinik/pasien/detail/${info.getValue()[1]}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
@@ -62,8 +62,8 @@ const FarmasiTableColumn = [
                     </svg>
                 </Link>
             </div>
-            <div className="tooltip" data-tip="Tambah CPPT Baru">
-                <Link className="btn btn-primary btn-outline btn-circle btn-xs" href={`/klinik/cppt/${info.getValue()[0]}/${info.getValue()[1]}`}>
+            <div className="tooltip" data-tip="Resep Pasien">
+                <Link className="btn btn-primary btn-outline btn-circle btn-xs" href={`/klinik/farmasi/resep/${info.getValue()[0]}/${info.getValue()[1]}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
                         <path fillRule="evenodd" d="M11.013 2.513a1.75 1.75 0 0 1 2.475 2.474L6.226 12.25a2.751 2.751 0 0 1-.892.596l-2.047.848a.75.75 0 0 1-.98-.98l.848-2.047a2.75 2.75 0 0 1 .596-.892l7.262-7.261Z" clipRule="evenodd" />
                     </svg>

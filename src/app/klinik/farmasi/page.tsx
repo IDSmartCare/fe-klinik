@@ -1,4 +1,3 @@
-import ErrorHeaderComponent from "@/app/components/ErrorHeaderComponent"
 import AlertHeaderComponent from "../setting/paramedis/components/AlertHeaderComponent"
 import TableFilterComponent from "@/app/components/TableFilterComponent"
 import { getServerSession } from "next-auth"
@@ -56,14 +55,8 @@ const PageFarmasi = async () => {
     const data = await getData(session?.user.idFasyankes)
     return (
         <>
-            {session?.user.role !== 'farmasi' ?
-                <ErrorHeaderComponent message="Anda bukan farmasi!" />
-                :
-                <>
-                    <AlertHeaderComponent message="Pasien terdaftar hari ini" />
-                    <TableFilterComponent rowsData={data} columnsData={FarmasiTableColumn} />
-                </>
-            }
+            <AlertHeaderComponent message="Pasien terdaftar hari ini" />
+            <TableFilterComponent rowsData={data} columnsData={FarmasiTableColumn} />
         </>
     )
 }
