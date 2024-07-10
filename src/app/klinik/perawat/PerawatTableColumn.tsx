@@ -17,7 +17,7 @@ const PerawatTableColumn = [
     }),
     columHelper.accessor(row => row.episodePendaftaran.pasien.jenisKelamin, {
         cell: info => info.getValue(),
-        header: "JK"
+        header: "Jenis Kelamin"
     }),
     columHelper.accessor(row => row.penjamin, {
         cell: info => info.getValue(),

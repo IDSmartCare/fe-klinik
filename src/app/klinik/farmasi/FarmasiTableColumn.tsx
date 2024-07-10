@@ -2,59 +2,46 @@
 import { createColumnHelper } from "@tanstack/table-core"
 import { format } from "date-fns"
 import Link from "next/link"
-import { typeListTerdaftar } from "../perawat/interface/typeListTerdaftar"
+import { ListFarmasiInterface } from "./interface/typeListFarmasi"
 
-const columHelper = createColumnHelper<typeListTerdaftar>()
+const columHelper = createColumnHelper<ListFarmasiInterface>()
 
 const FarmasiTableColumn = [
-    columHelper.accessor(row => row.episodePendaftaran.pasien.noRm, {
+    columHelper.accessor(row => row.pendaftaran.episodePendaftaran.pasien.noRm, {
         cell: info => info.getValue(),
         header: "No. Rekam Medis"
     }),
-    columHelper.accessor(row => row.episodePendaftaran.pasien.namaPasien, {
+    columHelper.accessor(row => row.pendaftaran.episodePendaftaran.pasien.namaPasien, {
         cell: info => info.getValue(),
         header: "Nama"
     }),
-    columHelper.accessor(row => row.episodePendaftaran.pasien.jenisKelamin, {
+    columHelper.accessor(row => row.pendaftaran.episodePendaftaran.pasien.jenisKelamin, {
         cell: info => info.getValue(),
-        header: "JK"
+        header: "Jenis Kelamin"
     }),
-    columHelper.accessor(row => row.penjamin, {
+    columHelper.accessor(row => row.pendaftaran.penjamin, {
         cell: info => info.getValue(),
         header: "Penjamin"
     }),
-    columHelper.accessor(row => row.jadwal.dokter.namaLengkap, {
+    columHelper.accessor(row => row.pendaftaran.jadwal.dokter.namaLengkap, {
         cell: info => info.getValue(),
         header: "Dokter"
     }),
     columHelper.accessor(row => row.createdAt, {
         cell: info => format(info.getValue(), 'dd/MM/yyyy-HH:mm'),
-        header: "Jam Regis"
+        header: "Jam SOAP"
     }),
 
-    columHelper.accessor(row => row.isSoapDokter, {
-        cell: info => info.getValue() &&
-            <div className="flex justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
-                    <path fillRule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14Zm3.844-8.791a.75.75 0 0 0-1.188-.918l-3.7 4.79-1.649-1.833a.75.75 0 1 0-1.114 1.004l2.25 2.5a.75.75 0 0 0 1.15-.043l4.25-5.5Z" clipRule="evenodd" />
-                </svg>
-            </div>
-        ,
-        header: "SOAP Dokter"
-    }),
-
-    columHelper.accessor(row => [row.id, row.episodePendaftaran.pasien.id], {
+    columHelper.accessor(row => [row.id, row.pendaftaran.episodePendaftaran.pasien.id], {
         cell: info => <div className="flex gap-1 justify-center">
-            {/* <div className="tooltip" data-tip="Riwayat Pendaftaran">
+            <div className="tooltip" data-tip="Riwayat Pendaftaran">
                 <Link className="btn btn-outline btn-success btn-circle btn-xs" href={`/klinik/pendaftaran/riwayat/${info.getValue()[1]}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
                         <path d="M2 3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3Z" />
                         <path fillRule="evenodd" d="M13 6H3v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V6ZM8.75 7.75a.75.75 0 0 0-1.5 0v2.69L6.03 9.22a.75.75 0 0 0-1.06 1.06l2.5 2.5a.75.75 0 0 0 1.06 0l2.5-2.5a.75.75 0 1 0-1.06-1.06l-1.22 1.22V7.75Z" clipRule="evenodd" />
                     </svg>
-
-
                 </Link>
-            </div> */}
+            </div>
             <div className="tooltip" data-tip="Detail Pasien">
                 <Link className="btn btn-outline btn-info btn-circle btn-xs" href={`/klinik/pasien/detail/${info.getValue()[1]}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">

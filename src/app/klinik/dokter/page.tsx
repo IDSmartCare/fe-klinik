@@ -22,7 +22,8 @@ const getData = async (idFasyankes: string, idProfile: number) => {
                 ],
                 jadwal: {
                     dokterId: Number(idProfile)
-                }
+                },
+                isSoapPerawat: true
             },
             orderBy: {
                 id: 'desc',

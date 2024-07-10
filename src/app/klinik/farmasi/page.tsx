@@ -10,10 +10,10 @@ const getData = async (idFasyankes: string) => {
     const tomorrow = new Date(today)
     tomorrow.setDate(tomorrow.getDate() + 1)
     try {
-        const getDb = await prisma.pendaftaran.findMany({
+        const getDb = await prisma.sOAP.findMany({
             where: {
-                isClose: false,
                 idFasyankes,
+                profesi: 'dokter',
                 AND: [
                     { createdAt: { gte: today } },
                     { createdAt: { lt: tomorrow } },
@@ -23,24 +23,32 @@ const getData = async (idFasyankes: string) => {
                 id: 'desc',
             },
             include: {
-                jadwal: {
-                    select: {
-                        dokter: true,
-                    },
-                },
-                episodePendaftaran: {
-                    select: {
-                        pasien: {
+                pendaftaran: {
+                    include: {
+                        episodePendaftaran: {
                             select: {
-                                noRm: true,
-                                namaPasien: true,
-                                jenisKelamin: true,
-                                kelurahan: true,
-                                id: true
+                                pasien: {
+                                    select: {
+                                        noRm: true,
+                                        namaPasien: true,
+                                        jenisKelamin: true,
+                                        id: true
+                                    }
+                                }
+                            }
+                        },
+                        jadwal: {
+                            select: {
+                                dokter: {
+                                    select: {
+                                        namaLengkap: true
+                                    }
+                                }
                             }
                         }
                     }
-                },
+                }
+
             }
         })
         return getDb

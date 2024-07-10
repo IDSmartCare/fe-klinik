@@ -33,7 +33,7 @@ const getCppt = async (id: string, idFasyankes: string) => {
             take: 10,
             skip: rowsToSkip,
             orderBy: {
-                id: 'asc'
+                id: 'asc',
             },
             include: {
                 inputBy: {
@@ -89,7 +89,11 @@ const PageCPPT = async ({ params }: { params: { id: any } }) => {
                                 return (
                                     <tr key={item.id}>
                                         <td>{index + 1}</td>
-                                        <td>{format(item.createdAt, 'dd/MM/yyyy-HH:mm')}</td>
+                                        <td>{format(item.createdAt, 'dd/MM/yyyy-HH:mm')}
+                                            <br />
+                                            No Regis : {item.pendaftaranId}
+
+                                        </td>
                                         <td>{item.profesi.toUpperCase()}</td>
                                         <td>
                                             <p>Subjective : {item.subjective}</p>

@@ -19,16 +19,13 @@ const getData = async (id: string, idFasyankes: string) => {
         return null
     }
 }
-const getDataResep = async (id: string, idFasyankes: string) => {
+const getDataResep = async (id: string) => {
     try {
-        const getDb = await prisma.sOAP.findFirst({
+        const getDb = await prisma.resepDokter.findMany({
             where: {
-                idFasyankes,
-                pendaftaranId: Number(id)
+                sOAPId: Number(id)
             },
-            include: {
-                resep: true
-            }
+
         })
         return getDb
     } catch (error) {
@@ -41,7 +38,7 @@ const PageInputResep = async ({ params }: { params: { id: any } }) => {
     const idRegis = params.id[0]
     const idPasien = params.id[1]
     const session = await getServerSession(authOption)
-    const data = await getDataResep(idRegis, session?.user.idFasyankes)
+    const data = await getDataResep(idRegis)
     const resApi = await getData(idPasien, session?.user.idFasyankes)
 
     return (
@@ -63,7 +60,7 @@ const PageInputResep = async ({ params }: { params: { id: any } }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {data?.resep.map((i, index) => {
+                    {data?.map((i, index) => {
                         return (
                             <tr key={i.id}>
                                 <td>{index + 1}</td>
