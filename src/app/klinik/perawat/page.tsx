@@ -5,7 +5,6 @@ import PerawatTableColumn from "./PerawatTableColumn"
 import { getServerSession } from "next-auth"
 import { authOption } from "@/auth"
 import FilterPasienComponent from "@/app/components/FilterPasienComponent"
-import ErrorHeaderComponent from "@/app/components/ErrorHeaderComponent"
 
 const getData = async (idFasyankes: string) => {
     const today = new Date()
@@ -58,14 +57,8 @@ const PagePerawat = async () => {
     return (
         <>
             <FilterPasienComponent />
-            {session?.user.role !== 'perawat' ?
-                <ErrorHeaderComponent message="Anda bukan perawat!" />
-                :
-                <>
-                    <AlertHeaderComponent message="Pasien terdaftar hari ini" />
-                    <TableFilterComponent rowsData={data} columnsData={PerawatTableColumn} />
-                </>
-            }
+            <AlertHeaderComponent message="Pasien terdaftar hari ini" />
+            <TableFilterComponent rowsData={data} columnsData={PerawatTableColumn} />
         </>
     )
 }

@@ -29,8 +29,15 @@ export async function createCppt(form: typeFormCppt, idpasien: string, idFasyank
             if (listResep.length > 0) {
                 const resepDokter = listResep.map((item) => {
                     return {
-                        resep: item,
-                        sOAPId: simpanSoap.id
+                        sOAPId: simpanSoap.id,
+                        namaObat: item.namaObat,
+                        obatId: item.obatId,
+                        jumlah: Number(item.jumlah),
+                        signa1: item.signa1,
+                        signa2: item.signa2,
+                        aturanPakai: item.aturanPakai,
+                        waktu: item.waktu,
+                        catatan: item?.catatan
                     }
                 })
                 await tx.resepDokter.createMany({
