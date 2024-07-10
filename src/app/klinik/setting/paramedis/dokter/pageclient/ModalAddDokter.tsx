@@ -40,19 +40,7 @@ const ModalAddDokter = ({ session }: { session: Session | null }) => {
         }
         getListPoli()
         async function getListUser() {
-            const getRes = await fetch(`/api/user/findalluser?idFasyankes=${session?.user.idFasyankes}`)
-            if (!getRes.ok) {
-                setOptionUser([])
-                return
-            }
-            const data = await getRes.json()
-            const newArr = data.map((item: any) => {
-                return {
-                    label: item.username,
-                    value: item.id
-                }
-            })
-            setOptionUser([...newArr])
+            setOptionUser([])
         }
         getListPoli()
         getListUser()
