@@ -7,7 +7,6 @@ import prisma from "@/db";
 
 export async function createDokter(form: typeFormDokter, idFasyankes: string) {
     const poliId: any = form.poliKlinikId
-    const userId: any = form.userId
     try {
         const postData = await prisma.profile.create({
             data: {
@@ -15,7 +14,6 @@ export async function createDokter(form: typeFormDokter, idFasyankes: string) {
                 profesi: "Dokter",
                 kodeDokter: form.kodeDokter,
                 poliKlinikId: Number(poliId.value),
-                userId: Number(userId.value),
                 idFasyankes,
             }
         })

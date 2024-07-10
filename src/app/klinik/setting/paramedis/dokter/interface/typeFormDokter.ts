@@ -7,5 +7,4 @@ export type typeFormDokter = {
     poliklinik?: {
         namaPoli: string
     }
-    userId?: number
 }

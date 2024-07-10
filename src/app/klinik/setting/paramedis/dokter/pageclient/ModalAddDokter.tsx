@@ -84,21 +84,6 @@ const ModalAddDokter = ({ session }: { session: Session | null }) => {
                             />}
                         />
                         <span className="label-text-alt text-error"> {errors.poliKlinikId && <span>{errors.poliKlinikId.message}</span>}</span>
-                        <Controller
-                            name="userId"
-                            control={control}
-                            rules={{
-                                required: "Tidak boleh kosong!"
-                            }}
-                            render={({ field }) => <Select
-                                {...field}
-                                isClearable
-                                placeholder="Pilih username dokter"
-                                instanceId={uuid}
-                                options={optionUser}
-                            />}
-                        />
-                        <span className="label-text-alt text-error"> {errors.userId && <span>{errors.userId.message}</span>}</span>
                         <SubmitButtonServer />
                     </form>
                 </div>
