@@ -58,7 +58,9 @@ const FormAddCppt = ({ idregis, idpasien, session }: { idregis: string, idpasien
             signa2,
             aturanPakai,
             waktu,
-            catatan
+            catatan,
+            satuan: obat.satuan,
+            harga_jual: obat.harga_jual,
         }
         setListObat([objtObat, ...listObat])
     }
@@ -80,7 +82,9 @@ const FormAddCppt = ({ idregis, idpasien, session }: { idregis: string, idpasien
             const list = apiRes.data.data.map((item: any) => {
                 return {
                     value: item.barang_id,
-                    label: item.barang.nama_barang,
+                    label: `${item.barang.nama_barang} (${item.barang.satuan})`,
+                    satuan: item.barang.satuan,
+                    harga_jual: item.barang.harga_jual,
                 }
             })
             return list
@@ -89,7 +93,7 @@ const FormAddCppt = ({ idregis, idpasien, session }: { idregis: string, idpasien
 
     const onChangeObat = (e: any) => {
         if (e) {
-            setObat({ namaObat: e.label, obatId: e.value })
+            setObat({ namaObat: e.label, obatId: e.value, satuan: e.satuan, harga_jual: e.harga_jual })
         }
     }
 
