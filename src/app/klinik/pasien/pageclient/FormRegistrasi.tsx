@@ -34,7 +34,7 @@ const FormRegistrasi = ({ idpasien, session }: { idpasien: string, session: Sess
             const newArr = dataDokter.map((item: typeFormJadwal) => {
                 return {
                     value: item.id,
-                    label: `${item.dokter?.namaLengkap}-${item.dokter?.poliklinik.kodePoli} (${item.jamPraktek})`
+                    label: `${item.dokter?.namaLengkap}-${item.dokter?.poliklinik?.kodePoli} (${item.jamPraktek})`
                 }
             })
             setDokter([...newArr])
