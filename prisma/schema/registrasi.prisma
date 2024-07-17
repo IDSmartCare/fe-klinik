@@ -14,6 +14,7 @@ model Pendaftaran {
     episodePendaftaranId Int?
     soap                 SOAP[]
     idFasyankes          String?             @db.VarChar(30)
+    billPasien           BillPasien[]
 }
 
 model EpisodePendaftaran {

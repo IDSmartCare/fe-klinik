@@ -9,6 +9,7 @@ model ResepDokter {
     aturanPakai String?  @db.VarChar(100)
     waktu       String?  @db.VarChar(50)
     hargaJual   String?  @db.VarChar(40)
+    stok        Int?
     catatan     String?
     SOAP        SOAP?    @relation(fields: [sOAPId], references: [id])
     sOAPId      Int?

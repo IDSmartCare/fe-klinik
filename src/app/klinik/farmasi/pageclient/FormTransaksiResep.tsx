@@ -3,11 +3,13 @@
 import { useEffect, useId, useState } from "react";
 import { ListResepInterface } from "../interface/typeListResep";
 import AsyncSelect from 'react-select/async';
-import { getApiBisnisOwner } from "@/app/lib/apiBisnisOwner";
+import { getApiBisnisOwner, postApiBisnisOwner } from "@/app/lib/apiBisnisOwner";
 import { ObatInterface } from "../../cppt/interface/typeFormResep";
 import { Session } from "next-auth";
+import { addTransaksiObat } from "../addTransaksi";
+import { ToastAlert } from "@/app/helper/ToastAlert";
 
-const FormTransaksiResep = ({ data, session, soapId }: { data: ListResepInterface[] | null, session: Session | null, soapId: number }) => {
+const FormTransaksiResep = ({ data, session, soapId, pendaftaranId }: { data: ListResepInterface[] | null, session: Session | null, soapId: number, pendaftaranId: number }) => {
     const [listResep, setListResep] = useState<ListResepInterface[] | null>(null)
     const [jumlah, setJumlah] = useState(0)
     const [signa1, setSigna1] = useState("")
@@ -39,6 +41,7 @@ const FormTransaksiResep = ({ data, session, soapId }: { data: ListResepInterfac
                     label: `${item.barang.nama_barang} (${item.barang.satuan})`,
                     satuan: item.barang.satuan,
                     harga_jual: item.barang.harga_jual,
+                    stok: item.stok
                 }
             })
             return list
@@ -47,13 +50,12 @@ const FormTransaksiResep = ({ data, session, soapId }: { data: ListResepInterfac
 
     const onChangeObat = (e: any) => {
         if (e) {
-            setObat({ namaObat: e.label, obatId: e.value, satuan: e.satuan, harga_jual: e.harga_jual })
+            setObat({ namaObat: e.label, obatId: e.value, satuan: e.satuan, harga_jual: e.harga_jual, stok: e.stok })
         }
     }
 
     const onAddResep = () => {
         const resepBaru: ListResepInterface = {
-            id: Math.floor((Math.random() * 100) + 1),
             namaObat: obat.namaObat,
             obatId: obat.obatId,
             satuan: obat.satuan,
@@ -66,7 +68,8 @@ const FormTransaksiResep = ({ data, session, soapId }: { data: ListResepInterfac
             hargaJual: obat.harga_jual,
             sOAPId: Number(soapId),
             createdAt: new Date(),
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            stok: obat.stok
         }
         if (listResep) {
             setListResep([...listResep, resepBaru])
@@ -81,9 +84,55 @@ const FormTransaksiResep = ({ data, session, soapId }: { data: ListResepInterfac
             setListResep([...filter])
         }
     }
-    const onClickSimpan = () => {
-        console.log(listResep);
+    const onClickSimpan = async () => {
+        const list = listResep?.map((item) => {
+            return {
+                ...item,
+                total: Number(item.hargaJual) * Number(item.jumlah)
+            }
+        })
+        const listToApi = listResep?.map((item) => {
+            return {
+                "barang_id": item.obatId,
+                "qty": item.jumlah
+            }
+        })
+        const bodyToPost = {
+            "barang": listToApi,
+            "wfid": session?.user.wfid
+        }
+        const postApi = await postApiBisnisOwner({ url: "decrease-stock", data: bodyToPost })
+        if (!postApi.status) {
+            ToastAlert({ icon: 'error', title: postApi.message })
+            return
+        }
+        const post: any = await addTransaksiObat(list, pendaftaranId)
+        if (post.status) {
+            ToastAlert({ icon: 'success', title: post.message as string })
+        } else {
+            ToastAlert({ icon: 'error', title: post.message as string })
+        }
+    }
 
+    const onChangeText = (e: any, jenisInput: string, id?: number) => {
+        if (e) {
+            if (listResep) {
+                const findIndex = listResep?.findIndex((item) => item.id === id)
+                if (jenisInput === 'jumlah') {
+                    listResep[findIndex].jumlah = e
+                } else if (jenisInput === 'signa1') {
+                    listResep[findIndex].signa1 = e
+                } else if (jenisInput === 'signa2') {
+                    listResep[findIndex].signa2 = e
+                } else if (jenisInput === 'aturanPakai') {
+                    listResep[findIndex].aturanPakai = e
+                } else if (jenisInput === 'waktu') {
+                    listResep[findIndex].waktu = e
+                } else {
+                    listResep[findIndex].catatan = e
+                }
+            }
+        }
     }
 
     return (
@@ -136,17 +185,17 @@ const FormTransaksiResep = ({ data, session, soapId }: { data: ListResepInterfac
                     </tr>
                     {listResep?.map((i, index) => {
                         return (
-                            <tr key={i.id}>
+                            <tr key={i.obatId}>
                                 <td>{index + 1}</td>
-                                <td><input type="text" className="input input-sm input-primary" defaultValue={i.namaObat?.toString()} /></td>
-                                <td><input type="text" className="input input-sm input-primary w-14" defaultValue={i.jumlah?.toString()} /></td>
+                                <td>{i.namaObat?.toString()}</td>
+                                <td><input type="text" onChange={(e) => onChangeText(e.target.value, 'jumlah', i.id)} className="input input-sm input-primary w-14" defaultValue={i.jumlah?.toString()} /></td>
                                 <td>{i.satuan}</td>
-                                <td><input type="text" className="input input-sm input-primary w-14" defaultValue={i.signa1?.toString()} /></td>
+                                <td><input type="text" onChange={(e) => onChangeText(e.target.value, 'signa1', i.id)} className="input input-sm input-primary w-14" defaultValue={i.signa1?.toString()} /></td>
                                 <td>X</td>
-                                <td><input type="text" className="input input-sm input-primary w-14" defaultValue={i.signa2?.toString()} /></td>
-                                <td><input type="text" className="input input-sm input-primary w-40" defaultValue={i.aturanPakai?.toString()} /></td>
-                                <td><input type="text" className="input input-sm input-primary w-32" defaultValue={i.waktu?.toString()} /></td>
-                                <td><input type="text" className="input input-sm input-primary w-32" defaultValue={i.catatan?.toString()} /></td>
+                                <td><input type="text" onChange={(e) => onChangeText(e.target.value, 'signa2', i.id)} className="input input-sm input-primary w-14" defaultValue={i.signa2?.toString()} /></td>
+                                <td><input type="text" onChange={(e) => onChangeText(e.target.value, 'aturanPakai', i.id)} className="input input-sm input-primary w-40" defaultValue={i.aturanPakai?.toString()} /></td>
+                                <td><input type="text" onChange={(e) => onChangeText(e.target.value, 'waktu', i.id)} className="input input-sm input-primary w-32" defaultValue={i.waktu?.toString()} /></td>
+                                <td><input type="text" onChange={(e) => onChangeText(e.target.value, 'catatan', i.id)} className="input input-sm input-primary w-32" defaultValue={i.catatan?.toString()} /></td>
                                 <td className="tooltip tooltip-left" data-tip="Hapus Resep"><button onClick={() => onDeleteResep(Number(i.id))} className="btn btn-xs btn-error btn-circle "><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
                                     <path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
                                 </svg>

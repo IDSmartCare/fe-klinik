@@ -12,5 +12,7 @@ export interface ListResepInterface {
     hargaJual?: string | null
     createdAt?: Date | null
     updatedAt?: Date | null
-    sOAPId?: number | null
+    sOAPId?: number | null,
+    stok?: number | null,
+    total?: number | null
 }

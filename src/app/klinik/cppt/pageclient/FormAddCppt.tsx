@@ -61,6 +61,7 @@ const FormAddCppt = ({ idregis, idpasien, session }: { idregis: string, idpasien
             catatan,
             satuan: obat.satuan,
             harga_jual: obat.harga_jual,
+            stok: obat.stok
         }
         setListObat([objtObat, ...listObat])
     }
@@ -85,6 +86,7 @@ const FormAddCppt = ({ idregis, idpasien, session }: { idregis: string, idpasien
                     label: `${item.barang.nama_barang} (${item.barang.satuan})`,
                     satuan: item.barang.satuan,
                     harga_jual: item.barang.harga_jual,
+                    stok: item.stok
                 }
             })
             return list
@@ -93,7 +95,7 @@ const FormAddCppt = ({ idregis, idpasien, session }: { idregis: string, idpasien
 
     const onChangeObat = (e: any) => {
         if (e) {
-            setObat({ namaObat: e.label, obatId: e.value, satuan: e.satuan, harga_jual: e.harga_jual })
+            setObat({ namaObat: e.label, obatId: e.value, satuan: e.satuan, harga_jual: e.harga_jual, stok: e.stok })
         }
     }
 
@@ -179,7 +181,7 @@ const FormAddCppt = ({ idregis, idpasien, session }: { idregis: string, idpasien
                             </div>
                             <input type="text" onChange={(e) => setAturanPakai(e.target.value)} value={aturanPakai} placeholder="Aturan Pakai" className="input input-sm input-primary" />
                             <input type="text" onChange={(e) => setWaktu(e.target.value)} value={waktu} placeholder="Waktu" className="input input-sm input-primary" />
-                            <textarea onChange={(e) => setCatatan(e.target.value)} placeholder="Catatan" className="textarea textarea-primary">{catatan}</textarea>
+                            <textarea onChange={(e) => setCatatan(e.target.value)} placeholder="Catatan" className="textarea textarea-primary" value={catatan}></textarea>
                             <button onClick={() => onClickResep()} className="btn btn-sm btn-warning" type="button">Tambah</button>
                         </div>
                     </div>

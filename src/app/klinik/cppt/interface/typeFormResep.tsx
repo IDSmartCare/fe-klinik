@@ -3,4 +3,5 @@ export interface ObatInterface {
     obatId?: string
     harga_jual?: string
     satuan?: string
+    stok?: number
 }

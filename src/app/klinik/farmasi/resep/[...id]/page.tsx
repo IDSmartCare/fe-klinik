@@ -49,6 +49,7 @@ const getDataResep = async (id: string) => {
 const PageInputResep = async ({ params }: { params: { id: any } }) => {
     const idSoap = params.id[0]
     const idPasien = params.id[1]
+    const idRegis = params.id[2]
     const session = await getServerSession(authOption)
     const data = await getDataResep(idSoap)
     const resApi = await getData(idPasien, session?.user.idFasyankes)
@@ -57,7 +58,7 @@ const PageInputResep = async ({ params }: { params: { id: any } }) => {
         <div className="flex flex-col gap-2">
             <PasienIdentitasComponent pasien={resApi} />
             <AlertHeaderComponent message="Transaksi Resep!" />
-            <FormTransaksiResep soapId={idSoap} data={data} session={session} />
+            <FormTransaksiResep soapId={idSoap} data={data} session={session} pendaftaranId={idRegis} />
 
         </div>
     )

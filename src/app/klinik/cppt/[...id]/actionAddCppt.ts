@@ -39,7 +39,8 @@ export async function createCppt(form: typeFormCppt, idpasien: string, idFasyank
                         waktu: item.waktu,
                         catatan: item?.catatan,
                         satuan: item?.satuan,
-                        hargaJual: item?.harga_jual
+                        hargaJual: item?.harga_jual,
+                        stok: item?.stok
                     }
                 })
                 await tx.resepDokter.createMany({
