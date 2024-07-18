@@ -24,7 +24,12 @@ const getData = async (id: string, idFasyankes: string) => {
 const getCppt = async (id: string, idFasyankes: string) => {
     const totalRows = await prisma.sOAP.count({
         where: {
-            idFasyankes
+            idFasyankes,
+            pendaftaran: {
+                episodePendaftaran: {
+                    pasienId: Number(id)
+                }
+            }
         }
     });
     const rowsToSkip = totalRows > 10 ? totalRows - 10 : 0;
