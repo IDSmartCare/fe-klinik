@@ -12,6 +12,8 @@ export async function addTransaksiObat(form: ListResepInterface[] | undefined, p
                     deskripsi: item?.namaObat,
                     total: item?.total?.toString(),
                     jenisBill: 'OBAT',
+                    harga: item.hargaJual,
+                    jumlah: item.jumlah,
                     pendaftaranId: Number(pendaftaranId),
                 }
             })

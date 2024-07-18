@@ -3,6 +3,8 @@ model BillPasien {
     deskripsi     String
     jenisBill     String       @db.VarChar(100)
     catatan       String?
+    jumlah        Int?
+    harga         String?      @db.VarChar(100)
     total         String
     createdAt     DateTime     @default(now()) @db.Timestamptz
     updatedAt     DateTime     @updatedAt @db.Timestamptz

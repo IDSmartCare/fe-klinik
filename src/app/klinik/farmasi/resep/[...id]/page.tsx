@@ -71,7 +71,7 @@ const PageInputResep = async ({ params }: { params: { id: any } }) => {
         <div className="flex flex-col gap-2">
             <PasienIdentitasComponent pasien={resApi} />
             <AlertHeaderComponent message="Transaksi Resep!" />
-            <FormTransaksiResep soap={soap} data={data} session={session} pendaftaranId={idRegis} />
+            <FormTransaksiResep pasien={resApi} soap={soap} data={data} session={session} pendaftaranId={idRegis} />
 
         </div>
     )

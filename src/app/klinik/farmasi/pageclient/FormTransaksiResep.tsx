@@ -8,8 +8,14 @@ import { ObatInterface } from "../../cppt/interface/typeFormResep";
 import { Session } from "next-auth";
 import { addTransaksiObat } from "../addTransaksi";
 import { ToastAlert } from "@/app/helper/ToastAlert";
+import { getTransaksiFarmasi } from "./getTransaksi";
+import ModalPrintBillFarmasi from "./ModalPrintBillFarmasi";
+import { CetakBill } from "../interface/cetakBill";
 
-const FormTransaksiResep = ({ data, session, soap, pendaftaranId }: { data: ListResepInterface[] | null, session: Session | null, soap: any, pendaftaranId: number }) => {
+const FormTransaksiResep = ({ data, session, soap, pendaftaranId, pasien }: {
+    data: ListResepInterface[] | null, session: Session | null, soap: any,
+    pendaftaranId: number, pasien: any
+}) => {
     const [listResep, setListResep] = useState<ListResepInterface[] | null>(null)
     const [jumlah, setJumlah] = useState(0)
     const [signa1, setSigna1] = useState("")
@@ -19,6 +25,7 @@ const FormTransaksiResep = ({ data, session, soap, pendaftaranId }: { data: List
     const [catatan, setCatatan] = useState("")
     const [obat, setObat] = useState<ObatInterface>({})
     const [btnSimpan, setBtnSimpan] = useState(false)
+    const [billFarmasi, setBillFarmasi] = useState<CetakBill[]>([])
     const uuid = useId()
 
     useEffect(() => {
@@ -139,6 +146,19 @@ const FormTransaksiResep = ({ data, session, soap, pendaftaranId }: { data: List
         }
     }
 
+    const cetakBill = async () => {
+        const getDb: any = await getTransaksiFarmasi(pendaftaranId)
+        if (getDb.status) {
+            ToastAlert({ icon: 'success', title: "Berhasil!" })
+            setBillFarmasi([...getDb.data])
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            const modal: any = document?.getElementById('modal-print-bill-farmasi')
+            modal.showModal()
+        } else {
+            ToastAlert({ icon: 'error', title: "Gagal ambil data!" })
+        }
+    }
+
     return (
         <div className="flex flex-col">
             <table className="table table-sm table-zebra mb-8">
@@ -219,10 +239,14 @@ const FormTransaksiResep = ({ data, session, soap, pendaftaranId }: { data: List
                 </tbody>
             </table>
             {soap.isBillingFarmasi ?
-                <button className="btn btn-error btn-sm">SUDAH TRANSAKSI</button>
+                <div className="flex flex-col gap-3 mt-5">
+                    <button className="btn btn-error btn-sm">SUDAH TRANSAKSI</button>
+                    <button className="btn btn-info btn-sm" onClick={() => cetakBill()}>CETAK BILL</button>
+                </div>
                 :
                 <button onClick={() => onClickSimpan()} className="btn btn-primary btn-sm mt-10">SIMPAN TRANSAKSI</button>
             }
+            <ModalPrintBillFarmasi billFarmasi={billFarmasi} pasien={pasien} />
         </div>
     )
 }
