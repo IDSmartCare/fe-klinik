@@ -162,9 +162,9 @@ const FormAddCppt = ({ idregis, idpasien, session }: { idregis: string, idpasien
             </div>
             {session?.user.role === "dokter" &&
                 <div className="flex w-full p-3 gap-2">
-                    <div className="form-control w-1/2">
+                    <div className="form-control w-1/2 border-2 p-2">
                         <div className="label">
-                            <span className="label-text">Resep</span>
+                            <span className="label-text text-lg font-bold ">Resep</span>
                         </div>
                         <div className="flex flex-col gap-2">
                             <AsyncSelect className="select-info w-full" required isClearable
@@ -185,9 +185,9 @@ const FormAddCppt = ({ idregis, idpasien, session }: { idregis: string, idpasien
                             <button onClick={() => onClickResep()} className="btn btn-sm btn-warning" type="button">Tambah</button>
                         </div>
                     </div>
-                    <div className="w-1/2 flex flex-col gap-2">
+                    <div className="w-1/2 flex flex-col gap-2 border-2 p-2">
                         <div className="label">
-                            <span className="label-text">List Resep</span>
+                            <span className="label-text font-bold text-lg">List Resep</span>
                         </div>
                         {listObat.map((item, index) => {
                             return (

@@ -2,8 +2,9 @@
 
 import prisma from "@/db"
 import { ListResepInterface } from "./interface/typeListResep"
+import { revalidatePath } from "next/cache"
 
-export async function addTransaksiObat(form: ListResepInterface[] | undefined, pendaftaranId: number) {
+export async function addTransaksiObat(form: ListResepInterface[] | undefined, pendaftaranId: number, soapId: number) {
     try {
         if (form) {
             const list: any = form.map(item => {
@@ -14,9 +15,25 @@ export async function addTransaksiObat(form: ListResepInterface[] | undefined, p
                     pendaftaranId: Number(pendaftaranId),
                 }
             })
-            const post = await prisma.billPasien.createMany({
-                data: list
+            const post = await prisma.$transaction(async (tx) => {
+                const bill = await tx.billPasien.createMany({
+                    data: list
+                })
+
+                await tx.sOAP.update({
+                    data: {
+                        isBillingFarmasi: true
+                    },
+                    where: {
+                        id: Number(soapId)
+                    }
+                })
+
+                return bill
+
+
             })
+            revalidatePath(`/klinik/farmasi`)
             return {
                 status: true,
                 message: "Berhasil tersimpan",

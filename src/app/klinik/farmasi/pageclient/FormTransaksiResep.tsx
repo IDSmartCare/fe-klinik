@@ -9,7 +9,7 @@ import { Session } from "next-auth";
 import { addTransaksiObat } from "../addTransaksi";
 import { ToastAlert } from "@/app/helper/ToastAlert";
 
-const FormTransaksiResep = ({ data, session, soapId, pendaftaranId }: { data: ListResepInterface[] | null, session: Session | null, soapId: number, pendaftaranId: number }) => {
+const FormTransaksiResep = ({ data, session, soap, pendaftaranId }: { data: ListResepInterface[] | null, session: Session | null, soap: any, pendaftaranId: number }) => {
     const [listResep, setListResep] = useState<ListResepInterface[] | null>(null)
     const [jumlah, setJumlah] = useState(0)
     const [signa1, setSigna1] = useState("")
@@ -18,12 +18,14 @@ const FormTransaksiResep = ({ data, session, soapId, pendaftaranId }: { data: Li
     const [waktu, setWaktu] = useState("")
     const [catatan, setCatatan] = useState("")
     const [obat, setObat] = useState<ObatInterface>({})
+    const [btnSimpan, setBtnSimpan] = useState(false)
     const uuid = useId()
+
     useEffect(() => {
         if (data) {
             setListResep([...data])
         }
-    }, [data])
+    }, [data, btnSimpan])
 
     const optionCariObat = (inputValue: string) =>
         new Promise<[]>((resolve) => {
@@ -56,6 +58,7 @@ const FormTransaksiResep = ({ data, session, soapId, pendaftaranId }: { data: Li
 
     const onAddResep = () => {
         const resepBaru: ListResepInterface = {
+            id: Math.random(),
             namaObat: obat.namaObat,
             obatId: obat.obatId,
             satuan: obat.satuan,
@@ -66,7 +69,7 @@ const FormTransaksiResep = ({ data, session, soapId, pendaftaranId }: { data: Li
             waktu,
             catatan,
             hargaJual: obat.harga_jual,
-            sOAPId: Number(soapId),
+            sOAPId: Number(soap.id),
             createdAt: new Date(),
             updatedAt: new Date(),
             stok: obat.stok
@@ -85,6 +88,7 @@ const FormTransaksiResep = ({ data, session, soapId, pendaftaranId }: { data: Li
         }
     }
     const onClickSimpan = async () => {
+        setBtnSimpan(!btnSimpan)
         const list = listResep?.map((item) => {
             return {
                 ...item,
@@ -106,7 +110,7 @@ const FormTransaksiResep = ({ data, session, soapId, pendaftaranId }: { data: Li
             ToastAlert({ icon: 'error', title: postApi.message })
             return
         }
-        const post: any = await addTransaksiObat(list, pendaftaranId)
+        const post: any = await addTransaksiObat(list, pendaftaranId, soap.id)
         if (post.status) {
             ToastAlert({ icon: 'success', title: post.message as string })
         } else {
@@ -137,20 +141,10 @@ const FormTransaksiResep = ({ data, session, soapId, pendaftaranId }: { data: Li
 
     return (
         <div className="flex flex-col">
-            <table className="table table-sm table-zebra">
+            <table className="table table-sm table-zebra mb-8">
                 <thead className="bg-base-200">
                     <tr>
-                        <th>No</th>
-                        <th>Nama Obat</th>
-                        <th>Jumlah</th>
-                        <th>Satuan</th>
-                        <th>Signa 1</th>
-                        <th></th>
-                        <th>Signa 2</th>
-                        <th>Aturan</th>
-                        <th>Waktu</th>
-                        <th>Catatan</th>
-                        <th>Aksi</th>
+                        <th colSpan={11}>Tambah Obat Baru</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -183,6 +177,25 @@ const FormTransaksiResep = ({ data, session, soapId, pendaftaranId }: { data: Li
                             </div>
                         </td>
                     </tr>
+                </tbody>
+            </table>
+            <table className="table table-sm table-zebra">
+                <thead className="bg-base-200">
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Obat</th>
+                        <th>Jumlah</th>
+                        <th>Satuan</th>
+                        <th>Signa 1</th>
+                        <th></th>
+                        <th>Signa 2</th>
+                        <th>Aturan</th>
+                        <th>Waktu</th>
+                        <th>Catatan</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
                     {listResep?.map((i, index) => {
                         return (
                             <tr key={i.obatId}>
@@ -205,7 +218,11 @@ const FormTransaksiResep = ({ data, session, soapId, pendaftaranId }: { data: Li
                     })}
                 </tbody>
             </table>
-            <button onClick={() => onClickSimpan()} className="btn btn-primary btn-sm mt-10">SIMPAN TRANSAKSI</button>
+            {soap.isBillingFarmasi ?
+                <button className="btn btn-error btn-sm">SUDAH TRANSAKSI</button>
+                :
+                <button onClick={() => onClickSimpan()} className="btn btn-primary btn-sm mt-10">SIMPAN TRANSAKSI</button>
+            }
         </div>
     )
 }

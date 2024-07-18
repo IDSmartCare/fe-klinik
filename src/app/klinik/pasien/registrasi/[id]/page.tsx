@@ -78,7 +78,7 @@ const PageRegistrasi = async ({ params }: { params: { id: string } }) => {
                                     return (
                                         <div key={item.id} className="collapse collapse-arrow bg-base-200">
                                             <input type="radio" name="my-accordion-2" />
-                                            <div className="collapse-title text-xl font-medium">
+                                            <div className="collapse-title text-lg font-medium">
                                                 Episode {item.episode}
                                                 <p className="text-xs">Kunjungan : {format(item.createdAt, 'dd/MM/yyyy HH:mm')}</p>
                                             </div>

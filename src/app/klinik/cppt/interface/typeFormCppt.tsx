@@ -13,4 +13,5 @@ export type typeFormCppt = {
     isVerifDokter: boolean | null
     isDokter: boolean | null
     jamVerifDokter?: any
+    isBillingFarmasi: boolean
 }

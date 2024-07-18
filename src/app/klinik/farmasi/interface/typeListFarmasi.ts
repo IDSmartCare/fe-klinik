@@ -30,19 +30,20 @@ interface Pendaftaran {
 export interface ListFarmasiInterface {
     id: number;
     profesi: string;
-    isDokter: boolean;
+    isDokter: boolean | null;
     subjective: string;
     objective: string;
     assesment: string;
     plan: string;
     instruksi: string;
-    isVerifDokter: boolean;
+    isBillingFarmasi: boolean | null
+    isVerifDokter: boolean | null;
     jamVerifDokter: string; // Using string to represent the ISO date format
     isAktif: boolean;
     createdAt: string; // Using string to represent the ISO date format
     updatedAt: string; // Using string to represent the ISO date format
     pendaftaranId: number;
     idFasyankes: string;
-    profileId: number;
+    profileId: number | null;
     pendaftaran: Pendaftaran;
 }

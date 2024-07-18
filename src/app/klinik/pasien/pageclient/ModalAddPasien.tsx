@@ -252,7 +252,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                 </div>
                                 <input type="text" {...register("namaPasien", {
                                     required: "*Tidak boleh kosong", pattern: {
-                                        value: /^[a-zA-Z]+$/,
+                                        value: /^[a-zA-Z\s]+$/,
                                         message: 'Nama tidak valid'
                                     }
                                 })} className="input input-primary w-full input-sm max-w-xs" />
@@ -380,7 +380,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                 </div>
                                 <input type="text" {...register("ibuKandung", {
                                     required: "*Tidak boleh kosong", pattern: {
-                                        value: /^[a-zA-Z]+$/,
+                                        value: /^[a-zA-Z\s]+$/,
                                         message: 'Nama tidak valid'
                                     }
                                 })} className="input input-primary w-full input-sm max-w-xs" />
