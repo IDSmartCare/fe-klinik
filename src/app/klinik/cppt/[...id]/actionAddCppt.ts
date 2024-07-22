@@ -9,6 +9,7 @@ export async function createCppt(form: typeFormCppt, idpasien: string, idFasyank
     try {
         const listResep = form.resep
         const transaksi = await prisma.$transaction(async (tx) => {
+
             const simpanSoap = await tx.sOAP.create({
                 data: {
                     profesi: form.profesi,
@@ -55,6 +56,33 @@ export async function createCppt(form: typeFormCppt, idpasien: string, idFasyank
                     },
                     data: {
                         isSoapDokter: true
+                    }
+                })
+                const getPenjamin = await tx.pendaftaran.findFirst({
+                    where: {
+                        id: Number(form.pendaftaranId)
+                    }
+                })
+                const konsulDokter = await tx.masterTarif.findFirst({
+                    where: {
+                        penjamin: getPenjamin?.penjamin,
+                        kategoriTarif: "Dokter",
+                        isAktif: true
+                    }
+                })
+                const bill = await tx.billPasien.findFirst({
+                    where: {
+                        pendaftaranId: form.pendaftaranId
+                    }
+                })
+                await tx.billPasienDetail.create({
+                    data: {
+                        harga: konsulDokter?.hargaTarif,
+                        jenisBill: "Dokter",
+                        deskripsi: konsulDokter?.namaTarif as string,
+                        billPasienId: bill?.id,
+                        jumlah: 1,
+                        subTotal: (Number(konsulDokter?.hargaTarif) * 1).toString()
                     }
                 })
             } else {

@@ -1,13 +1,34 @@
 model BillPasien {
-    id            Int          @id @default(autoincrement())
-    deskripsi     String
-    jenisBill     String       @db.VarChar(100)
-    catatan       String?
-    jumlah        Int?
-    harga         String?      @db.VarChar(100)
-    total         String
-    createdAt     DateTime     @default(now()) @db.Timestamptz
-    updatedAt     DateTime     @updatedAt @db.Timestamptz
-    Pendaftaran   Pendaftaran? @relation(fields: [pendaftaranId], references: [id])
-    pendaftaranId Int?
+    id               Int                @id @default(autoincrement())
+    billPasienDetail BillPasienDetail[]
+    totalBill        String?
+    createdAt        DateTime           @default(now()) @db.Timestamptz
+    updatedAt        DateTime           @updatedAt @db.Timestamptz
+    Pendaftaran      Pendaftaran?       @relation(fields: [pendaftaranId], references: [id])
+    pendaftaranId    Int?
+    pembayaranBill   PembayaranPasien[]
+}
+
+model PembayaranPasien {
+    id           Int         @id @default(autoincrement())
+    totalBayar   String?
+    tglBayar     DateTime?   @db.Timestamptz
+    createdAt    DateTime    @default(now()) @db.Timestamptz
+    updatedAt    DateTime    @updatedAt @db.Timestamptz
+    billPasien   BillPasien? @relation(fields: [billPasienId], references: [id])
+    billPasienId Int?
+}
+
+model BillPasienDetail {
+    id           Int         @id @default(autoincrement())
+    deskripsi    String
+    jenisBill    String      @db.VarChar(100)
+    catatan      String?
+    jumlah       Int?
+    harga        String?     @db.VarChar(100)
+    subTotal     String?
+    createdAt    DateTime    @default(now()) @db.Timestamptz
+    updatedAt    DateTime    @updatedAt @db.Timestamptz
+    billPasien   BillPasien? @relation(fields: [billPasienId], references: [id])
+    billPasienId Int?
 }

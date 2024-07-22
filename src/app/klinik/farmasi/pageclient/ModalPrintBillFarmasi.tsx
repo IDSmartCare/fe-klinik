@@ -98,9 +98,6 @@ const ModalPrintBillFarmasi = ({ billFarmasi, pasien }: { billFarmasi: CetakBill
                         <Page size="A4" style={styles.page}>
                             <View style={styles.header}>
                                 <Text style={styles.title}>Invoice Obat</Text>
-                                <Text>Company Name</Text>
-                                <Text>Company Address</Text>
-                                <Text>Company Contact Info</Text>
                             </View>
                             <View style={styles.companyInfo}>
                                 <View>

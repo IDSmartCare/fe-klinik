@@ -11,6 +11,13 @@ export async function createRegistrasi(form: typeFormRegis, idFasyankes: string)
         const tomorrow = new Date(today)
         tomorrow.setDate(tomorrow.getDate() + 1)
         const transaksi = await prisma.$transaction(async (tx) => {
+            const tarifAdm = await tx.masterTarif.findFirst({
+                where: {
+                    penjamin: form.penjamin,
+                    kategoriTarif: "Admin",
+                    isAktif: true
+                }
+            })
             const lastEpisode = await tx.episodePendaftaran.findMany({
                 where: {
                     pasienId: form.pasienId,
@@ -39,6 +46,23 @@ export async function createRegistrasi(form: typeFormRegis, idFasyankes: string)
                         idFasyankes,
                     }
                 })
+
+                const bill = await tx.billPasien.create({
+                    data: {
+                        pendaftaranId: registrasi.id,
+                    }
+                })
+                await tx.billPasienDetail.create({
+                    data: {
+                        harga: tarifAdm?.hargaTarif,
+                        jenisBill: "Admin",
+                        deskripsi: tarifAdm?.namaTarif as string,
+                        billPasienId: bill.id,
+                        jumlah: 1,
+                        subTotal: (Number(tarifAdm?.hargaTarif) * 1).toString()
+                    }
+                })
+
                 return registrasi
             }
             else {
@@ -62,6 +86,22 @@ export async function createRegistrasi(form: typeFormRegis, idFasyankes: string)
                             idFasyankes
                         }
                     })
+                    const bill = await tx.billPasien.create({
+                        data: {
+                            pendaftaranId: registrasi.id,
+                        }
+                    })
+
+                    await tx.billPasienDetail.create({
+                        data: {
+                            harga: tarifAdm?.hargaTarif,
+                            jenisBill: "Admin",
+                            deskripsi: tarifAdm?.namaTarif as string,
+                            billPasienId: bill?.id,
+                            jumlah: 1,
+                            subTotal: (Number(tarifAdm?.hargaTarif) * 1).toString()
+                        }
+                    })
                     return registrasi
                 } else {
 
@@ -79,6 +119,21 @@ export async function createRegistrasi(form: typeFormRegis, idFasyankes: string)
                             penjamin: form.penjamin,
                             namaAsuransi: form.namaAsuransi,
                             idFasyankes
+                        }
+                    })
+                    const bill = await tx.billPasien.create({
+                        data: {
+                            pendaftaranId: registrasi.id,
+                        }
+                    })
+                    await tx.billPasienDetail.create({
+                        data: {
+                            harga: tarifAdm?.hargaTarif,
+                            jenisBill: "Admin",
+                            deskripsi: tarifAdm?.namaTarif as string,
+                            billPasienId: bill.id,
+                            jumlah: 1,
+                            subTotal: (Number(tarifAdm?.hargaTarif) * 1).toString()
                         }
                     })
                     return registrasi
