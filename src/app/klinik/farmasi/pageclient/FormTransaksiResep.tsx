@@ -25,7 +25,7 @@ const FormTransaksiResep = ({ data, session, soap, pendaftaranId, pasien }: {
     const [catatan, setCatatan] = useState("")
     const [obat, setObat] = useState<ObatInterface>({})
     const [btnSimpan, setBtnSimpan] = useState(false)
-    const [billFarmasi, setBillFarmasi] = useState<CetakBill[]>([])
+    const [billFarmasi, setBillFarmasi] = useState<CetakBill>()
     const uuid = useId()
 
     useEffect(() => {
@@ -148,9 +148,11 @@ const FormTransaksiResep = ({ data, session, soap, pendaftaranId, pasien }: {
 
     const cetakBill = async () => {
         const getDb: any = await getTransaksiFarmasi(pendaftaranId)
+        console.log(getDb);
+
         if (getDb.status) {
             ToastAlert({ icon: 'success', title: "Berhasil!" })
-            setBillFarmasi([...getDb.data])
+            setBillFarmasi(getDb)
             await new Promise(resolve => setTimeout(resolve, 2000));
             const modal: any = document?.getElementById('modal-print-bill-farmasi')
             modal.showModal()

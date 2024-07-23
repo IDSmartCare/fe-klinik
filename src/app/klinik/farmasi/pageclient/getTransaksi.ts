@@ -4,9 +4,16 @@ import prisma from "@/db"
 
 export async function getTransaksiFarmasi(pendaftaranId: number) {
     try {
-        const getDb = await prisma.billPasien.findMany({
+        const getDb = await prisma.billPasien.findFirst({
             where: {
-                pendaftaranId: Number(pendaftaranId)
+                pendaftaranId: Number(pendaftaranId),
+            },
+            include: {
+                billPasienDetail: {
+                    where: {
+                        jenisBill: "OBAT"
+                    }
+                }
             }
         })
         return {

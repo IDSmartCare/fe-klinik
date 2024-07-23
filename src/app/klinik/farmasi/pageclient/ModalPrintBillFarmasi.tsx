@@ -4,6 +4,7 @@ import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import { CetakBill } from "../interface/cetakBill"
 import dynamic from "next/dynamic";
 import { typeFormPasienBaru } from "../../pasien/interface/typeFormPasienBaru";
+import { format } from "date-fns";
 
 
 const PDFViewer = dynamic(
@@ -13,79 +14,52 @@ const PDFViewer = dynamic(
         loading: () => <p>Loading...</p>,
     },
 );
-const ModalPrintBillFarmasi = ({ billFarmasi, pasien }: { billFarmasi: CetakBill[], pasien: typeFormPasienBaru }) => {
-    let totalBill = billFarmasi.reduce((prev, next) => Number(prev) + Number(next.total), 0)
+const ModalPrintBillFarmasi = ({ billFarmasi, pasien }: { billFarmasi: CetakBill | undefined, pasien: typeFormPasienBaru }) => {
+    let totalBill = billFarmasi?.data.billPasienDetail.reduce((prev, next) => Number(prev) + Number(next.subTotal), 0)
     const styles = StyleSheet.create({
         page: {
-            fontSize: 12,
-            padding: 20,
-            flexDirection: 'column',
+            padding: 30,
         },
         header: {
-            textAlign: 'center',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
             marginBottom: 20,
+        },
+        companyInfo: {
+            width: '40%',
+        },
+        customerInfo: {
+            textAlign: 'right',
+            width: '60%',
+        },
+        logo: {
+            width: 100,
+            height: 100,
         },
         title: {
             fontSize: 24,
             marginBottom: 10,
+            textAlign: 'center',
         },
-        companyInfo: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginBottom: 20,
-        },
-        billingTable: {
-            display: 'flex',
-            width: 'auto',
-            borderStyle: 'solid',
-            borderWidth: 1,
-            borderRightWidth: 0,
-            borderBottomWidth: 0,
-        },
-        tableRow: {
-            margin: 'auto',
+        item: {
             flexDirection: 'row',
+            borderBottomWidth: 1,
+            borderBottomColor: '#ddd',
+            marginBottom: 5,
+            paddingBottom: 5,
         },
-        tableColHeader: {
-            width: '25%',
-            borderStyle: 'solid',
-            borderWidth: 1,
-            borderLeftWidth: 0,
-            borderTopWidth: 0,
-            backgroundColor: '#f2f2f2',
-            padding: 5,
-            textAlign: 'left',
+        itemName: {
+            width: '70%',
         },
-        tableCol: {
-            width: '25%',
-            borderStyle: 'solid',
-            borderWidth: 1,
-            borderLeftWidth: 0,
-            borderTopWidth: 0,
-            padding: 5,
-            textAlign: 'left',
+        itemPrice: {
+            textAlign: 'right',
+            width: '30%',
         },
-        totals: {
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-end',
+        total: {
+            fontSize: 18,
             marginTop: 20,
         },
-        totalRow: {
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            width: '50%',
-            borderStyle: 'solid',
-            borderWidth: 1,
-            borderLeftWidth: 0,
-            borderTopWidth: 0,
-            padding: 5,
-            backgroundColor: '#f2f2f2',
-        },
-        totalRowContent: {
-            width: '50%',
-            textAlign: 'right',
-        },
+
     });
     return (
         <dialog id="modal-print-bill-farmasi" className="modal">
@@ -95,53 +69,38 @@ const ModalPrintBillFarmasi = ({ billFarmasi, pasien }: { billFarmasi: CetakBill
                 </form>
                 <PDFViewer className="w-full h-80">
                     <Document>
-                        <Page size="A4" style={styles.page}>
+                        <Page style={styles.page}>
                             <View style={styles.header}>
-                                <Text style={styles.title}>Invoice Obat</Text>
-                            </View>
-                            <View style={styles.companyInfo}>
-                                <View>
-                                    <Text>PASIEN : {pasien.namaPasien} / {pasien.noRm}</Text>
-                                    <Text>ASAL : {pasien.kelurahanDomisili}</Text>
-                                    <Text>HP : {pasien.noHp}</Text>
+                                <View style={styles.companyInfo}>
+                                    {/* {company.logo && <Image style={styles.logo} src={company.logo} />}
+            <Text>{company.address}</Text>
+            <Text>{company.phone}</Text> */}
+                                </View>
+                                <View style={styles.customerInfo}>
+                                    <Text>Invoice No: {billFarmasi?.data.id}</Text>
+                                    <Text>Date: {billFarmasi?.data.id && format(new Date(billFarmasi?.data.createdAt), 'dd/MM/yyyy')}</Text>
+                                    <Text>{pasien.namaPasien}</Text>
+                                    <Text>{pasien.kelurahanDomisili}</Text>
                                 </View>
                             </View>
-                            <View style={styles.billingTable}>
-                                <View style={styles.tableRow}>
-                                    <Text style={styles.tableColHeader}>Deskripsi</Text>
-                                    <Text style={styles.tableColHeader}>Jumlah</Text>
-                                    <Text style={styles.tableColHeader}>Harga</Text>
-                                    <Text style={styles.tableColHeader}>Total</Text>
-                                </View>
-                                {billFarmasi.map((item) => {
-                                    return (
-                                        <View style={styles.tableRow} key={item.id}>
-                                            <Text style={styles.tableCol}>{item.deskripsi}</Text>
-                                            <Text style={styles.tableCol}>{item.jumlah}</Text>
-                                            <Text style={styles.tableCol}>{new Intl.NumberFormat('id-ID', {
-                                                style: 'currency',
-                                                currency: 'IDR',
-                                            }).format(Number(item.harga))}</Text>
-                                            <Text style={styles.tableCol}>{new Intl.NumberFormat('id-ID', {
-                                                style: 'currency',
-                                                currency: 'IDR',
-                                            }).format(Number(item.total))}</Text>
-                                        </View>
-
-                                    )
-                                })}
-
+                            <Text style={styles.title}>Invoice</Text>
+                            <View style={styles.item}>
+                                <Text style={styles.itemName}>Item</Text>
+                                <Text style={styles.itemPrice}>Sub Total</Text>
                             </View>
-                            <View style={styles.totals}>
-                                <View style={styles.totalRow}>
-                                    <Text>Total</Text>
-                                    <Text style={styles.totalRowContent}>{
-                                        new Intl.NumberFormat('id-ID', {
-                                            style: 'currency',
-                                            currency: 'IDR',
-                                        }).format(Number(totalBill))}</Text>
+                            {billFarmasi?.data.billPasienDetail.map((item) => (
+                                <View key={item.id} style={styles.item}>
+                                    <Text style={styles.itemName}>{item.deskripsi} {item.jumlah}@{item.harga}</Text>
+                                    <Text style={styles.itemPrice}>{new Intl.NumberFormat('id-ID', {
+                                        style: 'currency',
+                                        currency: 'IDR',
+                                    }).format(Number(item.subTotal))}</Text>
                                 </View>
-                            </View>
+                            ))}
+                            <Text style={styles.total}>Total: {new Intl.NumberFormat('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR',
+                            }).format(Number(totalBill))}</Text>
                         </Page>
                     </Document>
                 </PDFViewer>

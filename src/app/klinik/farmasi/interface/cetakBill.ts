@@ -1,12 +1,25 @@
 export interface CetakBill {
-    id: number
-    deskripsi: string
-    catatan: string | null
-    createdAt: Date
-    jenisBill: string
-    pendaftaranId: number | null
-    total: string
-    updatedAt: Date
-    jumlah: number
-    harga: string
+    status: boolean;
+    message: string;
+    data: {
+        id: number;
+        totalBill: number | null;
+        createdAt: string;
+        updatedAt: string;
+        pendaftaranId: number;
+        billPasienDetail: BillPasienDetail[];
+    };
+}
+
+interface BillPasienDetail {
+    id: number;
+    deskripsi: string;
+    jenisBill: string;
+    catatan: string | null;
+    jumlah: number;
+    harga: string;
+    subTotal: string;
+    createdAt: string;
+    updatedAt: string;
+    billPasienId: number;
 }
