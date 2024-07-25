@@ -12,38 +12,20 @@ const getData = async (idFasyankes: string) => {
         today.setHours(0, 0, 0, 0)
         const tomorrow = new Date(today)
         tomorrow.setDate(tomorrow.getDate() + 1)
-        const getDb = await prisma.pendaftaran.findMany({
+        const getDb = await prisma.episodePendaftaran.findMany({
             where: {
-                isClose: false,
-                // AND: [
-                //     { createdAt: { gte: today } },
-                //     { createdAt: { lt: tomorrow } },
-                // ],
+                AND: [
+                    { createdAt: { gte: today } },
+                    { createdAt: { lt: tomorrow } },
+                ],
                 idFasyankes
+            },
+            include: {
+                pasien: true
             },
             orderBy: {
                 id: 'desc',
             },
-            include: {
-                jadwal: {
-                    select: {
-                        dokter: true,
-                    },
-                },
-                episodePendaftaran: {
-                    select: {
-                        pasien: {
-                            select: {
-                                noRm: true,
-                                namaPasien: true,
-                                jenisKelamin: true,
-                                kelurahan: true,
-                                id: true
-                            }
-                        }
-                    }
-                },
-            }
         })
         return getDb
     } catch (error) {

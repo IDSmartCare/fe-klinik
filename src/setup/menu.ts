@@ -70,11 +70,11 @@ export const listMenu = [
                 title: "Tagihan Pasien",
                 url: "/klinik/kasir"
             },
-            {
-                id: 2,
-                title: "POS",
-                url: "/pos"
-            }
+            // {
+            //     id: 2,
+            //     title: "POS",
+            //     url: "/pos"
+            // }
         ]
     },
     {
