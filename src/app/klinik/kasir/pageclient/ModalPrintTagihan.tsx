@@ -1,11 +1,6 @@
 'use client'
-
 import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
-import { CetakBill } from "../interface/cetakBill"
 import dynamic from "next/dynamic";
-import { typeFormPasienBaru } from "../../pasien/interface/typeFormPasienBaru";
-import { format } from "date-fns";
-
 
 const PDFViewer = dynamic(
     () => import("@react-pdf/renderer").then((mod) => mod.PDFViewer),
@@ -14,8 +9,8 @@ const PDFViewer = dynamic(
         loading: () => <p>Loading...</p>,
     },
 );
-const ModalPrintBillFarmasi = ({ billFarmasi, pasien }: { billFarmasi: CetakBill | undefined, pasien: typeFormPasienBaru }) => {
-    let totalBill = billFarmasi?.data.billPasienDetail.reduce((prev, next) => Number(prev) + Number(next.subTotal), 0)
+const ModalPrintTagihan = ({ tagihan }: { tagihan: any }) => {
+    let totalBill = tagihan?.billPasienDetail.reduce((prev: any, next: any) => Number(prev) + Number(next.subTotal), 0)
     const styles = StyleSheet.create({
         page: {
             padding: 30,
@@ -62,7 +57,7 @@ const ModalPrintBillFarmasi = ({ billFarmasi, pasien }: { billFarmasi: CetakBill
 
     });
     return (
-        <dialog id="modal-print-bill-farmasi" className="modal">
+        <dialog id="modal-print-bill-kasir" className="modal">
             <div className="modal-box w-8/12 max-w-2xl">
                 <form method="dialog">
                     <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
@@ -70,8 +65,8 @@ const ModalPrintBillFarmasi = ({ billFarmasi, pasien }: { billFarmasi: CetakBill
                 <PDFViewer className="w-full h-80">
                     <Document>
                         <Page style={styles.page}>
-                            {/* <View style={styles.header}>
-                                <View style={styles.companyInfo}>
+                            <View style={styles.header}>
+                                {/* <View style={styles.companyInfo}>
                                     {company.logo && <Image style={styles.logo} src={company.logo} />}
             <Text>{company.address}</Text>
             <Text>{company.phone}</Text>
@@ -81,14 +76,14 @@ const ModalPrintBillFarmasi = ({ billFarmasi, pasien }: { billFarmasi: CetakBill
                                     <Text>Date: {billFarmasi?.data.id && format(new Date(billFarmasi?.data.createdAt), 'dd/MM/yyyy')}</Text>
                                     <Text>{pasien.namaPasien}</Text>
                                     <Text>{pasien.kelurahanDomisili}</Text>
-                                </View>
-                            </View> */}
-                            <Text style={styles.title}>Invoice Obat</Text>
+                                </View> */}
+                            </View>
+                            <Text style={styles.title}>Invoice Pasien</Text>
                             <View style={styles.item}>
                                 <Text style={styles.itemName}>Item</Text>
                                 <Text style={styles.itemPrice}>Sub Total</Text>
                             </View>
-                            {billFarmasi?.data.billPasienDetail.map((item) => (
+                            {tagihan?.billPasienDetail.map((item: any) => (
                                 <View key={item.id} style={styles.item}>
                                     <Text style={styles.itemName}>{item.deskripsi} {item.jumlah}@{item.harga}</Text>
                                     <Text style={styles.itemPrice}>{new Intl.NumberFormat('id-ID', {
@@ -109,4 +104,4 @@ const ModalPrintBillFarmasi = ({ billFarmasi, pasien }: { billFarmasi: CetakBill
     )
 }
 
-export default ModalPrintBillFarmasi
+export default ModalPrintTagihan

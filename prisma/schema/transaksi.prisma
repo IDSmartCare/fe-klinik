@@ -6,6 +6,7 @@ model BillPasien {
     updatedAt        DateTime           @updatedAt @db.Timestamptz
     Pendaftaran      Pendaftaran?       @relation(fields: [pendaftaranId], references: [id])
     pendaftaranId    Int?
+    status           String?            @db.VarChar(50)
     pembayaranBill   PembayaranPasien[]
 }
 
@@ -17,6 +18,8 @@ model PembayaranPasien {
     updatedAt    DateTime    @updatedAt @db.Timestamptz
     billPasien   BillPasien? @relation(fields: [billPasienId], references: [id])
     billPasienId Int?
+    totalDiskon  String?
+    totalPajak   String?
 }
 
 model BillPasienDetail {

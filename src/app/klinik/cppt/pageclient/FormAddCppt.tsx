@@ -167,7 +167,7 @@ const FormAddCppt = ({ idregis, idpasien, session }: { idregis: string, idpasien
                             <span className="label-text text-lg font-bold ">Resep</span>
                         </div>
                         <div className="flex flex-col gap-2">
-                            <AsyncSelect className="select-info w-full" required isClearable
+                            <AsyncSelect className="select-info w-full" isClearable
                                 name="obat" loadOptions={optionCariObat} defaultOptions
                                 onChange={(e) => onChangeObat(e)}
                                 placeholder="Cari obat"

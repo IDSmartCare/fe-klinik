@@ -148,8 +148,6 @@ const FormTransaksiResep = ({ data, session, soap, pendaftaranId, pasien }: {
 
     const cetakBill = async () => {
         const getDb: any = await getTransaksiFarmasi(pendaftaranId)
-        console.log(getDb);
-
         if (getDb.status) {
             ToastAlert({ icon: 'success', title: "Berhasil!" })
             setBillFarmasi(getDb)

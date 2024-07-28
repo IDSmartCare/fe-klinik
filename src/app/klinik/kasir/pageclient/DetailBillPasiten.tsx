@@ -1,17 +1,22 @@
 'use client'
 
 import { useEffect, useState } from "react"
-import { BillPasienDetail } from "../interface/typeBillingPasien"
+import { ToastAlert } from "@/app/helper/ToastAlert";
+import { actionPembayaran } from "./pembayaran";
 
-const DetailBillPasien = ({ detailBill }: { detailBill: BillPasienDetail[] }) => {
+const DetailBillPasien = ({ detailBill }: { detailBill: any }) => {
     const [discount, setDiscount] = useState('');
     const [taxRate, setTaxRate] = useState('');
     const [total, setTotal] = useState(0);
     const [subTotal, setSubTotal] = useState(0);
+    const [kembali, setKembali] = useState(0);
+    const [bayar, setBayar] = useState(0)
+    const [totalDiskon, setTotalDiskon] = useState(0)
+    const [totalPajak, setTotalPajak] = useState(0)
 
     useEffect(() => {
-        setSubTotal(detailBill.reduce((prev, next) => Number(prev) + Number(next.subTotal), 0))
-        setTotal(detailBill.reduce((prev, next) => Number(prev) + Number(next.subTotal), 0))
+        setSubTotal(detailBill?.billPasienDetail.reduce((prev: any, next: any) => Number(prev) + Number(next.subTotal), 0))
+        setTotal(detailBill?.billPasienDetail.reduce((prev: any, next: any) => Number(prev) + Number(next.subTotal), 0))
     }, [detailBill])
 
     const onChangeDiskon = (e: string) => {
@@ -24,16 +29,45 @@ const DetailBillPasien = ({ detailBill }: { detailBill: BillPasienDetail[] }) =>
     }
     const calcuLatorInvoice = (diskon: number, pajak: number) => {
         const discountAmount = subTotal * (diskon / 100);
+        setTotalDiskon(discountAmount)
         const discountedSubtotal = subTotal - discountAmount;
         const taxAmount = discountedSubtotal * (pajak / 100);
+        setTotalPajak(taxAmount)
         const newTotal = discountedSubtotal + taxAmount;
         setTotal(newTotal)
     }
+
+    const onChangeBayar = (e: string) => {
+        let jml = Number(e)
+        if (jml === 0) {
+            setKembali(0)
+        } else {
+            setBayar(Number(e))
+            let bayar = Number(e) - total
+            setKembali(bayar)
+        }
+    }
+    const onClickBayar = async () => {
+        if (bayar === 0) {
+            ToastAlert({ icon: 'error', title: 'Pembayaran harus diisi!' })
+        } else if (bayar < total) {
+            ToastAlert({ icon: 'error', title: 'Pembayaran harus lebih besar/sama dengan total tagihan!' })
+        } else {
+            const post = await actionPembayaran(detailBill.id, detailBill.pendaftaranId, bayar, total, totalDiskon, totalPajak)
+            if (post.status) {
+                ToastAlert({ icon: 'success', title: post.message as string })
+            } else {
+                ToastAlert({ icon: 'error', title: post.message as string })
+            }
+        }
+    }
+    // const cetakKwitansi=()=>{
+
+    // }
     return (
         <div>
             <div className="overflow-x-auto">
                 <table className="table table-sm">
-                    {/* head */}
                     <thead>
                         <tr>
                             <th></th>
@@ -44,7 +78,7 @@ const DetailBillPasien = ({ detailBill }: { detailBill: BillPasienDetail[] }) =>
                         </tr>
                     </thead>
                     <tbody>
-                        {detailBill.map((item, index) => (
+                        {detailBill.billPasienDetail.map((item: any, index: any) => (
 
                             <tr key={item.id}>
                                 <th>{index + 1}</th>
@@ -73,11 +107,11 @@ const DetailBillPasien = ({ detailBill }: { detailBill: BillPasienDetail[] }) =>
 
                         <tr className="font-semibold">
                             <td colSpan={4} className="text-right">Diskon %</td>
-                            <td><input type="text" value={discount} onChange={(e) => onChangeDiskon(e.target.value)} className="input input-sm input-primary" /></td>
+                            <td><input type="number" value={discount} onChange={(e) => onChangeDiskon(e.target.value)} className="input input-sm input-primary" /></td>
                         </tr>
                         <tr className="font-semibold">
                             <td colSpan={4} className="text-right">Pajak %</td>
-                            <td><input type="text" onChange={(e) => onChangePajak(e.target.value)} value={taxRate} className="input input-sm input-primary" /></td>
+                            <td><input type="number" onChange={(e) => onChangePajak(e.target.value)} value={taxRate} className="input input-sm input-primary" /></td>
                         </tr>
                         <tr className="font-semibold">
                             <td colSpan={4} className="text-right">Total</td>
@@ -88,8 +122,29 @@ const DetailBillPasien = ({ detailBill }: { detailBill: BillPasienDetail[] }) =>
                                 }).format(total)}</td>
                         </tr>
                         <tr className="font-semibold">
-                            <td colSpan={4} className="text-right">Bayar</td>
-                            <td><input type="number" className="input input-sm input-primary" /></td>
+                            <td colSpan={4} className="text-right">Jumlah Pembayaran</td>
+                            <td><input type="number" onChange={(e) => onChangeBayar(e.target.value)} className="input input-sm input-primary" /></td>
+                        </tr>
+                        <tr className="font-semibold">
+                            <td colSpan={4} className="text-right">Kembali</td>
+                            <td>
+                                {new Intl.NumberFormat('id-ID', {
+                                    style: 'currency',
+                                    currency: 'IDR',
+                                }).format(kembali)}</td>
+                        </tr>
+                        <tr>
+                            <td colSpan={5}>
+                                {
+                                    detailBill.status === "LUNAS" ?
+                                        <div className="flex flex-col gap-3 mt-5">
+                                            <button className="btn btn-success btn-sm">LUNAS</button>
+                                            {/* <button className="btn btn-info btn-sm" onClick={()=>cetakKwitansi()}>CETAK KWITANSI</button> */}
+                                        </div>
+                                        :
+                                        <button onClick={() => onClickBayar()} className="btn btn-primary btn-sm btn-block">BAYAR</button>
+                                }
+                            </td>
                         </tr>
                     </tbody>
                 </table>

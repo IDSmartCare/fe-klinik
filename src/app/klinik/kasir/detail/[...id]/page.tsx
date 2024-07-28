@@ -3,7 +3,7 @@ import DetailBillPasien from "../../pageclient/DetailBillPasiten";
 
 const getData = async (pendaftaranId: string) => {
     try {
-        const getDb = await prisma.billPasien.findMany({
+        const getDb = await prisma.billPasien.findFirst({
             where: {
                 pendaftaranId: Number(pendaftaranId)
             },
@@ -22,11 +22,7 @@ const DetailBilling = async ({ params }: { params: { id: any } }) => {
     const data = await getData(idRegis)
 
     return (
-        <div>
-            {data.map((item) => (
-                <DetailBillPasien key={item.id} detailBill={item.billPasienDetail} />
-            ))}
-        </div>
+        <DetailBillPasien detailBill={data} />
     )
 }
 

@@ -1,9 +1,21 @@
+'use client'
+
 import { format } from "date-fns";
 import AlertHeaderComponent from "../../setting/paramedis/components/AlertHeaderComponent";
 import Link from "next/link";
+import ModalPrintTagihan from "../pageclient/ModalPrintTagihan";
+import { useState } from "react";
+import { getBillingPasien } from "./getBillingPasien";
 
 const ListBillingPasien = ({ dataRegis }: { dataRegis: any }) => {
-
+    const [tagihan, setTagihan] = useState<any>()
+    const onClickPrint = async (id: string) => {
+        const getData: any = await getBillingPasien(Number(id))
+        setTagihan(getData.data)
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        const modal: any = document?.getElementById('modal-print-bill-kasir')
+        modal.showModal()
+    }
     return (
         <div className="flex flex-col gap-2">
             <AlertHeaderComponent message="List Tagihan Yang Ada!" />
@@ -17,12 +29,16 @@ const ListBillingPasien = ({ dataRegis }: { dataRegis: any }) => {
                             <p>Poli : {item.jadwal?.dokter.poliklinik?.namaPoli}</p>
                             <p>Dokter : {item.jadwal?.dokter.namaLengkap}</p>
                             <div className="card-actions justify-end">
-                                <Link href={`/klinik/kasir/detail/${item.id}`} className="btn btn-primary">Bayar</Link>
+                                <button className="btn btn-sm btn-info" onClick={() => onClickPrint(item?.id)}>CETAK TAGIHAN</button>
+                                {item?.penjamin === "PRIBADI" &&
+                                    <Link href={`/klinik/kasir/detail/${item.id}`} className="btn btn-sm btn-primary">BAYAR</Link>
+                                }
                             </div>
                         </div>
                     </div>
                 ))}
             </div>
+            <ModalPrintTagihan tagihan={tagihan} />
         </div>
     )
 }

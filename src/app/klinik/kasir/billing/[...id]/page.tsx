@@ -25,6 +25,9 @@ const getRegis = async (id: string, idFasyankes: string) => {
                 episodePendaftaranId: Number(id),
                 idFasyankes
             },
+            orderBy: {
+                id: 'desc'
+            },
             include: {
                 jadwal: {
                     include: {
