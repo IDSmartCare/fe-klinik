@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react"
 import { ToastAlert } from "@/app/helper/ToastAlert";
 import { actionPembayaran } from "./pembayaran";
+import { getBillingDetail } from "./getBilling";
+import ModalPrintKwintansi from "./ModalPrintKwitansi";
 
 const DetailBillPasien = ({ detailBill }: { detailBill: any }) => {
     const [discount, setDiscount] = useState('');
@@ -13,6 +15,7 @@ const DetailBillPasien = ({ detailBill }: { detailBill: any }) => {
     const [bayar, setBayar] = useState(0)
     const [totalDiskon, setTotalDiskon] = useState(0)
     const [totalPajak, setTotalPajak] = useState(0)
+    const [billData, setBillData] = useState<any>()
 
     useEffect(() => {
         setSubTotal(detailBill?.billPasienDetail.reduce((prev: any, next: any) => Number(prev) + Number(next.subTotal), 0))
@@ -53,7 +56,8 @@ const DetailBillPasien = ({ detailBill }: { detailBill: any }) => {
         } else if (bayar < total) {
             ToastAlert({ icon: 'error', title: 'Pembayaran harus lebih besar/sama dengan total tagihan!' })
         } else {
-            const post = await actionPembayaran(detailBill.id, detailBill.pendaftaranId, bayar, total, totalDiskon, totalPajak)
+            const post = await actionPembayaran(detailBill.id, detailBill.pendaftaranId,
+                bayar, total, totalDiskon, totalPajak, kembali)
             if (post.status) {
                 ToastAlert({ icon: 'success', title: post.message as string })
             } else {
@@ -61,9 +65,17 @@ const DetailBillPasien = ({ detailBill }: { detailBill: any }) => {
             }
         }
     }
-    // const cetakKwitansi=()=>{
-
-    // }
+    const cetakKwitansi = async (billId: number) => {
+        const get = await getBillingDetail(billId)
+        if (get.status) {
+            setBillData(get.data)
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            const modal: any = document?.getElementById('modal-print-bill-pasien')
+            modal.showModal()
+        } else {
+            ToastAlert({ icon: 'error', title: get.message as string })
+        }
+    }
     return (
         <div>
             <div className="overflow-x-auto">
@@ -139,7 +151,7 @@ const DetailBillPasien = ({ detailBill }: { detailBill: any }) => {
                                     detailBill.status === "LUNAS" ?
                                         <div className="flex flex-col gap-3 mt-5">
                                             <button className="btn btn-success btn-sm">LUNAS</button>
-                                            {/* <button className="btn btn-info btn-sm" onClick={()=>cetakKwitansi()}>CETAK KWITANSI</button> */}
+                                            <button className="btn btn-info btn-sm" onClick={() => cetakKwitansi(detailBill.id)}>CETAK KWITANSI</button>
                                         </div>
                                         :
                                         <button onClick={() => onClickBayar()} className="btn btn-primary btn-sm btn-block">BAYAR</button>
@@ -149,6 +161,7 @@ const DetailBillPasien = ({ detailBill }: { detailBill: any }) => {
                     </tbody>
                 </table>
             </div>
+            <ModalPrintKwintansi tagihan={billData} />
         </div>
     )
 }

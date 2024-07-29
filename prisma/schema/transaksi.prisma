@@ -20,6 +20,7 @@ model PembayaranPasien {
     billPasienId Int?
     totalDiskon  String?
     totalPajak   String?
+    kembalian    String?
 }
 
 model BillPasienDetail {

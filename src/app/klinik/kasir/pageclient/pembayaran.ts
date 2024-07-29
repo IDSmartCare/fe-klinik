@@ -4,7 +4,7 @@ import prisma from "@/db"
 import { revalidatePath } from "next/cache"
 
 export async function actionPembayaran(billId: number, pendaftaranId: number, totalBayar: number,
-    totalBill: number, totalDiskon: number, totalPajak: number) {
+    totalBill: number, totalDiskon: number, totalPajak: number, kembali: number) {
     try {
         const post = await prisma.$transaction(async (tx) => {
             const payment = await tx.pembayaranPasien.create({
@@ -13,7 +13,8 @@ export async function actionPembayaran(billId: number, pendaftaranId: number, to
                     tglBayar: new Date(),
                     totalBayar: totalBayar.toString(),
                     totalDiskon: totalDiskon.toString(),
-                    totalPajak: totalPajak.toString()
+                    totalPajak: totalPajak.toString(),
+                    kembalian: kembali.toString()
                 }
             })
             await tx.billPasien.update({
