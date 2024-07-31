@@ -36,3 +36,18 @@ model BillPasienDetail {
     billPasien   BillPasien? @relation(fields: [billPasienId], references: [id])
     billPasienId Int?
 }
+
+model TransaksiPOS {
+    id               Int      @id @default(autoincrement())
+    barangId         String   @db.VarChar(100)
+    namaBarang       String   @db.VarChar(100)
+    groupTransaksiId String   @db.VarChar(100)
+    hargaJual        String?  @db.VarChar(100)
+    qty              Int?
+    subTotal         String?  @db.VarChar(100)
+    emailPelanggan   String?  @db.VarChar(100)
+    namaPelanggan    String?  @db.VarChar(100)
+    hpPelanggan      String?  @db.VarChar(100)
+    createdAt        DateTime @default(now()) @db.Timestamptz
+    updatedAt        DateTime @updatedAt @db.Timestamptz
+}
