@@ -93,7 +93,17 @@ export const listMenu = [
                 id: 1,
                 title: "Jadwal Dokter",
                 url: "/klinik/setting/paramedis/jadwaldokter"
-            }
+            },
+            {
+                id: 2,
+                title: "Master Tarif",
+                url: "/klinik/setting/mastertarif"
+            },
+            {
+                id: 3,
+                title: "User Login",
+                url: "#"
+            },
         ]
     },
 ]
