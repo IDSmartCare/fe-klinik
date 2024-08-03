@@ -3,6 +3,7 @@ import AlertHeaderComponent from "../paramedis/components/AlertHeaderComponent"
 import prisma from "@/db"
 import { getServerSession } from "next-auth"
 import { authOption } from "@/auth"
+import TarifTableColumn from "./TarifTableColumn"
 
 const getTarif = async (idFasyankes: string) => {
     try {
@@ -21,12 +22,11 @@ const getTarif = async (idFasyankes: string) => {
 const MasterTarif = async () => {
     const session = await getServerSession(authOption)
     const tarif = await getTarif(session?.user.idFasyankes)
-    console.log(tarif);
 
     return (
         <>
             <AlertHeaderComponent message="List Tarif" />
-            <TableFilterComponent rowsData={[]} columnsData={[]} />
+            <TableFilterComponent rowsData={tarif} columnsData={TarifTableColumn} />
         </>
     )
 }
