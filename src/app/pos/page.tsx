@@ -185,6 +185,18 @@ const PagePos = () => {
                 </div>
                 <div className="w-1/3">
                     <div className="flex flex-col bg-base-200 min-h-screen p-2 gap-2">
+                        <div className="flex items-center justify-between">
+                            <p className="font-medium label-text">Nama</p>
+                            <input type="text" value={namaPelanggan} onChange={(e) => setNamaPelanggan(e.target.value)} className="input input-bordered w-full max-w-xs" />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <p className="font-medium label-text">No HP</p>
+                            <input type="number" value={hpPelanggan} onChange={(e) => setHpPelanggan(e.target.value)} className="input input-bordered w-full max-w-xs" />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <p className="font-medium label-text">Email</p>
+                            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="input input-bordered w-full max-w-xs" />
+                        </div>
                         <table className="table">
                             <thead>
                                 <tr>
@@ -237,18 +249,7 @@ const PagePos = () => {
                                 <p className="font-medium label-text">Biaya Lainnya</p>
                                 <input type="number" value={biayaLain} onChange={(e) => onChangeBiayaLain(e.target.value)} className="input input-bordered w-full max-w-xs" />
                             </div>
-                            <div className="flex items-center justify-between">
-                                <p className="font-medium label-text">Nama</p>
-                                <input type="text" value={namaPelanggan} onChange={(e) => setNamaPelanggan(e.target.value)} className="input input-bordered w-full max-w-xs" />
-                            </div>
-                            <div className="flex items-center justify-between">
-                                <p className="font-medium label-text">No HP</p>
-                                <input type="number" value={hpPelanggan} onChange={(e) => setHpPelanggan(e.target.value)} className="input input-bordered w-full max-w-xs" />
-                            </div>
-                            <div className="flex items-center justify-between">
-                                <p className="font-medium label-text">Email</p>
-                                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="input input-bordered w-full max-w-xs" />
-                            </div>
+
                             <div>
                                 <button onClick={() => onBayar()} className="btn btn-info btn-block">BAYAR  {
                                     new Intl.NumberFormat('id-ID', {
