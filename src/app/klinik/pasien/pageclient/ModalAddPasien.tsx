@@ -31,6 +31,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
     const [listKecamatanDomisili, setListKecamatanDomisili] = useState<{ label: string, value: string }[]>([])
     const [listKelurahanDomisili, setListKelurahanDomisili] = useState<{ label: string, value: string }[]>([])
     const [listProvinsi, setListProvinsi] = useState<{ label: string, value: string }[]>([])
+    const [showNik, setShowNik] = useState(true)
 
     useEffect(() => {
         const getProv = async () => {
@@ -235,6 +236,15 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
             setListKelurahanDomisili([])
         }
     }
+
+    const onChangeWNI = (e: any) => {
+        const value = e.target.value
+        if (value === "WNI") {
+            setShowNik(true)
+        } else {
+            setShowNik(false)
+        }
+    }
     return (
         <div className="self-end">
             <ButtonModalComponent icon={icon.add} modalname="add-pasien" title="Pasien Baru" />
@@ -262,15 +272,17 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                     </label>
                                 }
                             </div>
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">NIK</span>
+                            {showNik &&
+                                <div className="form-control w-full max-w-xs">
+                                    <div className="label">
+                                        <span className="label-text">NIK</span>
+                                    </div>
+                                    <input type="number" {...register("nik", {
+                                        minLength: { value: 16, message: "Harus 16 digit" },
+                                        maxLength: { value: 16, message: "Harus 16 digit" },
+                                    })} className="input input-primary w-full input-sm max-w-xs" />
                                 </div>
-                                <input type="number" {...register("nik", {
-                                    minLength: { value: 16, message: "Harus 16 digit" },
-                                    maxLength: { value: 16, message: "Harus 16 digit" },
-                                })} className="input input-primary w-full input-sm max-w-xs" />
-                            </div>
+                            }
                             {errors.nik &&
                                 <label className="label">
                                     <span className="label-text-alt text-error">{errors.nik.message}</span>
@@ -288,12 +300,14 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                 </div>
                                 <input type="text" {...register("noAsuransi")} className="input input-primary w-full input-sm max-w-xs" />
                             </div>
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">No. Paspor</span>
+                            {!showNik &&
+                                <div className="form-control w-full max-w-xs">
+                                    <div className="label">
+                                        <span className="label-text">No. Paspor</span>
+                                    </div>
+                                    <input type="text" {...register("paspor")} className="input input-primary w-full input-sm max-w-xs" />
                                 </div>
-                                <input type="text" {...register("paspor")} className="input input-primary w-full input-sm max-w-xs" />
-                            </div>
+                            }
                             <div className="form-control w-full max-w-xs">
                                 <div className="label">
                                     <span className="label-text">HP</span>
@@ -394,7 +408,12 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                 <div className="label">
                                     <span className="label-text">Bahasa</span>
                                 </div>
-                                <input type="text" {...register("bahasa")} className="input input-primary w-full input-sm max-w-xs" />
+                                <div className="flex gap-2 ml-2">
+                                    <span className="label-text">Indonesia</span>
+                                    <input type="radio" {...register("bahasa")} value={"Indonesia"} defaultChecked className="radio radio-primary" />
+                                    <span className="label-text">Inggris</span>
+                                    <input type="radio" {...register("bahasa")} value={"Inggris"} className="radio radio-primary" />
+                                </div>
                             </div>
 
                         </div>
@@ -404,7 +423,17 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                 <div className="label">
                                     <span className="label-text">Warganegara</span>
                                 </div>
-                                <input type="text" {...register("wargaNegara")} className="input input-primary w-full input-sm max-w-xs" />
+                                <div className="flex items-center gap-2 ml-1">
+                                    <span className="label-text">Indonesia</span>
+                                    <input type="radio" {...register("wargaNegara", { required: "*Tidak boleh kosong" })} value={"WNI"} onChange={onChangeWNI} className="radio radio-primary" />
+                                    <span className="label-text">Asing</span>
+                                    <input type="radio" {...register("wargaNegara", { required: "*Tidak boleh kosong" })} value={"WNA"} onChange={onChangeWNI} className="radio radio-primary" />
+                                </div>
+                                {errors.wargaNegara &&
+                                    <label className="label">
+                                        <span className="label-text-alt text-error">{errors.wargaNegara.message?.toString()}</span>
+                                    </label>
+                                }
                             </div>
                             <div className="form-control w-full max-w-xs">
                                 <div className="label">

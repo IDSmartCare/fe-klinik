@@ -179,8 +179,15 @@ const FormAddCppt = ({ idregis, idpasien, session }: { idregis: string, idpasien
                                 {'X'}
                                 <input type="text" onChange={(e) => setSigna2(e.target.value)} value={signa2} placeholder="Signa 2" className="input input-sm input-primary w-1/3" />
                             </div>
-                            <input type="text" onChange={(e) => setAturanPakai(e.target.value)} value={aturanPakai} placeholder="Aturan Pakai" className="input input-sm input-primary" />
-                            <input type="text" onChange={(e) => setWaktu(e.target.value)} value={waktu} placeholder="Waktu" className="input input-sm input-primary" />
+                            <select className="select select-primary w-full select-sm" onChange={(e) => setAturanPakai(e.target.value)} value={aturanPakai} >
+                                <option value={"Sebelum Makan"}>Sebelum Makan</option>
+                                <option value={"Sesudah Makan"}>Sesudah Makan</option>
+                            </select>
+                            <select className="select select-primary w-full select-sm" onChange={(e) => setWaktu(e.target.value)} value={waktu}>
+                                <option value={"Pagi"}>Pagi</option>
+                                <option value={"Siang"}>Siang</option>
+                                <option value={"Malam"}>Malam</option>
+                            </select>
                             <textarea onChange={(e) => setCatatan(e.target.value)} placeholder="Catatan" className="textarea textarea-primary" value={catatan}></textarea>
                             <button onClick={() => onClickResep()} className="btn btn-sm btn-warning" type="button">Tambah</button>
                         </div>
@@ -197,6 +204,7 @@ const FormAddCppt = ({ idregis, idpasien, session }: { idregis: string, idpasien
                                         <p className="font-medium">{item.namaObat} ({item.signa1}X{item.signa2})</p>
                                         <p>{item.aturanPakai}</p>
                                         <p>{item.waktu}</p>
+                                        <p>{item.catatan}</p>
                                     </div>
                                     <button type="button" onClick={() => removeResep(index)} className="btn btn-error btn-circle btn-sm">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
