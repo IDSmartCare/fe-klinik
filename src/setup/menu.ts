@@ -102,7 +102,7 @@ export const listMenu = [
             {
                 id: 3,
                 title: "User Login",
-                url: "#"
+                url: "/klinik/setting/userlogin"
             },
         ]
     },
