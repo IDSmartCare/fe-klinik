@@ -9,6 +9,7 @@ import Select from 'react-select'
 import { useEffect, useId, useState } from "react"
 import { createPasien } from "../action"
 import { Session } from "next-auth"
+import AlertHeaderComponent from "../../setting/paramedis/components/AlertHeaderComponent"
 
 const ModalAddPasien = ({ session }: { session: Session | null }) => {
     const uuid = useId()
@@ -253,549 +254,626 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                     <form method="dialog">
                         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
-                    <h3 className="font-bold text-lg">Tambah Pasien Baru</h3>
-                    <form onSubmit={handleSubmit(onSubmit)} className="flex gap-2">
-                        <div className="flex-1">
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">Nama Pasien</span>
-                                </div>
-                                <input type="text" {...register("namaPasien", {
-                                    required: "*Tidak boleh kosong", pattern: {
-                                        value: /^[a-zA-Z\s]+$/,
-                                        message: 'Nama tidak valid'
-                                    }
-                                })} className="input input-primary w-full input-sm max-w-xs" />
-                                {errors.namaPasien &&
-                                    <label className="label">
-                                        <span className="label-text-alt text-error">{errors.namaPasien.message}</span>
-                                    </label>
-                                }
-                            </div>
-                            {showNik &&
-                                <div className="form-control w-full max-w-xs">
-                                    <div className="label">
-                                        <span className="label-text">NIK</span>
-                                    </div>
-                                    <input type="number" {...register("nik", {
-                                        minLength: { value: 16, message: "Harus 16 digit" },
-                                        maxLength: { value: 16, message: "Harus 16 digit" },
-                                    })} className="input input-primary w-full input-sm max-w-xs" />
-                                </div>
-                            }
-                            {errors.nik &&
-                                <label className="label">
-                                    <span className="label-text-alt text-error">{errors.nik.message}</span>
-                                </label>
-                            }
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">No. BPJS</span>
-                                </div>
-                                <input type="number" {...register("bpjs")} className="input input-primary w-full input-sm max-w-xs" />
-                            </div>
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">No. Asuransi Lain</span>
-                                </div>
-                                <input type="text" {...register("noAsuransi")} className="input input-primary w-full input-sm max-w-xs" />
-                            </div>
-                            {!showNik &&
-                                <div className="form-control w-full max-w-xs">
-                                    <div className="label">
-                                        <span className="label-text">No. Paspor</span>
-                                    </div>
-                                    <input type="text" {...register("paspor")} className="input input-primary w-full input-sm max-w-xs" />
-                                </div>
-                            }
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">HP</span>
-                                </div>
-                                <input type="number" {...register("noHp", { required: "*Tidak boleh kosong" })} className="input input-primary w-full input-sm max-w-xs" />
-                                {errors.noHp &&
-                                    <label className="label">
-                                        <span className="label-text-alt text-error">{errors.noHp.message}</span>
-                                    </label>
-                                }
-                            </div>
-                        </div>
-                        <div className="flex-1">
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">Tempat Lahir</span>
-                                </div>
-                                <input type="text" {...register("tempatLahir", { required: "*Tidak boleh kosong" })} className="input input-primary w-full input-sm max-w-xs" />
-                                {errors.tempatLahir &&
-                                    <label className="label">
-                                        <span className="label-text-alt text-error">{errors.tempatLahir.message}</span>
-                                    </label>
-                                }
-                            </div>
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">Tgl. Lahir</span>
-                                </div>
-                                <input type="date" {...register("tanggalLahir", { required: "*Tidak boleh kosong" })} className="input input-primary w-full input-sm max-w-xs" />
-                                {errors.tanggalLahir &&
-                                    <label className="label">
-                                        <span className="label-text-alt text-error">{errors.tanggalLahir.message}</span>
-                                    </label>
-                                }
-                            </div>
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">Jenis Kelamin</span>
-                                </div>
-                                <div className="flex gap-2 ml-2">
-                                    <span className="label-text">Laki-Laki</span>
-                                    <input type="radio" {...register("jenisKelamin", { required: "*Tidak boleh kosong" })} value={"L"} className="radio radio-primary" />
-                                    <span className="label-text">Perempuan</span>
-                                    <input type="radio" {...register("jenisKelamin", { required: "*Tidak boleh kosong" })} value={"P"} className="radio radio-primary" />
-                                </div>
-                                {errors.jenisKelamin &&
-                                    <label className="label">
-                                        <span className="label-text-alt text-error">{errors.jenisKelamin.message}</span>
-                                    </label>
-                                }
-                            </div>
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">Status Menikah</span>
-                                </div>
-                                <Controller
-                                    name="statusMenikah"
-                                    control={control}
-                                    rules={{
-                                        required: "*Tidak boleh kosong"
-                                    }}
-                                    render={({ field }) => <Select
-                                        {...field}
-                                        isClearable
-                                        instanceId={uuid}
-                                        options={[
-                                            { value: "BELUM_KAWIN", label: "BELUM KAWIN" },
-                                            { value: "KAWIN", label: "KAWIN" },
-                                            { value: "CERAI_HIDUP", label: "CERAI HIDUP" },
-                                            { value: "CERAI_MATI", label: "CERAI MATI" },
-                                        ]}
-                                    />}
-                                />
-                                {errors.statusMenikah &&
-                                    <label className="label">
-                                        <span className="label-text-alt text-error">{errors.statusMenikah.message?.toString()}</span>
-                                    </label>
-                                }
-                            </div>
-
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">Nama Ibu</span>
-                                </div>
-                                <input type="text" {...register("ibuKandung", {
-                                    required: "*Tidak boleh kosong", pattern: {
-                                        value: /^[a-zA-Z\s]+$/,
-                                        message: 'Nama tidak valid'
-                                    }
-                                })} className="input input-primary w-full input-sm max-w-xs" />
-                                {errors.ibuKandung &&
-                                    <label className="label">
-                                        <span className="label-text-alt text-error">{errors.ibuKandung.message}</span>
-                                    </label>
-                                }
-                            </div>
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">Bahasa</span>
-                                </div>
-                                <div className="flex gap-2 ml-2">
-                                    <span className="label-text">Indonesia</span>
-                                    <input type="radio" {...register("bahasa")} value={"Indonesia"} defaultChecked className="radio radio-primary" />
-                                    <span className="label-text">Inggris</span>
-                                    <input type="radio" {...register("bahasa")} value={"Inggris"} className="radio radio-primary" />
-                                </div>
-                            </div>
-
-                        </div>
-                        <div className="flex-1">
-
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">Warganegara</span>
-                                </div>
-                                <div className="flex items-center gap-2 ml-1">
-                                    <span className="label-text">Indonesia</span>
-                                    <input type="radio" {...register("wargaNegara", { required: "*Tidak boleh kosong" })} value={"WNI"} onChange={onChangeWNI} className="radio radio-primary" />
-                                    <span className="label-text">Asing</span>
-                                    <input type="radio" {...register("wargaNegara", { required: "*Tidak boleh kosong" })} value={"WNA"} onChange={onChangeWNI} className="radio radio-primary" />
-                                </div>
-                                {errors.wargaNegara &&
-                                    <label className="label">
-                                        <span className="label-text-alt text-error">{errors.wargaNegara.message?.toString()}</span>
-                                    </label>
-                                }
-                            </div>
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">Pendidikan</span>
-                                </div>
-                                <Controller
-                                    name="pendidikan"
-                                    control={control}
-                                    rules={{
-                                        required: "*Tidak boleh kosong"
-                                    }}
-                                    render={({ field }) => <Select
-                                        {...field}
-                                        isClearable
-                                        instanceId={uuid}
-                                        options={[
-                                            { value: "TS", label: "TIDAK SEKOLAH" },
-                                            { value: "SD", label: "SD" },
-                                            { value: "SMP", label: "SMP SEDERAJAT" },
-                                            { value: "SMA", label: "SMA SEDERAJAT" },
-                                            { value: "D1", label: "D1-D3 SEDERAJAT" },
-                                            { value: "D4", label: "D4" },
-                                            { value: "S1", label: "S1" },
-                                            { value: "S2", label: "S2" },
-                                            { value: "S3", label: "S3" },
-                                        ]}
-                                    />}
-                                />
-                                {errors.pendidikan &&
-                                    <label className="label">
-                                        <span className="label-text-alt text-error">{errors.pendidikan.message?.toString()}</span>
-                                    </label>
-                                }
-                            </div>
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">Agama</span>
-                                </div>
-                                <Controller
-                                    name="agama"
-                                    control={control}
-                                    rules={{
-                                        required: "*Tidak boleh kosong",
-                                        onChange: (e) => onChangeAgama(e)
-                                    }}
-                                    render={({ field }) => <Select
-                                        {...field}
-                                        instanceId={uuid}
-                                        options={[
-                                            { value: "ISLAM", label: "ISLAM" },
-                                            { value: "KRISTEN", label: "KRISTEN (PROTESTAN)" },
-                                            { value: "KATOLIK", label: "KATOLIK" },
-                                            { value: "HINDU", label: "HINDU" },
-                                            { value: "BUDHA", label: "BUDHA" },
-                                            { value: "KONGHUCU", label: "KONGHUCU" },
-                                            { value: "PENGHAYAT", label: "PENGHAYAT" },
-                                            { value: "LAINNYA", label: "LAIN-LAIN" },
-                                        ]}
-                                    />}
-                                />
-                                {errors.agama &&
-                                    <label className="label">
-                                        <span className="label-text-alt text-error">{errors.agama.message?.toString()}</span>
-                                    </label>
-                                }
-                            </div>
-                            {agamaLainnya &&
-                                <div className="form-control w-full max-w-xs">
-                                    <div className="label">
-                                        <span className="label-text">Lainnya</span>
-                                    </div>
-                                    <input type="text" value={textAgamaLain} onChange={(e) => setTextAgamaLain(e.target.value)} className="input input-primary w-full input-sm max-w-xs" />
-                                </div>
-                            }
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">Pekerjaan</span>
-                                </div>
-                                <Controller
-                                    name="pekerjaan"
-                                    control={control}
-                                    rules={{
-                                        required: "*Tidak boleh kosong",
-                                        onChange: (e) => onChangePekerjaan(e)
-                                    }}
-                                    render={({ field }) => <Select
-                                        {...field}
-                                        instanceId={uuid}
-                                        options={[
-                                            { value: "TIDAK_BEKERJA", label: "TIDAK BEKERJA" },
-                                            { value: "PNS", label: "PNS" },
-                                            { value: "TNI/POLRI", label: "TNI/POLRI" },
-                                            { value: "BUMN", label: "BUMN" },
-                                            { value: "SWASTA", label: "PEGAWAI SWASTA / WIRAUSAHA" },
-                                            { value: "LAINNYA", label: "LAIN-LAIN" },
-                                        ]}
-                                    />}
-                                />
-                                {errors.pekerjaan &&
-                                    <label className="label">
-                                        <span className="label-text-alt text-error">{errors.pekerjaan.message?.toString()}</span>
-                                    </label>
-                                }
-                            </div>
-                            {pekerjaanLainnya &&
-                                <div className="form-control w-full max-w-xs">
-                                    <div className="label">
-                                        <span className="label-text">Lainnya</span>
-                                    </div>
-                                    <input type="text" value={textPekerjaanLain} onChange={(e) => setTextPekerjaanLain(e.target.value)} className="input input-primary w-full input-sm max-w-xs" />
-                                </div>
-                            }
-
-                        </div>
-                        <div className="flex-1">
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">Alamat KTP</span>
-                                </div>
-                                <input type="text" {...register("alamat", { required: "*Tidak boleh kosong" })} className="input input-primary w-full input-sm max-w-xs" />
-                                {errors.alamat &&
-                                    <label className="label">
-                                        <span className="label-text-alt text-error">{errors.alamat.message}</span>
-                                    </label>
-                                }
-                            </div>
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">RT / RW</span>
-                                </div>
-                                <div className="flex gap-2">
-                                    <input type="number" {...register("rt", { required: "*RT Tidak boleh kosong" })} className="input input-primary w-full input-sm max-w-xs" />
-                                    <input type="number" {...register("rw", { required: "*RW Tidak boleh kosong" })} className="input input-primary w-full input-sm max-w-xs" />
-                                </div>
-                                <div className="flex">
-
-                                    {errors.rt &&
-                                        <label className="label">
-                                            <span className="label-text-alt text-error">{errors.rt.message}</span>
-                                        </label>
-                                    }
-                                    {errors.rw &&
-                                        <label className="label">
-                                            <span className="label-text-alt text-error">{errors.rw.message}</span>
-                                        </label>
-                                    }
-                                </div>
-                            </div>
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">Provinsi</span>
-                                </div>
-                                <Controller
-                                    name="provinsi"
-                                    control={control}
-                                    rules={{
-                                        required: "*Tidak boleh kosong",
-                                        onChange: (e) => { onChangeProvinsi(e.target.value) }
-                                    }}
-                                    render={({ field }) => <Select
-                                        {...field}
-                                        isClearable
-                                        instanceId={uuid}
-                                        options={listProvinsi}
-                                    />}
-                                />
-                                {errors.provinsi &&
-                                    <label className="label">
-                                        <span className="label-text-alt text-error">{errors.provinsi.message?.toString()}</span>
-                                    </label>
-                                }
-                            </div>
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">Kota / Kab</span>
-                                </div>
-                                <Controller
-                                    name="kota"
-                                    control={control}
-                                    rules={{
-                                        required: "*Tidak boleh kosong",
-                                        onChange: (e) => { onChangeKota(e.target.value) }
-                                    }}
-                                    render={({ field }) => <Select
-                                        {...field}
-                                        isClearable
-                                        instanceId={uuid}
-                                        options={listKota}
-                                    />}
-                                />
-                                {errors.kota &&
-                                    <label className="label">
-                                        <span className="label-text-alt text-error">{errors.kota.message?.toString()}</span>
-                                    </label>
-                                }
-                            </div>
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">Kecamatan</span>
-                                </div>
-                                <Controller
-                                    name="kecamatan"
-                                    control={control}
-                                    rules={{
-                                        required: "*Tidak boleh kosong",
-                                        onChange: (e) => { onChangeKecamatan(e.target.value) }
-                                    }}
-                                    render={({ field }) => <Select
-                                        {...field}
-                                        isClearable
-                                        instanceId={uuid}
-                                        options={listKecamatan}
-                                    />}
-                                />
-                                {errors.kecamatan &&
-                                    <label className="label">
-                                        <span className="label-text-alt text-error">{errors.kecamatan.message?.toString()}</span>
-                                    </label>
-                                }
-                            </div>
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">Kelurahan</span>
-                                </div>
-                                <Controller
-                                    name="kelurahan"
-                                    control={control}
-                                    rules={{
-                                        required: "*Tidak boleh kosong"
-                                    }}
-                                    render={({ field }) => <Select
-                                        {...field}
-                                        isClearable
-                                        instanceId={uuid}
-                                        options={listKelurahan}
-                                    />}
-                                />
-                                {errors.kelurahan &&
-                                    <label className="label">
-                                        <span className="label-text-alt text-error">{errors.kelurahan.message?.toString()}</span>
-                                    </label>
-                                }
-                            </div>
-                            <div className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">Kode Pos</span>
-                                </div>
-                                <input type="number" {...register("kodePos", {
-                                    required: "*Tidak boleh kosong",
-                                    maxLength: { value: 6, message: "Max 6 digit" }
-                                })} className="input input-primary w-full input-sm max-w-xs" />
-                            </div>
-                            {errors.kodePos &&
-                                <label className="label">
-                                    <span className="label-text-alt text-error">{errors.kodePos.message?.toString()}</span>
-                                </label>
-                            }
-                        </div>
-                        <div className="flex-1">
+                    <div className="flex flex-col mt-5">
+                        <div className="flex justify-between items-center">
+                            <h3 className="font-bold text-lg">Tambah Pasien Baru</h3>
                             <label className="label cursor-pointer">
-                                <span className="label-text">Domisili Sesuai Dengan KTP</span>
+                                <span className="label-text font-bold text-lg mr-2">Domisili Sesuai Dengan KTP</span>
                                 <input type="checkbox" onChange={() => setDomisili(!domisili)} checked={domisili} className="checkbox checkbox-primary" />
                             </label>
-                            {!domisili &&
-                                <>
-                                    <div className="form-control w-full max-w-xs">
-                                        <div className="label">
-                                            <span className="label-text">Alamat Domisili</span>
-                                        </div>
+                        </div>
 
-                                        <input type="text" {...register("alamatDomisili")} className="input input-primary w-full input-sm max-w-xs" />
-                                    </div>
-                                    <div className="form-control w-full max-w-xs">
-                                        <div className="label">
-                                            <span className="label-text">RT / RW Domisili</span>
+                    </div>
+                    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
+                        <AlertHeaderComponent message="Identitas Pasien" />
+                        <div className="flex gap-2">
+                            <div className="flex flex-col gap-2 w-1/2">
+                                <div className="flex flex-col ">
+                                    <div className="flex">
+                                        <div className="label w-1/3">
+                                            <span className="label-text">Nama Pasien</span>
                                         </div>
-                                        <div className="flex gap-2">
-                                            <input type="number" {...register("rtDomisili")} className="input input-primary w-full input-sm max-w-xs" />
-                                            <input type="number" {...register("rwDomisili")} className="input input-primary w-full input-sm max-w-xs" />
+                                        <input type="text" {...register("namaPasien", {
+                                            required: "*Tidak boleh kosong", pattern: {
+                                                value: /^[a-zA-Z\s]+$/,
+                                                message: 'Nama tidak valid'
+                                            }
+                                        })} className="input input-primary w-full input-sm" />
+                                    </div>
+                                    {errors.namaPasien &&
+                                        <label className="label">
+                                            <span className="label-text-alt text-error">{errors.namaPasien.message}</span>
+                                        </label>
+                                    }
+                                </div>
+                                <div className="flex flex-col">
+                                    <div className="flex">
+                                        <div className="label w-1/3">
+                                            <span className="label-text">Tempat Lahir</span>
+                                        </div>
+                                        <input type="text" {...register("tempatLahir", { required: "*Tidak boleh kosong" })} className="input input-primary w-full input-sm" />
+                                    </div>
+                                    {errors.tempatLahir &&
+                                        <label className="label">
+                                            <span className="label-text-alt text-error">{errors.tempatLahir.message}</span>
+                                        </label>
+                                    }
+                                </div>
+                                <div className="flex flex-col">
+                                    <div className="flex">
+                                        <div className="label w-1/3">
+                                            <span className="label-text">Tanggal Lahir</span>
+                                        </div>
+                                        <input type="date" {...register("tanggalLahir", { required: "*Tidak boleh kosong" })} className="input input-primary w-full input-sm" />
+                                    </div>
+                                    {errors.tanggalLahir &&
+                                        <label className="label">
+                                            <span className="label-text-alt text-error">{errors.tanggalLahir.message}</span>
+                                        </label>
+                                    }
+                                </div>
+                                <div className="flex flex-col">
+                                    <div className="flex">
+                                        <div className="label w-1/3">
+                                            <span className="label-text">Nomor HP</span>
+                                        </div>
+                                        <input type="number" {...register("noHp", { required: "*Tidak boleh kosong" })} className="input input-primary w-full input-sm" />
+                                    </div>
+                                    {errors.noHp &&
+                                        <label className="label">
+                                            <span className="label-text-alt text-error">{errors.noHp.message}</span>
+                                        </label>
+                                    }
+                                </div>
+                                <div className="flex flex-col">
+                                    <div className="flex">
+
+                                        <div className="label w-1/3">
+                                            <span className="label-text">Nama Ibu Kandung</span>
+                                        </div>
+                                        <input type="text" {...register("ibuKandung", {
+                                            required: "*Tidak boleh kosong", pattern: {
+                                                value: /^[a-zA-Z\s]+$/,
+                                                message: 'Nama tidak valid'
+                                            }
+                                        })} className="input input-primary w-full input-sm" />
+                                    </div>
+                                    {errors.ibuKandung &&
+                                        <label className="label">
+                                            <span className="label-text-alt text-error">{errors.ibuKandung.message}</span>
+                                        </label>
+                                    }
+                                </div>
+                                <div className="flex">
+                                    <div className="label w-1/3">
+                                        <span className="label-text">Nomor BPJS</span>
+                                    </div>
+                                    <input type="number" {...register("bpjs")} className="input input-primary w-full input-sm" />
+                                </div>
+                                <div className="flex">
+                                    <div className="label w-1/3">
+                                        <span className="label-text">No. Asuransi Lain</span>
+                                    </div>
+                                    <input type="text" {...register("noAsuransi")} className="input input-primary w-full input-sm" />
+                                </div>
+                            </div>
+                            <div className="flex flex-col w-1/2 gap-2">
+                                <div className="flex flex-col">
+                                    <div className="flex items-center">
+                                        <div className="label w-1/3">
+                                            <span className="label-text">Jenis Kelamin</span>
+                                        </div>
+                                        <div className="flex gap-2 items-center w-full">
+                                            <div className="flex items-center gap-2">
+
+                                                <input type="radio" {...register("jenisKelamin", { required: "*Tidak boleh kosong" })} value={"L"} className="radio radio-primary" />
+                                                <span className="label-text">Laki-Laki</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+
+                                                <input type="radio" {...register("jenisKelamin", { required: "*Tidak boleh kosong" })} value={"P"} className="radio radio-primary" />
+                                                <span className="label-text">Perempuan</span>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="form-control w-full max-w-xs">
-                                        <div className="label">
-                                            <span className="label-text">Provinsi Domisili</span>
+                                    {errors.jenisKelamin &&
+                                        <label className="label">
+                                            <span className="label-text-alt text-error">{errors.jenisKelamin.message}</span>
+                                        </label>
+                                    }
+                                </div>
+                                <div className="flex flex-col">
+                                    <div className="flex items-center">
+
+                                        <div className="label w-1/3">
+                                            <span className="label-text">Kewarganegaraan </span>
+                                        </div>
+                                        <div className="flex items-center w-full gap-2">
+                                            <div className="flex items-center gap-2">
+
+                                                <input type="radio" {...register("wargaNegara", { required: "*Tidak boleh kosong", onChange: onChangeWNI })} value={"WNI"} className="radio radio-primary" />
+                                                <span className="label-text">WNI</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+
+                                                <input type="radio" {...register("wargaNegara", { required: "*Tidak boleh kosong", onChange: onChangeWNI })} value={"WNA"} className="radio radio-primary" />
+                                                <span className="label-text">WNA</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {errors.wargaNegara &&
+                                        <label className="label">
+                                            <span className="label-text-alt text-error">{errors.wargaNegara.message?.toString()}</span>
+                                        </label>
+                                    }
+                                </div>
+                                {showNik &&
+                                    <div className="flex">
+                                        <div className="label w-1/3">
+                                            <span className="label-text">NIK</span>
+                                        </div>
+                                        <input type="number" {...register("nik", {
+                                            minLength: { value: 16, message: "Harus 16 digit" },
+                                            maxLength: { value: 16, message: "Harus 16 digit" },
+                                        })} className="input input-primary w-full input-sm" />
+                                    </div>
+                                }
+                                {errors.nik &&
+                                    <label className="label">
+                                        <span className="label-text-alt text-error">{errors.nik.message}</span>
+                                    </label>
+                                }
+                                {!showNik &&
+                                    <div className="flex">
+                                        <div className="label w-1/3">
+                                            <span className="label-text">No. Paspor</span>
+                                        </div>
+                                        <input type="text" {...register("paspor")} className="input input-primary w-full input-sm" />
+                                    </div>
+                                }
+                                <div className="flex flex-col">
+                                    <div className="flex">
+                                        <div className="label w-1/3">
+                                            <span className="label-text">Status Menikah</span>
                                         </div>
                                         <Controller
-                                            name="provinsiDomisili"
+                                            name="statusMenikah"
                                             control={control}
-                                            rules={
-                                                { onChange: (e) => { onChangeProvinsiDomisili(e.target.value) } }
-                                            }
+                                            rules={{
+                                                required: "*Tidak boleh kosong"
+                                            }}
                                             render={({ field }) => <Select
                                                 {...field}
+                                                isClearable
+                                                className="w-full"
+                                                instanceId={uuid}
+                                                options={[
+                                                    { value: "BELUM_KAWIN", label: "BELUM KAWIN" },
+                                                    { value: "KAWIN", label: "KAWIN" },
+                                                    { value: "CERAI_HIDUP", label: "CERAI HIDUP" },
+                                                    { value: "CERAI_MATI", label: "CERAI MATI" },
+                                                ]}
+                                            />}
+                                        />
+                                    </div>
+                                    {errors.statusMenikah &&
+                                        <label className="label">
+                                            <span className="label-text-alt text-error">{errors.statusMenikah.message?.toString()}</span>
+                                        </label>
+                                    }
+                                </div>
+                                <div className="flex flex-col ">
+                                    <div className="flex">
+
+                                        <div className="label w-1/3">
+                                            <span className="label-text">Agama</span>
+                                        </div>
+                                        <Controller
+                                            name="agama"
+                                            control={control}
+                                            rules={{
+                                                required: "*Tidak boleh kosong",
+                                                onChange: (e) => onChangeAgama(e)
+                                            }}
+                                            render={({ field }) => <Select
+                                                {...field}
+                                                instanceId={uuid}
+                                                className="w-full"
+                                                options={[
+                                                    { value: "ISLAM", label: "ISLAM" },
+                                                    { value: "KRISTEN", label: "KRISTEN (PROTESTAN)" },
+                                                    { value: "KATOLIK", label: "KATOLIK" },
+                                                    { value: "HINDU", label: "HINDU" },
+                                                    { value: "BUDHA", label: "BUDHA" },
+                                                    { value: "KONGHUCU", label: "KONGHUCU" },
+                                                    { value: "PENGHAYAT", label: "PENGHAYAT" },
+                                                    { value: "LAINNYA", label: "LAIN-LAIN" },
+                                                ]}
+                                            />}
+                                        />
+                                    </div>
+                                    {errors.agama &&
+                                        <label className="label">
+                                            <span className="label-text-alt text-error">{errors.agama.message?.toString()}</span>
+                                        </label>
+                                    }
+                                </div>
+                                {agamaLainnya &&
+                                    <div className="flex">
+                                        <div className="label w-1/3">
+                                            <span className="label-text">Lainnya</span>
+                                        </div>
+                                        <input type="text" value={textAgamaLain} onChange={(e) => setTextAgamaLain(e.target.value)} className="input input-primary w-full input-sm" />
+                                    </div>
+                                }
+                                <div className="flex flex-col">
+                                    <div className="flex">
+                                        <div className="label w-1/3">
+                                            <span className="label-text">Pendidikan</span>
+                                        </div>
+                                        <Controller
+                                            name="pendidikan"
+                                            control={control}
+                                            rules={{
+                                                required: "*Tidak boleh kosong"
+                                            }}
+                                            render={({ field }) => <Select
+                                                {...field}
+                                                isClearable
+                                                instanceId={uuid}
+                                                className="w-full"
+                                                options={[
+                                                    { value: "TS", label: "TIDAK SEKOLAH" },
+                                                    { value: "SD", label: "SD" },
+                                                    { value: "SMP", label: "SMP SEDERAJAT" },
+                                                    { value: "SMA", label: "SMA SEDERAJAT" },
+                                                    { value: "D1", label: "D1-D3 SEDERAJAT" },
+                                                    { value: "D4", label: "D4" },
+                                                    { value: "S1", label: "S1" },
+                                                    { value: "S2", label: "S2" },
+                                                    { value: "S3", label: "S3" },
+                                                ]}
+                                            />}
+                                        />
+                                    </div>
+                                    {errors.pendidikan &&
+                                        <label className="label">
+                                            <span className="label-text-alt text-error">{errors.pendidikan.message?.toString()}</span>
+                                        </label>
+                                    }
+                                </div>
+                                <div className="flex flex-col">
+                                    <div className="flex">
+
+                                        <div className="label w-1/3">
+                                            <span className="label-text">Pekerjaan</span>
+                                        </div>
+                                        <Controller
+                                            name="pekerjaan"
+                                            control={control}
+                                            rules={{
+                                                required: "*Tidak boleh kosong",
+                                                onChange: (e) => onChangePekerjaan(e)
+                                            }}
+                                            render={({ field }) => <Select
+                                                {...field}
+                                                instanceId={uuid}
+                                                className="w-full"
+                                                options={[
+                                                    { value: "TIDAK_BEKERJA", label: "TIDAK BEKERJA" },
+                                                    { value: "PNS", label: "PNS" },
+                                                    { value: "TNI/POLRI", label: "TNI/POLRI" },
+                                                    { value: "BUMN", label: "BUMN" },
+                                                    { value: "SWASTA", label: "PEGAWAI SWASTA / WIRAUSAHA" },
+                                                    { value: "LAINNYA", label: "LAIN-LAIN" },
+                                                ]}
+                                            />}
+                                        />
+                                    </div>
+                                    {errors.pekerjaan &&
+                                        <label className="label">
+                                            <span className="label-text-alt text-error">{errors.pekerjaan.message?.toString()}</span>
+                                        </label>
+                                    }
+                                </div>
+                                {pekerjaanLainnya &&
+                                    <div className="flex">
+                                        <div className="label w-1/3">
+                                            <span className="label-text">Lainnya</span>
+                                        </div>
+                                        <input type="text" value={textPekerjaanLain} onChange={(e) => setTextPekerjaanLain(e.target.value)} className="input input-primary w-full input-sm" />
+                                    </div>
+                                }
+                                <div className="flex">
+                                    <div className="label w-1/3">
+                                        <span className="label-text">Bahasa</span>
+                                    </div>
+                                    <div className="flex gap-2 items-center w-full">
+                                        <input type="radio" {...register("bahasa")} value={"Indonesia"} defaultChecked className="radio radio-primary" />
+                                        <span className="label-text">Indonesia</span>
+                                        <input type="radio" {...register("bahasa")} value={"Inggris"} className="radio radio-primary" />
+                                        <span className="label-text">Inggris</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <AlertHeaderComponent message="Alamat Pasien" />
+                        <div className="flex flex-col">
+                            <div className="flex">
+                                <div className="label w-40">
+                                    <span className="label-text">Alamat KTP</span>
+                                </div>
+                                <input type="text" {...register("alamat", { required: "*Tidak boleh kosong" })} className="input input-primary w-full input-sm" />
+                            </div>
+                            {errors.alamat &&
+                                <label className="label">
+                                    <span className="label-text-alt text-error">{errors.alamat.message}</span>
+                                </label>
+                            }
+                        </div>
+                        <div className="flex gap-2">
+                            <div className="flex flex-col gap-2 w-1/2">
+                                <div className="flex gap-2 flex-col">
+                                    <div className="flex">
+
+                                        <div className="label w-1/3">
+                                            <span className="label-text">Provinsi</span>
+                                        </div>
+                                        <Controller
+                                            name="provinsi"
+                                            control={control}
+                                            rules={{
+                                                required: "*Tidak boleh kosong",
+                                                onChange: (e) => { onChangeProvinsi(e.target.value) }
+                                            }}
+                                            render={({ field }) => <Select
+                                                {...field}
+                                                className="w-full"
                                                 isClearable
                                                 instanceId={uuid}
                                                 options={listProvinsi}
                                             />}
                                         />
                                     </div>
-                                    <div className="form-control w-full max-w-xs">
-                                        <div className="label">
-                                            <span className="label-text">Kota / Kab Domisili</span>
+                                    {errors.provinsi &&
+                                        <label className="label">
+                                            <span className="label-text-alt text-error">{errors.provinsi.message?.toString()}</span>
+                                        </label>
+                                    }
+
+                                    <div className="flex">
+                                        <div className="label w-1/3">
+                                            <span className="label-text">Kecamatan</span>
                                         </div>
                                         <Controller
-                                            name="kotaDomisili"
+                                            name="kecamatan"
                                             control={control}
-                                            rules={
-                                                { onChange: (e) => { onChangeKotaDomisili(e.target.value) } }
+                                            rules={{
+                                                required: "*Tidak boleh kosong",
+                                                onChange: (e) => { onChangeKecamatan(e.target.value) }
+                                            }}
+                                            render={({ field }) => <Select
+                                                {...field}
+                                                isClearable
+                                                className="w-full"
+                                                instanceId={uuid}
+                                                options={listKecamatan}
+                                            />}
+                                        />
+                                    </div>
+                                    {errors.kecamatan &&
+                                        <label className="label">
+                                            <span className="label-text-alt text-error">{errors.kecamatan.message?.toString()}</span>
+                                        </label>
+                                    }
+                                    <div className="flex flex-col">
+                                        <div className="flex">
+
+
+                                            <div className="label w-1/3">
+                                                <span className="label-text">Kelurahan</span>
+                                            </div>
+                                            <Controller
+                                                name="kelurahan"
+                                                control={control}
+                                                rules={{
+                                                    required: "*Tidak boleh kosong"
+                                                }}
+                                                render={({ field }) => <Select
+                                                    {...field}
+                                                    isClearable
+                                                    className="w-full"
+                                                    instanceId={uuid}
+                                                    options={listKelurahan}
+                                                />}
+                                            />
+                                        </div>
+                                        {errors.kelurahan &&
+                                            <label className="label">
+                                                <span className="label-text-alt text-error">{errors.kelurahan.message?.toString()}</span>
+                                            </label>
+                                        }
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div className="flex flex-col gap-2 w-1/2">
+                                <div className="flex flex-col gap-2">
+                                    <div className="flex">
+                                        <div className="label w-1/3">
+                                            <span className="label-text">Kota / Kab</span>
+                                        </div>
+                                        <Controller
+                                            name="kota"
+                                            control={control}
+                                            rules={{
+                                                required: "*Tidak boleh kosong",
+                                                onChange: (e) => { onChangeKota(e.target.value) }
+                                            }}
+                                            render={({ field }) => <Select
+                                                {...field}
+                                                isClearable
+                                                className="w-full"
+                                                instanceId={uuid}
+                                                options={listKota}
+                                            />}
+                                        />
+                                    </div>
+                                    {errors.kota &&
+                                        <label className="label">
+                                            <span className="label-text-alt text-error">{errors.kota.message?.toString()}</span>
+                                        </label>
+                                    }
+                                    <div className="flex flex-col">
+                                        <div className="flex">
+                                            <div className="label w-1/3">
+                                                <span className="label-text">RT / RW</span>
+                                            </div>
+                                            <div className="flex w-full gap-2">
+                                                <input type="number" {...register("rt", { required: "*RT Tidak boleh kosong" })} className="input input-primary w-full input-sm " />
+                                                <input type="number" {...register("rw", { required: "*RW Tidak boleh kosong" })} className="input input-primary w-full input-sm " />
+                                            </div>
+                                        </div>
+                                        <div className="flex">
+                                            {errors.rt &&
+                                                <label className="label">
+                                                    <span className="label-text-alt text-error">{errors.rt.message}</span>
+                                                </label>
                                             }
-                                            render={({ field }) => <Select
-                                                {...field}
-                                                isClearable
-                                                instanceId={uuid}
-                                                options={listKotaDomisili}
-                                            />}
-                                        />
-                                    </div>
-                                    <div className="form-control w-full max-w-xs">
-                                        <div className="label">
-                                            <span className="label-text">Kecamatan Domisili</span>
-                                        </div>
-                                        <Controller
-                                            name="kecamatanDomisili"
-                                            control={control}
-                                            rules={
-                                                { onChange: (e) => { onChangeKecamatanDomisili(e.target.value) } }
+                                            {errors.rw &&
+                                                <label className="label">
+                                                    <span className="label-text-alt text-error">{errors.rw.message}</span>
+                                                </label>
                                             }
-                                            render={({ field }) => <Select
-                                                {...field}
-                                                isClearable
-                                                instanceId={uuid}
-                                                options={listKecamatanDomisili}
-                                            />}
-                                        />
-                                    </div>
-                                    <div className="form-control w-full max-w-xs">
-                                        <div className="label">
-                                            <span className="label-text">Kelurahan Domisili</span>
                                         </div>
-                                        <Controller
-                                            name="kelurahanDomisili"
-                                            control={control}
-                                            render={({ field }) => <Select
-                                                {...field}
-                                                isClearable
-                                                instanceId={uuid}
-                                                options={listKelurahanDomisili}
-                                            />}
-                                        />
                                     </div>
-                                    <div className="form-control w-full max-w-xs">
-                                        <div className="label">
-                                            <span className="label-text">Kode Pos Domisili</span>
+                                    <div className="flex flex-col">
+                                        <div className="flex">
+
+                                            <div className="label w-1/3">
+                                                <span className="label-text">Kode Pos</span>
+                                            </div>
+                                            <input type="number" {...register("kodePos", {
+                                                required: "*Tidak boleh kosong",
+                                                maxLength: { value: 6, message: "Max 6 digit" }
+                                            })} className="input input-primary w-full input-sm " />
                                         </div>
-                                        <input type="text" {...register("kodePosDomisili")} className="input input-primary w-full input-sm max-w-xs" />
                                     </div>
-                                </>
-                            }
-                            <div className="flex-1 mt-3">
-                                <SubmitButtonServer />
+                                    {errors.kodePos &&
+                                        <label className="label">
+                                            <span className="label-text-alt text-error">{errors.kodePos.message?.toString()}</span>
+                                        </label>
+                                    }
+                                </div>
                             </div>
                         </div>
+                        {!domisili &&
+                            <div className="flex flex-col gap-2">
+                                <AlertHeaderComponent message="Alamat Domisili" />
+                                <div className="flex">
+                                    <div className="label w-40">
+                                        <span className="label-text">Alamat Domisili</span>
+                                    </div>
+                                    <input type="text" {...register("alamatDomisili")} className="input input-primary w-full input-sm" />
+                                </div>
+                                <div className="flex gap-2">
+                                    <div className="flex flex-col w-1/2 gap-2">
+                                        <div className="flex">
+                                            <div className="label w-1/3">
+                                                <span className="label-text">Provinsi Domisili</span>
+                                            </div>
+                                            <Controller
+                                                name="provinsiDomisili"
+                                                control={control}
+                                                rules={
+                                                    { onChange: (e) => { onChangeProvinsiDomisili(e.target.value) } }
+                                                }
+                                                render={({ field }) => <Select
+                                                    {...field}
+                                                    isClearable
+                                                    instanceId={uuid}
+                                                    options={listProvinsi}
+                                                    className="w-full"
+                                                />}
+                                            />
+                                        </div>
+                                        <div className="flex">
+                                            <div className="label w-1/3">
+                                                <span className="label-text">Kec. Domisili</span>
+                                            </div>
+                                            <Controller
+                                                name="kecamatanDomisili"
+                                                control={control}
+                                                rules={
+                                                    { onChange: (e) => { onChangeKecamatanDomisili(e.target.value) } }
+                                                }
+                                                render={({ field }) => <Select
+                                                    {...field}
+                                                    className="w-full"
+                                                    isClearable
+                                                    instanceId={uuid}
+                                                    options={listKecamatanDomisili}
+                                                />}
+                                            />
+                                        </div>
+                                        <div className="flex">
+                                            <div className="label w-1/3">
+                                                <span className="label-text">Kelurahan Domisili</span>
+                                            </div>
+                                            <Controller
+                                                name="kelurahanDomisili"
+                                                control={control}
+                                                render={({ field }) => <Select
+                                                    {...field}
+                                                    isClearable
+                                                    className="w-full"
+                                                    instanceId={uuid}
+                                                    options={listKelurahanDomisili}
+                                                />}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col w-1/2 gap-2">
+                                        <div className="flex">
+                                            <div className="label w-1/3">
+                                                <span className="label-text">Kota / Kab Domisili</span>
+                                            </div>
+                                            <Controller
+                                                name="kotaDomisili"
+                                                control={control}
+                                                rules={
+                                                    { onChange: (e) => { onChangeKotaDomisili(e.target.value) } }
+                                                }
+                                                render={({ field }) => <Select
+                                                    {...field}
+                                                    isClearable
+                                                    className="w-full"
+                                                    instanceId={uuid}
+                                                    options={listKotaDomisili}
+                                                />}
+                                            />
+
+                                        </div>
+                                        <div className="flex">
+                                            <div className="label w-1/3">
+                                                <span className="label-text">RT / RW Domisili </span>
+                                            </div>
+                                            <div className="flex gap-2 w-full">
+                                                <input type="number" {...register("rtDomisili")} className="input input-primary w-full input-sm" />
+                                                <input type="number" {...register("rwDomisili")} className="input input-primary w-full input-sm" />
+                                            </div>
+                                        </div>
+                                        <div className="flex">
+                                            <div className="label w-1/3">
+                                                <span className="label-text">Kode Pos Domisili</span>
+                                            </div>
+                                            <input type="text" {...register("kodePosDomisili")} className="input input-primary w-full input-sm" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <SubmitButtonServer />
                     </form>
                 </div>
 
