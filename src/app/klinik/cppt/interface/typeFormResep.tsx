@@ -5,3 +5,8 @@ export interface ObatInterface {
     satuan?: string
     stok?: number
 }
+
+export interface DiagnosaInterface {
+    kodeDiagnosa?: string
+    namaDiagnosa?: string
+}

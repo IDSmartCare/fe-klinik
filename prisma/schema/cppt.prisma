@@ -7,6 +7,8 @@ model SOAP {
     assesment        String
     plan             String
     instruksi        String
+    kodeDiagnosa     String?
+    namaDiagnosa     String?
     isVerifDokter    Boolean?      @default(false)
     isBillingFarmasi Boolean?      @default(false)
     jamVerifDokter   DateTime?     @db.Timestamptz

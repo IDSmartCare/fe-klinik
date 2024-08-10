@@ -23,7 +23,9 @@ export async function createCppt(form: typeFormCppt, idpasien: string, idFasyank
                     pendaftaranId: form.pendaftaranId,
                     isDokter: form.isDokter,
                     isVerifDokter: form.isVerifDokter,
-                    jamVerifDokter: form.jamVerifDokter
+                    jamVerifDokter: form.jamVerifDokter,
+                    kodeDiagnosa: form.kodeDiagnosa,
+                    namaDiagnosa: form.namaDiagnosa
                 }
             })
 

@@ -105,6 +105,7 @@ const PageCPPT = async ({ params }: { params: { id: any } }) => {
                                             <p>Objective : {item.objective}</p>
                                             <p>Assesment : {item.assesment}</p>
                                             <p>Plan : {item.plan}</p>
+                                            <p>Diagnosa : {item.kodeDiagnosa}-{item.namaDiagnosa}</p>
                                             {item.profesi !== "Dokter" && <p className="mt-5 font-bold">Input by : {item.inputBy?.namaLengkap}</p>}
                                             {item.resep.length > 0 && <p className="font-bold mt-5">RESEP DOKTER</p>}
                                             {item.resep.map((i) => {

@@ -97,9 +97,6 @@ const getData = async (idFasyankes: string, idProfile: number, role: string) => 
 const PageDokter = async () => {
     const session = await getServerSession(authOption)
     const data = await getData(session?.user.idFasyankes, session?.user.idProfile, session?.user.role)
-    console.log(data);
-
-
     return (
         <>
             <FilterPasienComponent />
