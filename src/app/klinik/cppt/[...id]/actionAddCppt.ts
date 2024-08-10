@@ -65,6 +65,7 @@ export async function createCppt(form: typeFormCppt, idpasien: string, idFasyank
                 })
                 const konsulDokter = await tx.masterTarif.findFirst({
                     where: {
+                        idFasyankes,
                         penjamin: getPenjamin?.penjamin,
                         kategoriTarif: "Dokter",
                         isAktif: true

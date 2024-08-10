@@ -6,8 +6,9 @@ import Link from "next/link";
 import ModalPrintTagihan from "../pageclient/ModalPrintTagihan";
 import { useState } from "react";
 import { getBillingPasien } from "./getBillingPasien";
+import { Session } from "next-auth";
 
-const ListBillingPasien = ({ dataRegis }: { dataRegis: any }) => {
+const ListBillingPasien = ({ dataRegis, session }: { dataRegis: any, session: Session | null }) => {
     const [tagihan, setTagihan] = useState<any>()
     const onClickPrint = async (id: string) => {
         const getData: any = await getBillingPasien(Number(id))
@@ -30,7 +31,7 @@ const ListBillingPasien = ({ dataRegis }: { dataRegis: any }) => {
                             <p>Dokter : {item.jadwal?.dokter.namaLengkap}</p>
                             <div className="card-actions justify-end">
                                 <button className="btn btn-sm btn-info" onClick={() => onClickPrint(item?.id)}>CETAK TAGIHAN</button>
-                                {item?.penjamin === "PRIBADI" &&
+                                {item?.penjamin === "PRIBADI" && session?.user.role !== "admin" &&
                                     <Link href={`/klinik/kasir/detail/${item.id}`} className="btn btn-sm btn-primary">BAYAR</Link>
                                 }
                             </div>

@@ -6,50 +6,87 @@ import { authOption } from "@/auth"
 import ListPasienDokter from "./ListPasienDokter"
 import FilterPasienComponent from "@/app/components/FilterPasienComponent"
 
-const getData = async (idFasyankes: string, idProfile: number) => {
+const getData = async (idFasyankes: string, idProfile: number, role: string) => {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
     const tomorrow = new Date(today)
     tomorrow.setDate(tomorrow.getDate() + 1)
     try {
-        const getDb = await prisma.pendaftaran.findMany({
-            where: {
-                isClose: false,
-                idFasyankes,
-                AND: [
-                    { createdAt: { gte: today } },
-                    { createdAt: { lt: tomorrow } },
-                ],
-                jadwal: {
-                    dokterId: Number(idProfile)
+        if (role === "admin") {
+            const getDb = await prisma.pendaftaran.findMany({
+                where: {
+                    isClose: false,
+                    idFasyankes,
+                    AND: [
+                        { createdAt: { gte: today } },
+                        { createdAt: { lt: tomorrow } },
+                    ],
                 },
-                isSoapPerawat: true
-            },
-            orderBy: {
-                id: 'desc',
-            },
-            include: {
-                jadwal: {
-                    select: {
-                        dokter: true,
+                orderBy: {
+                    id: 'desc',
+                },
+                include: {
+                    jadwal: {
+                        select: {
+                            dokter: true,
+                        },
                     },
-                },
-                episodePendaftaran: {
-                    select: {
-                        pasien: {
-                            select: {
-                                noRm: true,
-                                namaPasien: true,
-                                jenisKelamin: true,
-                                kelurahan: true,
-                                id: true
+                    episodePendaftaran: {
+                        select: {
+                            pasien: {
+                                select: {
+                                    noRm: true,
+                                    namaPasien: true,
+                                    jenisKelamin: true,
+                                    kelurahan: true,
+                                    id: true
+                                }
                             }
                         }
-                    }
+                    },
+                }
+            })
+            return getDb
+        } else {
+            const getDb = await prisma.pendaftaran.findMany({
+                where: {
+                    isClose: false,
+                    idFasyankes,
+                    AND: [
+                        { createdAt: { gte: today } },
+                        { createdAt: { lt: tomorrow } },
+                    ],
+                    jadwal: {
+                        dokterId: Number(idProfile)
+                    },
+                    isSoapPerawat: true
                 },
-            }
-        })
-        return getDb
+                orderBy: {
+                    id: 'desc',
+                },
+                include: {
+                    jadwal: {
+                        select: {
+                            dokter: true,
+                        },
+                    },
+                    episodePendaftaran: {
+                        select: {
+                            pasien: {
+                                select: {
+                                    noRm: true,
+                                    namaPasien: true,
+                                    jenisKelamin: true,
+                                    kelurahan: true,
+                                    id: true
+                                }
+                            }
+                        }
+                    },
+                }
+            })
+            return getDb
+        }
 
     } catch (error) {
         console.log(error);
@@ -59,7 +96,9 @@ const getData = async (idFasyankes: string, idProfile: number) => {
 
 const PageDokter = async () => {
     const session = await getServerSession(authOption)
-    const data = await getData(session?.user.idFasyankes, session?.user.idProfile)
+    const data = await getData(session?.user.idFasyankes, session?.user.idProfile, session?.user.role)
+    console.log(data);
+
 
     return (
         <>

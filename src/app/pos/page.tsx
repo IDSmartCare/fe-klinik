@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react"
 import { PembelianInterface, StokBarangInterface } from "./interface/postInterface"
 import { ToastAlert } from "../helper/ToastAlert"
 import simpanPOS from "./actionSimpanPos"
+import Link from "next/link"
 
 const PagePos = () => {
     const { data } = useSession()
@@ -14,6 +15,7 @@ const PagePos = () => {
     const [subTotal, setSubTotal] = useState(0)
     const [total, setTotal] = useState(0)
     const [biayaLain, setBiayaLain] = useState("")
+    const [pajak, setPajak] = useState("")
     const [kembalian, setKembalian] = useState(0)
     const [bayar, setBayar] = useState("")
     const [email, setEmail] = useState("")
@@ -62,7 +64,19 @@ const PagePos = () => {
 
     const onChangeBiayaLain = (e: string) => {
         setBiayaLain(e)
-        setTotal(subTotal + Number(e))
+        calculatorTotal(Number(pajak), Number(e))
+    }
+
+    const onChangePajak = (e: string) => {
+        setPajak(e)
+        calculatorTotal(Number(e), Number(biayaLain))
+    }
+
+    const calculatorTotal = (pajak: number, biayalain: number) => {
+
+        const pajakTotal = subTotal * (pajak / 100);
+        const totalBayar = subTotal + pajakTotal + biayalain;
+        setTotal(totalBayar)
     }
 
     const onBayar = () => {
@@ -129,6 +143,11 @@ const PagePos = () => {
 
     return (
         <div className="flex gap-2 flex-col p-2">
+            <Link href={"/klinik"}><button className="btn btn-sm btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
+                    <path fillRule="evenodd" d="M12.5 9.75A2.75 2.75 0 0 0 9.75 7H4.56l2.22 2.22a.75.75 0 1 1-1.06 1.06l-3.5-3.5a.75.75 0 0 1 0-1.06l3.5-3.5a.75.75 0 0 1 1.06 1.06L4.56 5.5h5.19a4.25 4.25 0 0 1 0 8.5h-1a.75.75 0 0 1 0-1.5h1a2.75 2.75 0 0 0 2.75-2.75Z" clipRule="evenodd" />
+                </svg>
+                Kembali</button></Link>
             <div role="alert" className="alert alert-info">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -185,6 +204,7 @@ const PagePos = () => {
                 </div>
                 <div className="w-1/3">
                     <div className="flex flex-col bg-base-200 min-h-screen p-2 gap-2">
+                        <p className="text-xl font-medium">Biodata Pasien</p>
                         <div className="flex items-center justify-between">
                             <p className="font-medium label-text">Nama</p>
                             <input type="text" value={namaPelanggan} onChange={(e) => setNamaPelanggan(e.target.value)} className="input input-bordered w-full max-w-xs" />
@@ -197,6 +217,7 @@ const PagePos = () => {
                             <p className="font-medium label-text">Email</p>
                             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="input input-bordered w-full max-w-xs" />
                         </div>
+                        <div className="divider"></div>
                         <table className="table">
                             <thead>
                                 <tr>
@@ -241,9 +262,14 @@ const PagePos = () => {
                         </table>
                         <div className="divider"></div>
                         <div className="flex flex-col gap-2">
+                            <p className="text-xl font-medium">Rincian Pembayaran</p>
                             <div className="flex items-center justify-between">
                                 <p className="font-medium label-text">Sub Total</p>
                                 <input type="text" value={subTotal} readOnly className="input input-bordered w-full max-w-xs" />
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <p className="font-medium label-text">Pajak %</p>
+                                <input type="number" max={100} value={pajak} onChange={e => onChangePajak(e.target.value)} className="input input-bordered w-full max-w-xs" />
                             </div>
                             <div className="flex items-center justify-between">
                                 <p className="font-medium label-text">Biaya Lainnya</p>

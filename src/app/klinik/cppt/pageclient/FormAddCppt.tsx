@@ -90,6 +90,18 @@ const FormAddCppt = ({ idregis, idpasien, session }: { idregis: string, idpasien
                 }
             })
             return list
+        } else {
+            const apiRes = await getApiBisnisOwner({ url: `master-barang?wfid=${session?.user.wfid}` })
+            const list = apiRes.data.data.map((item: any) => {
+                return {
+                    value: item.barang_id,
+                    label: `${item.barang.nama_barang} (${item.barang.satuan})`,
+                    satuan: item.barang.satuan,
+                    harga_jual: item.barang.harga_jual,
+                    stok: item.stok
+                }
+            })
+            return list
         }
     };
 
@@ -158,6 +170,7 @@ const FormAddCppt = ({ idregis, idpasien, session }: { idregis: string, idpasien
                         </label>
                     }
                 </div>
+
 
             </div>
             {session?.user.role === "dokter" &&

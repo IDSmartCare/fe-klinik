@@ -13,6 +13,7 @@ export async function createRegistrasi(form: typeFormRegis, idFasyankes: string)
         const transaksi = await prisma.$transaction(async (tx) => {
             const tarifAdm = await tx.masterTarif.findFirst({
                 where: {
+                    idFasyankes,
                     penjamin: form.penjamin,
                     kategoriTarif: "Admin",
                     isAktif: true

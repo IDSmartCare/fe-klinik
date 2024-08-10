@@ -56,7 +56,7 @@ const BillingPasien = async ({ params }: { params: { id: any } }) => {
     return (
         <div className="flex flex-col gap-2">
             <PasienIdentitasComponent pasien={resApi} />
-            <ListBillingPasien dataRegis={getRegisData} />
+            <ListBillingPasien dataRegis={getRegisData} session={session} />
         </div>
     )
 }

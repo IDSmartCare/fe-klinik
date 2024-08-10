@@ -8,7 +8,7 @@ const columHelper = createColumnHelper<typeListTerdaftar>()
 const PendaftaranTableCoulumn = [
     columHelper.accessor(row => row.episodePendaftaran.pasien.noRm, {
         cell: info => info.getValue(),
-        header: "RM"
+        header: "No. Rekam Medis"
     }),
     columHelper.accessor(row => row.episodePendaftaran.pasien.namaPasien, {
         cell: info => info.getValue(),

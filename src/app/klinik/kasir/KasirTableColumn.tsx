@@ -9,7 +9,7 @@ const columHelper = createColumnHelper<EpisodePasien>()
 const KasirTableCoulumn = [
     columHelper.accessor(row => row.pasien.noRm, {
         cell: info => info.getValue(),
-        header: "RM"
+        header: "No. Rekam Medis"
     }),
     columHelper.accessor(row => row.pasien.namaPasien, {
         cell: info => info.getValue(),

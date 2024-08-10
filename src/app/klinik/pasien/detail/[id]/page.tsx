@@ -37,7 +37,7 @@ const PageDetailPasien = async ({ params }: { params: { id: string } }) => {
                                     <th colSpan={4} className="bg-info">IDENTITAS</th>
                                 </tr>
                                 <tr>
-                                    <th>NO RM</th>
+                                    <th>No. Rekam Medis</th>
                                     <td>: {resApi.noRm}</td>
                                     <th>NAMA</th>
                                     <td>: {resApi.namaPasien}</td>
