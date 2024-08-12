@@ -17,12 +17,6 @@ const FormTransaksiResep = ({ data, session, soap, pendaftaranId, pasien }: {
     pendaftaranId: number, pasien: any
 }) => {
     const [listResep, setListResep] = useState<ListResepInterface[] | null>(null)
-    const [jumlah, setJumlah] = useState(0)
-    const [signa1, setSigna1] = useState("")
-    const [signa2, setSigna2] = useState("")
-    const [aturanPakai, setAturanPakai] = useState("")
-    const [waktu, setWaktu] = useState("")
-    const [catatan, setCatatan] = useState("")
     const [obat, setObat] = useState<ObatInterface>({})
     const [btnSimpan, setBtnSimpan] = useState(false)
     const [billFarmasi, setBillFarmasi] = useState<CetakBill>()
@@ -54,6 +48,18 @@ const FormTransaksiResep = ({ data, session, soap, pendaftaranId, pasien }: {
                 }
             })
             return list
+        } else {
+            const apiRes = await getApiBisnisOwner({ url: `master-barang?wfid=${session?.user.wfid}` })
+            const list = apiRes.data.data.map((item: any) => {
+                return {
+                    value: item.barang_id,
+                    label: `${item.barang.nama_barang} (${item.barang.satuan})`,
+                    satuan: item.barang.satuan,
+                    harga_jual: item.barang.harga_jual,
+                    stok: item.stok
+                }
+            })
+            return list
         }
     };
 
@@ -69,12 +75,12 @@ const FormTransaksiResep = ({ data, session, soap, pendaftaranId, pasien }: {
             namaObat: obat.namaObat,
             obatId: obat.obatId,
             satuan: obat.satuan,
-            jumlah,
-            signa1,
-            signa2,
-            aturanPakai,
-            waktu,
-            catatan,
+            jumlah: 0,
+            signa1: "",
+            signa2: "",
+            aturanPakai: "",
+            waktu: "",
+            catatan: "",
             hargaJual: obat.harga_jual,
             sOAPId: Number(soap.id),
             createdAt: new Date(),
@@ -130,7 +136,7 @@ const FormTransaksiResep = ({ data, session, soap, pendaftaranId, pasien }: {
             if (listResep) {
                 const findIndex = listResep?.findIndex((item) => item.id === id)
                 if (jenisInput === 'jumlah') {
-                    listResep[findIndex].jumlah = e
+                    listResep[findIndex].jumlah = Number(e)
                 } else if (jenisInput === 'signa1') {
                     listResep[findIndex].signa1 = e
                 } else if (jenisInput === 'signa2') {
@@ -164,36 +170,26 @@ const FormTransaksiResep = ({ data, session, soap, pendaftaranId, pasien }: {
             <table className="table table-sm table-zebra mb-8">
                 <thead className="bg-base-200">
                     <tr>
-                        <th colSpan={11}>Tambah Obat Baru</th>
+                        <th colSpan={2}>Tambah Obat Baru</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr className="bg-info">
-                        <td></td>
                         <td>
-                            <AsyncSelect className="select-info w-full" required isClearable
-                                name="obat" loadOptions={optionCariObat} defaultOptions
-                                onChange={(e) => onChangeObat(e)}
-                                placeholder="Cari obat"
-                                instanceId={uuid}
-                            />
-                        </td>
-                        <td><input type="text" onChange={(e) => setJumlah(Number(e.target.value))} className="input input-sm input-primary w-14" /></td>
-                        <td>{obat.satuan}</td>
-                        <td><input type="text" onChange={(e) => setSigna1(e.target.value)} className="input input-sm input-primary w-14" /></td>
-                        <td>X</td>
-                        <td><input type="text" onChange={(e) => setSigna2(e.target.value)} className="input input-sm input-primary w-14" /></td>
-                        <td><input type="text" onChange={(e) => setAturanPakai(e.target.value)} className="input input-sm input-primary w-40" /></td>
-                        <td><input type="text" onChange={(e) => setWaktu(e.target.value)} className="input input-sm input-primary w-32" /></td>
-                        <td><input type="text" onChange={(e) => setCatatan(e.target.value)} className="input input-sm input-primary w-32" /></td>
-                        <td>
-                            <div className="tooltip tooltip-left" data-tip="Tambah Resep">
-
-                                <button className="btn btn-xs btn-circle btn-primary" onClick={() => onAddResep()} >
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
-                                        <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
-                                    </svg>
-                                </button>
+                            <div className="flex items-center">
+                                <AsyncSelect className="select-info w-full" required isClearable
+                                    name="obat" loadOptions={optionCariObat} defaultOptions
+                                    onChange={(e) => onChangeObat(e)}
+                                    placeholder="Cari obat"
+                                    instanceId={uuid}
+                                />
+                                <div className="tooltip tooltip-left w-20" data-tip="Tambah Resep">
+                                    <button className="btn btn-sm btn-circle btn-primary" onClick={() => onAddResep()} >
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
+                                            <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                         </td>
                     </tr>

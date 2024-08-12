@@ -248,10 +248,12 @@ const FormAddCppt = ({ idregis, idpasien, session }: { idregis: string, idpasien
                                     <input type="text" onChange={(e) => setSigna2(e.target.value)} value={signa2} placeholder="Signa 2" className="input input-sm input-primary w-1/3" />
                                 </div>
                                 <select className="select select-primary w-full select-sm" onChange={(e) => setAturanPakai(e.target.value)} value={aturanPakai} >
+                                    <option>Silahkan Pilih</option>
                                     <option value={"Sebelum Makan"}>Sebelum Makan</option>
                                     <option value={"Sesudah Makan"}>Sesudah Makan</option>
                                 </select>
                                 <select className="select select-primary w-full select-sm" onChange={(e) => setWaktu(e.target.value)} value={waktu}>
+                                    <option>Silahkan Pilih</option>
                                     <option value={"Pagi"}>Pagi</option>
                                     <option value={"Siang"}>Siang</option>
                                     <option value={"Malam"}>Malam</option>

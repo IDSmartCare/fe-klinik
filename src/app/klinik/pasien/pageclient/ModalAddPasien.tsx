@@ -2,7 +2,6 @@
 
 import { useForm, SubmitHandler, Controller } from "react-hook-form"
 import { ToastAlert } from "@/app/helper/ToastAlert"
-import { SubmitButtonServer } from "@/app/components/SubmitButtonServerComponent"
 import { typeFormPasienBaru } from "../interface/typeFormPasienBaru"
 import ButtonModalComponent, { icon } from "../../../components/ButtonModalComponent"
 import Select from 'react-select'
@@ -16,7 +15,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isValid },
         reset,
         control
     } = useForm<typeFormPasienBaru>()
@@ -271,7 +270,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                 <div className="flex flex-col ">
                                     <div className="flex">
                                         <div className="label w-1/3">
-                                            <span className="label-text">Nama Pasien</span>
+                                            <span className="label-text">Nama Pasien *</span>
                                         </div>
                                         <input type="text" {...register("namaPasien", {
                                             required: "*Tidak boleh kosong", pattern: {
@@ -289,7 +288,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                 <div className="flex flex-col">
                                     <div className="flex">
                                         <div className="label w-1/3">
-                                            <span className="label-text">Tempat Lahir</span>
+                                            <span className="label-text">Tempat Lahir *</span>
                                         </div>
                                         <input type="text" {...register("tempatLahir", { required: "*Tidak boleh kosong" })} className="input input-primary w-full input-sm" />
                                     </div>
@@ -302,7 +301,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                 <div className="flex flex-col">
                                     <div className="flex">
                                         <div className="label w-1/3">
-                                            <span className="label-text">Tanggal Lahir</span>
+                                            <span className="label-text">Tanggal Lahir *</span>
                                         </div>
                                         <input type="date" {...register("tanggalLahir", { required: "*Tidak boleh kosong" })} className="input input-primary w-full input-sm" />
                                     </div>
@@ -315,7 +314,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                 <div className="flex flex-col">
                                     <div className="flex">
                                         <div className="label w-1/3">
-                                            <span className="label-text">Nomor HP</span>
+                                            <span className="label-text">Nomor HP *</span>
                                         </div>
                                         <input type="number" {...register("noHp", { required: "*Tidak boleh kosong" })} className="input input-primary w-full input-sm" />
                                     </div>
@@ -329,7 +328,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                     <div className="flex">
 
                                         <div className="label w-1/3">
-                                            <span className="label-text">Nama Ibu Kandung</span>
+                                            <span className="label-text">Ibu Kandung *</span>
                                         </div>
                                         <input type="text" {...register("ibuKandung", {
                                             required: "*Tidak boleh kosong", pattern: {
@@ -361,7 +360,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                 <div className="flex flex-col">
                                     <div className="flex items-center">
                                         <div className="label w-1/3">
-                                            <span className="label-text">Jenis Kelamin</span>
+                                            <span className="label-text">Jenis Kelamin *</span>
                                         </div>
                                         <div className="flex gap-2 items-center w-full">
                                             <div className="flex items-center gap-2">
@@ -386,7 +385,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                     <div className="flex items-center">
 
                                         <div className="label w-1/3">
-                                            <span className="label-text">Kewarganegaraan </span>
+                                            <span className="label-text">Warganegara *</span>
                                         </div>
                                         <div className="flex items-center w-full gap-2">
                                             <div className="flex items-center gap-2">
@@ -434,7 +433,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                 <div className="flex flex-col">
                                     <div className="flex">
                                         <div className="label w-1/3">
-                                            <span className="label-text">Status Menikah</span>
+                                            <span className="label-text">Status Menikah *</span>
                                         </div>
                                         <Controller
                                             name="statusMenikah"
@@ -466,7 +465,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                     <div className="flex">
 
                                         <div className="label w-1/3">
-                                            <span className="label-text">Agama</span>
+                                            <span className="label-text">Agama *</span>
                                         </div>
                                         <Controller
                                             name="agama"
@@ -509,7 +508,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                 <div className="flex flex-col">
                                     <div className="flex">
                                         <div className="label w-1/3">
-                                            <span className="label-text">Pendidikan</span>
+                                            <span className="label-text">Pendidikan *</span>
                                         </div>
                                         <Controller
                                             name="pendidikan"
@@ -546,7 +545,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                     <div className="flex">
 
                                         <div className="label w-1/3">
-                                            <span className="label-text">Pekerjaan</span>
+                                            <span className="label-text">Pekerjaan *</span>
                                         </div>
                                         <Controller
                                             name="pekerjaan"
@@ -586,7 +585,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                 }
                                 <div className="flex">
                                     <div className="label w-1/3">
-                                        <span className="label-text">Bahasa</span>
+                                        <span className="label-text">Bahasa *</span>
                                     </div>
                                     <div className="flex gap-2 items-center w-full">
                                         <input type="radio" {...register("bahasa")} value={"Indonesia"} defaultChecked className="radio radio-primary" />
@@ -601,7 +600,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                         <div className="flex flex-col">
                             <div className="flex">
                                 <div className="label w-40">
-                                    <span className="label-text">Alamat KTP</span>
+                                    <span className="label-text">Alamat KTP *</span>
                                 </div>
                                 <input type="text" {...register("alamat", { required: "*Tidak boleh kosong" })} className="input input-primary w-full input-sm" />
                             </div>
@@ -617,7 +616,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                     <div className="flex">
 
                                         <div className="label w-1/3">
-                                            <span className="label-text">Provinsi</span>
+                                            <span className="label-text">Provinsi *</span>
                                         </div>
                                         <Controller
                                             name="provinsi"
@@ -643,7 +642,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
 
                                     <div className="flex">
                                         <div className="label w-1/3">
-                                            <span className="label-text">Kecamatan</span>
+                                            <span className="label-text">Kecamatan *</span>
                                         </div>
                                         <Controller
                                             name="kecamatan"
@@ -671,7 +670,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
 
 
                                             <div className="label w-1/3">
-                                                <span className="label-text">Kelurahan</span>
+                                                <span className="label-text">Kelurahan *</span>
                                             </div>
                                             <Controller
                                                 name="kelurahan"
@@ -701,7 +700,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                 <div className="flex flex-col gap-2">
                                     <div className="flex">
                                         <div className="label w-1/3">
-                                            <span className="label-text">Kota / Kab</span>
+                                            <span className="label-text">Kota / Kab *</span>
                                         </div>
                                         <Controller
                                             name="kota"
@@ -727,7 +726,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                     <div className="flex flex-col">
                                         <div className="flex">
                                             <div className="label w-1/3">
-                                                <span className="label-text">RT / RW</span>
+                                                <span className="label-text">RT / RW *</span>
                                             </div>
                                             <div className="flex w-full gap-2">
                                                 <input type="number" {...register("rt", { required: "*RT Tidak boleh kosong" })} className="input input-primary w-full input-sm " />
@@ -751,7 +750,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                         <div className="flex">
 
                                             <div className="label w-1/3">
-                                                <span className="label-text">Kode Pos</span>
+                                                <span className="label-text">Kode Pos *</span>
                                             </div>
                                             <input type="number" {...register("kodePos", {
                                                 required: "*Tidak boleh kosong",
@@ -873,7 +872,9 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                 </div>
                             </div>
                         }
-                        <SubmitButtonServer />
+                        <button type="submit" className='btn btn-sm btn-primary btn-block' disabled={!isValid}>
+                            Submit
+                        </button>
                     </form>
                 </div>
 
