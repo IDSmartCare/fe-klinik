@@ -167,34 +167,36 @@ const FormTransaksiResep = ({ data, session, soap, pendaftaranId, pasien }: {
 
     return (
         <div className="flex flex-col">
-            <table className="table table-sm table-zebra mb-8">
-                <thead className="bg-base-200">
-                    <tr>
-                        <th colSpan={2}>Tambah Obat Baru</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr className="bg-info">
-                        <td>
-                            <div className="flex items-center">
-                                <AsyncSelect className="select-info w-full" required isClearable
-                                    name="obat" loadOptions={optionCariObat} defaultOptions
-                                    onChange={(e) => onChangeObat(e)}
-                                    placeholder="Cari obat"
-                                    instanceId={uuid}
-                                />
-                                <div className="tooltip tooltip-left w-20" data-tip="Tambah Resep">
-                                    <button className="btn btn-sm btn-circle btn-primary" onClick={() => onAddResep()} >
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
-                                            <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
-                                        </svg>
-                                    </button>
+            {session?.user.role !== "admin" &&
+                <table className="table table-sm table-zebra mb-8">
+                    <thead className="bg-base-200">
+                        <tr>
+                            <th colSpan={2}>Tambah Obat Baru</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr className="bg-info">
+                            <td>
+                                <div className="flex items-center">
+                                    <AsyncSelect className="select-info w-full" required isClearable
+                                        name="obat" loadOptions={optionCariObat} defaultOptions
+                                        onChange={(e) => onChangeObat(e)}
+                                        placeholder="Cari obat"
+                                        instanceId={uuid}
+                                    />
+                                    <div className="tooltip tooltip-left w-20" data-tip="Tambah Resep">
+                                        <button className="btn btn-sm btn-circle btn-primary" onClick={() => onAddResep()} >
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
+                                                <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            }
             <table className="table table-sm table-zebra">
                 <thead className="bg-base-200">
                     <tr>
@@ -208,7 +210,9 @@ const FormTransaksiResep = ({ data, session, soap, pendaftaranId, pasien }: {
                         <th>Aturan</th>
                         <th>Waktu</th>
                         <th>Catatan</th>
-                        <th>Aksi</th>
+                        {session?.user.role !== 'admin' &&
+                            <th>Aksi</th>
+                        }
                     </tr>
                 </thead>
                 <tbody>
@@ -225,10 +229,12 @@ const FormTransaksiResep = ({ data, session, soap, pendaftaranId, pasien }: {
                                 <td><input type="text" onChange={(e) => onChangeText(e.target.value, 'aturanPakai', i.id)} className="input input-sm input-primary w-40" defaultValue={i.aturanPakai?.toString()} /></td>
                                 <td><input type="text" onChange={(e) => onChangeText(e.target.value, 'waktu', i.id)} className="input input-sm input-primary w-32" defaultValue={i.waktu?.toString()} /></td>
                                 <td><input type="text" onChange={(e) => onChangeText(e.target.value, 'catatan', i.id)} className="input input-sm input-primary w-32" defaultValue={i.catatan?.toString()} /></td>
-                                <td className="tooltip tooltip-left" data-tip="Hapus Resep"><button onClick={() => onDeleteResep(Number(i.id))} className="btn btn-xs btn-error btn-circle "><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
-                                    <path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
-                                </svg>
-                                </button></td>
+                                {session?.user.role !== 'admin' &&
+                                    <td className="tooltip tooltip-left" data-tip="Hapus Resep"><button onClick={() => onDeleteResep(Number(i.id))} className="btn btn-xs btn-error btn-circle "><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
+                                        <path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
+                                    </svg>
+                                    </button></td>
+                                }
                             </tr>
                         )
                     })}
@@ -240,6 +246,7 @@ const FormTransaksiResep = ({ data, session, soap, pendaftaranId, pasien }: {
                     <button className="btn btn-info btn-sm" onClick={() => cetakBill()}>CETAK BILL</button>
                 </div>
                 :
+                session?.user.role !== 'admin' &&
                 <button onClick={() => onClickSimpan()} className="btn btn-primary btn-sm mt-10">SIMPAN TRANSAKSI</button>
             }
             <ModalPrintBillFarmasi billFarmasi={billFarmasi} pasien={pasien} />

@@ -5,7 +5,7 @@ const Dashboard = () => {
     return (
         <div className="flex flex-col items-center justify-center h-screen">
             <div className="flex gap-4">
-                <div className="card w-96 bg-base-100 shadow-xl">
+                {/* <div className="card w-96 bg-base-100 shadow-xl">
                     <figure>
                         <Image src={"/bg-antrian.png"} alt="bg-klinik" width={400} height={400} />
                     </figure>
@@ -16,7 +16,7 @@ const Dashboard = () => {
                             <Link href="#" className="btn btn-primary">Masuk</Link>
                         </div>
                     </div>
-                </div>
+                </div> */}
                 <div className="card w-96 bg-base-100 shadow-xl">
                     <figure>
                         <Image src={"/bg-klinik.jpg"} alt="bg-klinik" width={400} height={400} />
