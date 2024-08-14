@@ -1,33 +1,47 @@
 'use server'
 
 import prisma from "@/db"
-import { PembelianInterface } from "./interface/postInterface"
+import { DataInvoice, PembelianInterface } from "./interface/postInterface"
 import { revalidatePath } from "next/cache"
 
-export default async function simpanPOS(pembelian: PembelianInterface[], nama: string, email: string, hp: string, groupId: string) {
+export default async function simpanPOS(pembelian: PembelianInterface[], dataInvoice: DataInvoice | undefined) {
     try {
-
-        const listBody: any = pembelian.map(item => {
-            return {
-                barangId: item.barang_id,
-                namaBarang: item.nama_barang,
-                groupTransaksiId: groupId,
-                hargaJual: item.harga_jual,
-                qty: item.qty,
-                subTotal: item.totalHarga.toString(),
-                emailPelanggan: email ?? null,
-                hpPelanggan: hp ?? null,
-                namaPelanggan: nama
-            }
-        })
-        const post = await prisma.transaksiPOS.createMany({
-            data: listBody
+        const transaksi = await prisma.$transaction(async (tx) => {
+            const postToTransaksiPos = await tx.transaksiPOS.create({
+                data: {
+                    groupTransaksiId: dataInvoice?.groupTransaksiId as string,
+                    biayaLainnya: dataInvoice?.biayaLainnya,
+                    diskonInvoice: dataInvoice?.diskonInvoice,
+                    emailPelanggan: dataInvoice?.emailPelanggan,
+                    hpPelanggan: dataInvoice?.hpPelanggan,
+                    namaPelanggan: dataInvoice?.namaPelanggan,
+                    pajak: dataInvoice?.pajak,
+                    subTotal: dataInvoice?.subTotal,
+                    total: dataInvoice?.total,
+                    totalBayar: dataInvoice?.totalBayar,
+                }
+            })
+            const listBody: any = pembelian.map(item => {
+                return {
+                    barangId: item.barang_id,
+                    namaBarang: item.nama_barang,
+                    hargaJual: item.harga_jual,
+                    diskonFromBo: item.diskonFromBo.toString(),
+                    hargaSetelahDiskon: (Number(item.harga_jual) - Number(item.diskonFromBo)).toString(),
+                    qty: item.qty,
+                    transaksiPOSId: postToTransaksiPos.groupTransaksiId
+                }
+            })
+            await tx.transaksiPOSDetail.createMany({
+                data: listBody
+            })
+            return postToTransaksiPos
         })
         revalidatePath("/pos")
         return {
             status: true,
             message: "Berhasil",
-            data: post,
+            data: transaksi,
         }
     } catch (error) {
         return {

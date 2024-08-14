@@ -38,16 +38,32 @@ model BillPasienDetail {
 }
 
 model TransaksiPOS {
-    id               Int      @id @default(autoincrement())
-    barangId         String   @db.VarChar(100)
-    namaBarang       String   @db.VarChar(100)
-    groupTransaksiId String   @db.VarChar(100)
-    hargaJual        String?  @db.VarChar(100)
-    qty              Int?
-    subTotal         String?  @db.VarChar(100)
-    emailPelanggan   String?  @db.VarChar(100)
-    namaPelanggan    String?  @db.VarChar(100)
-    hpPelanggan      String?  @db.VarChar(100)
-    createdAt        DateTime @default(now()) @db.Timestamptz
-    updatedAt        DateTime @updatedAt @db.Timestamptz
+    id                 Int                  @id @default(autoincrement())
+    groupTransaksiId   String               @unique() @db.VarChar(100)
+    subTotal           String?              @db.VarChar(100)
+    diskonInvoice      String?              @db.VarChar(100)
+    pajak              String?              @db.VarChar(100)
+    total              String?              @db.VarChar(100)
+    totalBayar         String?              @db.VarChar(100)
+    emailPelanggan     String?              @db.VarChar(100)
+    namaPelanggan      String?              @db.VarChar(100)
+    hpPelanggan        String?              @db.VarChar(100)
+    biayaLainnya       String?              @db.VarChar(100)
+    createdAt          DateTime             @default(now()) @db.Timestamptz
+    updatedAt          DateTime             @updatedAt @db.Timestamptz
+    transaksiPosDetail TransaksiPOSDetail[]
+}
+
+model TransaksiPOSDetail {
+    id                 Int           @id @default(autoincrement())
+    barangId           String        @db.VarChar(100)
+    namaBarang         String        @db.VarChar(100)
+    hargaJual          String?       @db.VarChar(100)
+    diskonFromBo       String?       @db.VarChar(100)
+    hargaSetelahDiskon String?       @db.VarChar(100)
+    qty                Int?
+    createdAt          DateTime      @default(now()) @db.Timestamptz
+    updatedAt          DateTime      @updatedAt @db.Timestamptz
+    transaksiPOS       TransaksiPOS? @relation(fields: [transaksiPOSId], references: [groupTransaksiId])
+    transaksiPOSId     String?
 }

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { getApiBisnisOwner, postApiBisnisOwner } from "../lib/apiBisnisOwner"
 import { useSession } from "next-auth/react"
-import { PembelianInterface, StokBarangInterface } from "./interface/postInterface"
+import { DataInvoice, PembelianInterface, StokBarangInterface } from "./interface/postInterface"
 import { ToastAlert } from "../helper/ToastAlert"
 import simpanPOS from "./actionSimpanPos"
 import Link from "next/link"
@@ -16,11 +16,16 @@ const PagePos = () => {
     const [total, setTotal] = useState(0)
     const [biayaLain, setBiayaLain] = useState("")
     const [pajak, setPajak] = useState("")
+    const [diskon, setDiskon] = useState("")
     const [kembalian, setKembalian] = useState(0)
+    const [hargaDiskon, setHargaDiskon] = useState(0)
+    const [hargaPajak, setHargaPajak] = useState(0)
     const [bayar, setBayar] = useState("")
     const [email, setEmail] = useState("")
     const [hpPelanggan, setHpPelanggan] = useState("")
     const [namaPelanggan, setNamaPelanggan] = useState("")
+    const [jenisDiskon, setJenisDiskon] = useState("")
+
 
     useEffect(() => {
         const getApiBarang = async (wfid: string) => {
@@ -35,19 +40,40 @@ const PagePos = () => {
         if (existingItem) {
             const updatedItems = pembelian.map(item => {
                 if (item.barang_id === barang.barang_id) {
-                    return { ...item, qty: item.qty + 1, totalHarga: (item.qty + 1) * Number(item.harga_jual) };
+                    let totalDiskon = 0
+                    if (barang.diskon.percent_disc) {
+                        const diskon = Number(barang.barang.harga_jual) * (Number(barang.diskon.percent_disc) / 100)
+                        const subTotal = Number(barang.barang.harga_jual) - diskon
+                        totalDiskon = subTotal
+                    } else {
+                        totalDiskon = Number(barang.barang.harga_jual) - Number(barang.diskon.amount_disc)
+                    }
+                    return {
+                        ...item, qty: item.qty + 1,
+                        totalHarga: Number(item.qty + 1) * totalDiskon
+                    };
                 }
                 return item;
             });
             setPembelian(updatedItems);
             subTotalCalculate(updatedItems)
         } else {
+            let totalDiskon = 0
+            if (barang.diskon.percent_disc) {
+                const diskon = Number(barang.barang.harga_jual) * (Number(barang.diskon.percent_disc) / 100)
+                const subTotal = Number(barang.barang.harga_jual) - diskon
+                totalDiskon = subTotal
+            } else {
+                totalDiskon = Number(barang.barang.harga_jual) - Number(barang.diskon.amount_disc)
+            }
             const addBarang: any = {
                 barang_id: barang.barang_id,
                 nama_barang: barang.barang.nama_barang,
                 harga_jual: barang.barang.harga_jual,
                 qty: 1,
-                totalHarga: Number(barang.barang.harga_jual) * 1
+                totalHarga: totalDiskon,
+                diskonFromBo: barang.diskon.amount_disc ? barang.diskon.amount_disc :
+                    Number(barang.barang.harga_jual) * (Number(barang.diskon.percent_disc) / 100),
             }
             let allBarang = [...pembelian, addBarang]
             setPembelian([...pembelian, addBarang]);
@@ -64,19 +90,34 @@ const PagePos = () => {
 
     const onChangeBiayaLain = (e: string) => {
         setBiayaLain(e)
-        calculatorTotal(Number(pajak), Number(e))
+        calculatorTotal(Number(pajak), Number(e), Number(diskon))
     }
 
     const onChangePajak = (e: string) => {
         setPajak(e)
-        calculatorTotal(Number(e), Number(biayaLain))
+        calculatorTotal(Number(e), Number(biayaLain), Number(diskon))
     }
 
-    const calculatorTotal = (pajak: number, biayalain: number) => {
+    const onChangeDiskon = (e: string) => {
+        setDiskon(e)
+        calculatorTotal(Number(pajak), Number(biayaLain), Number(e))
+    }
 
-        const pajakTotal = subTotal * (pajak / 100);
-        const totalBayar = subTotal + pajakTotal + biayalain;
-        setTotal(totalBayar)
+    const calculatorTotal = (pajak: number, biayalain: number, diskon: number) => {
+        let discountAmount = 0
+        let total = subTotal
+        let taxAmount = total * (pajak / 100);
+        setHargaPajak(taxAmount)
+        total = subTotal + taxAmount
+        if (jenisDiskon === "percent") {
+            discountAmount = total * (diskon / 100);
+            setHargaDiskon(discountAmount)
+        } else {
+            discountAmount = diskon
+            setHargaDiskon(diskon)
+        }
+        let newTotal = total - discountAmount + biayalain;
+        setTotal(newTotal)
     }
 
     const onBayar = () => {
@@ -109,7 +150,18 @@ const PagePos = () => {
             ToastAlert({ icon: 'error', title: "Pembayaran tidak boleh kurang" })
             return
         }
-        const post = await simpanPOS(pembelian, namaPelanggan, email, hpPelanggan, groupId)
+        const post = await simpanPOS(pembelian, {
+            namaPelanggan,
+            emailPelanggan: email,
+            groupTransaksiId: groupId,
+            hpPelanggan,
+            diskonInvoice: hargaDiskon.toString(),
+            pajak: hargaPajak.toString(),
+            biayaLainnya: biayaLain ?? "0",
+            subTotal: subTotal.toString(),
+            total: total.toString(),
+            totalBayar: bayar
+        })
         if (post.status) {
             const postApi = await postApiBisnisOwner({ url: "decrease-stock", data: bodyToPost })
             if (!postApi.status) {
@@ -125,6 +177,10 @@ const PagePos = () => {
             setEmail("")
             setHpPelanggan("")
             setNamaPelanggan("")
+            setTimeout(() => {
+                const modal: any = document?.getElementById('modal-pos-print')
+                modal.show()
+            }, 2000);
         } else {
             ToastAlert({ icon: 'error', title: post.message as string })
         }
@@ -171,6 +227,7 @@ const PagePos = () => {
                                 <tr>
                                     <th>Produk</th>
                                     <th>Harga</th>
+                                    <td>Diskon</td>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -187,11 +244,18 @@ const PagePos = () => {
                                                 </div>
                                             </td>
                                             <td>
-                                                {new Intl.NumberFormat('id-ID', {
+                                                {
+                                                    new Intl.NumberFormat('id-ID', {
+                                                        style: 'currency',
+                                                        currency: 'IDR',
+                                                    }).format(Number(item.barang.harga_jual))}
+                                            </td>
+                                            <td>
+                                                {item.diskon.type === "Percentage" ? `${item.diskon.percent_disc}%` : `${new Intl.NumberFormat('id-ID', {
                                                     style: 'currency',
                                                     currency: 'IDR',
-                                                }).format(Number(item.barang.harga_jual))}                                            </td>
-
+                                                }).format(Number(item.diskon.amount_disc))}`}
+                                            </td>
                                             <th>
                                                 <button onClick={() => onClickTambah(item)} className="btn btn-primary">Tambah</button>
                                             </th>
@@ -234,11 +298,6 @@ const PagePos = () => {
                                             <td>
                                                 <div>
                                                     <div className="font-bold">{item.nama_barang}</div>
-                                                    <div className="text-sm opacity-50">Harga : {
-                                                        new Intl.NumberFormat('id-ID', {
-                                                            style: 'currency',
-                                                            currency: 'IDR',
-                                                        }).format(Number(item.harga_jual))}</div>
                                                 </div>
                                             </td>
                                             <td>{item.qty}</td>
@@ -272,6 +331,14 @@ const PagePos = () => {
                                 <input type="number" max={100} value={pajak} onChange={e => onChangePajak(e.target.value)} className="input input-bordered w-full max-w-xs" />
                             </div>
                             <div className="flex items-center justify-between">
+                                <p className="font-medium label-text">Diskon</p>
+                                <p>%</p>
+                                <input type="radio" className="radio radio-primary" onChange={e => setJenisDiskon(e.target.value)} name="diskon" value={"percent"} />
+                                <p>Rp.</p>
+                                <input type="radio" className="radio radio-primary" onChange={e => setJenisDiskon(e.target.value)} name="diskon" value={"rp"} />
+                                <input type="text" value={diskon} onChange={e => onChangeDiskon(e.target.value)} className="input input-bordered w-full max-w-xs" />
+                            </div>
+                            <div className="flex items-center justify-between">
                                 <p className="font-medium label-text">Biaya Lainnya</p>
                                 <input type="number" value={biayaLain} onChange={(e) => onChangeBiayaLain(e.target.value)} className="input input-bordered w-full max-w-xs" />
                             </div>
@@ -295,7 +362,7 @@ const PagePos = () => {
                     <form className="flex flex-col gap-2" onSubmit={onSubmitData}>
                         <div className="flex items-center">
                             <p className="w-1/3">Total</p>
-                            <input type="number" readOnly defaultValue={total} className="input input-primary" />
+                            <input type="number" readOnly value={total.toString()} className="input input-primary" />
                         </div>
                         <div className="flex items-center">
                             <p className="w-1/3">Bayar</p>
@@ -307,6 +374,14 @@ const PagePos = () => {
                         </div>
                         <button className="btn btn-info">SUBMIT</button>
                     </form>
+                </div>
+            </dialog>
+            <dialog id="modal-pos-print" className="modal">
+                <div className="modal-box w-8/12 max-w-2xl">
+                    <form method="dialog">
+                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                    </form>
+                    oke
                 </div>
             </dialog>
         </div>

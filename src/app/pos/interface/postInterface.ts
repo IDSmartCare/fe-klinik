@@ -4,8 +4,16 @@ export interface StokBarangInterface {
     barang_id: string;
     stok: number;
     barang: Barang;
+    diskon: Diskon
 }
 
+interface Diskon {
+    stok_barang_id: string
+    type: string
+    percent_disc: number
+    amount_disc: string
+    expired_disc: string
+}
 interface Barang {
     barang_id: string;
     kategori_id: string;
@@ -31,4 +39,18 @@ export interface PembelianInterface {
     harga_jual: string
     qty: number
     totalHarga: number
+    diskonFromBo: string
+}
+
+export interface DataInvoice {
+    namaPelanggan?: string
+    emailPelanggan?: string
+    hpPelanggan?: string
+    subTotal?: string
+    total?: string
+    totalBayar?: string
+    pajak?: string
+    diskonInvoice?: string
+    biayaLainnya?: string
+    groupTransaksiId: string
 }
