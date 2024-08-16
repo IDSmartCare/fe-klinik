@@ -4,9 +4,12 @@ import prisma from "@/db"
 
 export default async function GetPosByGroupId(groupId: string) {
     try {
-        const getData = await prisma.transaksiPOS.findMany({
+        const getData = await prisma.transaksiPOS.findFirst({
             where: {
                 groupTransaksiId: groupId
+            },
+            include: {
+                transaksiPosDetail: true
             }
         })
         return {

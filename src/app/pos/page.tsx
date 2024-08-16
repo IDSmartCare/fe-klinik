@@ -3,10 +3,13 @@
 import { useEffect, useState } from "react"
 import { getApiBisnisOwner, postApiBisnisOwner } from "../lib/apiBisnisOwner"
 import { useSession } from "next-auth/react"
-import { DataInvoice, PembelianInterface, StokBarangInterface } from "./interface/postInterface"
+import { PembelianInterface, StokBarangInterface } from "./interface/postInterface"
 import { ToastAlert } from "../helper/ToastAlert"
 import simpanPOS from "./actionSimpanPos"
 import Link from "next/link"
+import GetPosByGroupId from "./getPos"
+import { TransaksiAfterSubmit } from "./interface/listAfterSubmit"
+import ModalPrintBill from "./pageclient/ModalPrintBill"
 
 const PagePos = () => {
     const { data } = useSession()
@@ -25,6 +28,7 @@ const PagePos = () => {
     const [hpPelanggan, setHpPelanggan] = useState("")
     const [namaPelanggan, setNamaPelanggan] = useState("")
     const [jenisDiskon, setJenisDiskon] = useState("")
+    const [resAfterSubmit, setResAfterSubmit] = useState<TransaksiAfterSubmit | null | undefined>()
 
 
     useEffect(() => {
@@ -177,6 +181,8 @@ const PagePos = () => {
             setEmail("")
             setHpPelanggan("")
             setNamaPelanggan("")
+            const getDataAfterSubmit = await GetPosByGroupId(groupId)
+            setResAfterSubmit(getDataAfterSubmit.data as any)
             setTimeout(() => {
                 const modal: any = document?.getElementById('modal-pos-print')
                 modal.show()
@@ -376,14 +382,7 @@ const PagePos = () => {
                     </form>
                 </div>
             </dialog>
-            <dialog id="modal-pos-print" className="modal">
-                <div className="modal-box w-8/12 max-w-2xl">
-                    <form method="dialog">
-                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-                    </form>
-                    oke
-                </div>
-            </dialog>
+            <ModalPrintBill data={resAfterSubmit} />
         </div>
     )
 }
