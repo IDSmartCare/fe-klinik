@@ -4,6 +4,8 @@ import { getServerSession } from "next-auth"
 import { authOption } from "@/auth"
 import { getApiBisnisOwner } from "@/app/lib/apiBisnisOwner"
 import prisma from "@/db"
+import UserTableColumn from "./UserTableColumn"
+import ModalAddUser from "./pageclient/ModalAddUser"
 
 const getDb = async (idFasyankes: string) => {
     try {
@@ -15,6 +17,13 @@ const getDb = async (idFasyankes: string) => {
                 id: {
                     in: ids
 
+                }
+            },
+            include: {
+                poliklinik: {
+                    select: {
+                        namaPoli: true
+                    }
                 }
             }
         })
@@ -33,12 +42,12 @@ const getDb = async (idFasyankes: string) => {
 const UserLoginPage = async () => {
     const session = await getServerSession(authOption)
     const data = await getDb(session?.user.idFasyankes)
-    console.log(data);
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-2">
             <AlertHeaderComponent message="List userlogin" />
-            <TableFilterComponent rowsData={[]} columnsData={[]} />
+            <ModalAddUser session={session} />
+            <TableFilterComponent rowsData={data} columnsData={UserTableColumn} />
 
         </div>
     )
