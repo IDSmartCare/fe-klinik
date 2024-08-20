@@ -39,7 +39,9 @@ const ModalAddPoli = ({ session }: { session: Session | null }) => {
                         <span className="label-text-alt text-error"> {errors.namaPoli && <span>{errors.namaPoli.message}</span>}</span>
                         <input type="text" placeholder="Kode Poliklinik" {...register("kodePoli", { required: "Tidak boleh kosong!" })} className="input input-sm input-bordered input-primary w-full max-w-xs" />
                         <span className="label-text-alt text-error"> {errors.kodePoli && <span>{errors.kodePoli.message}</span>}</span>
-                        <SubmitButtonServer />
+                        {session?.user.role !== "tester" &&
+                            <SubmitButtonServer />
+                        }
                     </form>
                 </div>
 

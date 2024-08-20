@@ -1,10 +1,11 @@
 'use client'
 
 import { ToastAlert } from "@/app/helper/ToastAlert"
+import { Session } from "next-auth"
 import { useRouter } from "next/navigation"
 
 
-const FormEditPoli = ({ data }: { data: any }) => {
+const FormEditPoli = ({ data, session }: { data: any, session: Session | null }) => {
     const route = useRouter()
     const onSubmit = async (e: any) => {
         e.preventDefault()
@@ -44,7 +45,9 @@ const FormEditPoli = ({ data }: { data: any }) => {
                     </div>
                     <input type="text" defaultValue={data.namaPoli} name="namaPoli" className="input input-primary w-full input-sm" />
                 </div>
-                <button className="btn btn-sm btn-primary btn-block mt-2">EDIT</button>
+                {session?.user.role !== "tester" &&
+                    <button className="btn btn-sm btn-primary btn-block mt-2">EDIT</button>
+                }
             </form>
         </div>
     )

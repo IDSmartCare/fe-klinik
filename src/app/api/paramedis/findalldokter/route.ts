@@ -6,7 +6,7 @@ export async function GET(req: Request) {
     const data = await prisma.profile.findMany({
         where: {
             isAktif: true,
-            profesi: "Dokter",
+            profesi: "DOKTER",
             idFasyankes
         }
     })

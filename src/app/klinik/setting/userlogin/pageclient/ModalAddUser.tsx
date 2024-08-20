@@ -204,7 +204,9 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
                                 </div>
                             </>
                         }
-                        <button className="btn btn-primary btn-block btn-sm">Simpan</button>
+                        {session?.user.role !== "tester" &&
+                            <button className="btn btn-primary btn-block btn-sm">Simpan</button>
+                        }
                     </form>
                 </div>
             </dialog>

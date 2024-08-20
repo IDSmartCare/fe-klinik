@@ -5,7 +5,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { ToastAlert } from "@/app/helper/ToastAlert"
 import { typeFormJadwal } from "../interface/typeFormJadwal"
 import { useEffect, useId, useState } from "react"
-import { typeFormDokter } from "../../dokter/interface/typeFormDokter"
+import { typeFormDokter } from "../interface/typeFormDokter"
 import Select from 'react-select'
 import { createJadwal } from "../action"
 import { Session } from "next-auth"
@@ -103,7 +103,9 @@ const ModalAddJadwal = ({ session }: { session: Session | null }) => {
                             <input type="time" {...register("jamSampai", { required: "Tidak boleh kosong!" })} className="input input-sm input-bordered input-primary w-full max-w-xs" />
                         </div>
                         <span className="label-text-alt text-error"> {errors.jamDari && <span>{errors.jamDari.message}</span>}</span>
-                        <SubmitButtonServer />
+                        {session?.user.role !== "tester" &&
+                            <SubmitButtonServer />
+                        }
                     </form>
                 </div>
             </dialog>
