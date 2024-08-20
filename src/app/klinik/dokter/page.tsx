@@ -12,7 +12,7 @@ const getData = async (idFasyankes: string, idProfile: number, role: string) => 
     const tomorrow = new Date(today)
     tomorrow.setDate(tomorrow.getDate() + 1)
     try {
-        if (role === "admin") {
+        if (role === "admin" || role === "tester") {
             const getDb = await prisma.pendaftaran.findMany({
                 where: {
                     isClose: false,

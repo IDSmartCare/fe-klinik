@@ -378,7 +378,9 @@ const PagePos = () => {
                             <p className="w-1/3">Kembali</p>
                             <input type="number" value={kembalian} readOnly className="input input-primary" />
                         </div>
-                        <button className="btn btn-info">SUBMIT</button>
+                        {data?.user.role !== "admin" && data?.user.role !== "tester" &&
+                            <button className="btn btn-info">SUBMIT</button>
+                        }
                     </form>
                 </div>
             </dialog>

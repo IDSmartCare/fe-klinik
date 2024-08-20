@@ -93,10 +93,7 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
                                 <span className="label-text">Username</span>
                             </div>
                             <input type="text" {...register("username", {
-                                required: "*Tidak boleh kosong", pattern: {
-                                    value: /^[a-zA-Z\s]+$/,
-                                    message: 'Nama tidak valid'
-                                }
+                                required: "*Tidak boleh kosong"
                             })} className="input input-primary w-full input-sm" />
                             {errors.username &&
                                 <label className="label">

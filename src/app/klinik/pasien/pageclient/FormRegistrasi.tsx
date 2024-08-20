@@ -133,9 +133,11 @@ const FormRegistrasi = ({ idpasien, session }: { idpasien: string, session: Sess
                     </div>
                 }
             </div>
-            <div className='mt-3'>
-                <SubmitButtonServer />
-            </div>
+            {session?.user.role !== "tester" &&
+                <div className='mt-3'>
+                    <SubmitButtonServer />
+                </div>
+            }
         </form>
     )
 }

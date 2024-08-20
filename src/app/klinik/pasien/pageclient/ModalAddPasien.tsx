@@ -872,9 +872,11 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                                 </div>
                             </div>
                         }
-                        <button type="submit" className='btn btn-sm btn-primary btn-block' disabled={!isValid}>
-                            Submit
-                        </button>
+                        {session?.user.role !== "tester" &&
+                            <button type="submit" className='btn btn-sm btn-primary btn-block' disabled={!isValid}>
+                                Submit
+                            </button>
+                        }
                     </form>
                 </div>
 
