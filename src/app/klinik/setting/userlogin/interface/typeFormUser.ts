@@ -7,4 +7,6 @@ export type FormAddUser = {
     namaLengkap: string
     kodedokter?: string
     poliklinik?: any
+    str?: string
+    sip?: string
 }

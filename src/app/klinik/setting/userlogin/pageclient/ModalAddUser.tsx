@@ -202,6 +202,18 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
                                     </div>
                                     <input type="text" {...register('kodedokter')} className="input input-sm input-primary w-full " />
                                 </div>
+                                <div className="form-control w-full">
+                                    <div className="label">
+                                        <span className="label-text">STR</span>
+                                    </div>
+                                    <input type="text" {...register('str')} className="input input-sm input-primary w-full " />
+                                </div>
+                                <div className="form-control w-full">
+                                    <div className="label">
+                                        <span className="label-text">SIP</span>
+                                    </div>
+                                    <input type="text" {...register('sip')} className="input input-sm input-primary w-full " />
+                                </div>
                             </>
                         }
                         {session?.user.role !== "tester" &&

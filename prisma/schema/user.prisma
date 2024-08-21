@@ -5,6 +5,8 @@ model Profile {
   unit          String?        @db.VarChar(50)
   kodeDokter    String?        @db.VarChar(30)
   idFasyankes   String?        @db.VarChar(30)
+  str           String?        @db.VarChar(100)
+  sip           String?        @db.VarChar(100)
   isAktif       Boolean?       @default(true)
   createdAt     DateTime       @default(now()) @db.Timestamptz
   updatedAt     DateTime       @updatedAt @db.Timestamptz

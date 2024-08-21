@@ -18,7 +18,7 @@ const getData = async (id: string) => {
 const EditTarif = async ({ params }: { params: { id: string } }) => {
     const data = await getData(params.id)
 
-    return (<FormEditTarif data={data} />)
+    return (<FormEditTarif dataForm={data} />)
 }
 
 export default EditTarif

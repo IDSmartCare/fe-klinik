@@ -14,6 +14,8 @@ export async function createUser(form: FormAddUser, idFasyankes: string) {
                 unit: form.role.value.toUpperCase(),
                 poliKlinikId: Number(form.poliklinik?.value) || null,
                 idFasyankes,
+                str: form.str,
+                sip: form.sip,
             }
         })
         revalidatePath("/klinik/setting/userlogin")

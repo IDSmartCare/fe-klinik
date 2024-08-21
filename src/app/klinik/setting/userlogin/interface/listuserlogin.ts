@@ -11,6 +11,8 @@ interface DetailLoginInterface {
     profesi?: string
     unit?: string
     kodeDokter?: string
+    str?: string
+    sip?: string
     idFasyankes?: string
     isAktif: boolean
     createdAt: Date
