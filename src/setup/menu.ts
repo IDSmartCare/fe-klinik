@@ -74,6 +74,11 @@ export const listMenu = [
                 id: 2,
                 title: "POS",
                 url: "/pos"
+            },
+            {
+                id: 3,
+                title: "History POS",
+                url: "/klinik/kasir/historypos"
             }
         ]
     },

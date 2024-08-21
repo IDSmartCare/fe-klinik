@@ -165,7 +165,7 @@ const PagePos = () => {
             subTotal: subTotal.toString(),
             total: total.toString(),
             totalBayar: bayar
-        })
+        }, data?.user.idFasyankes)
         if (post.status) {
             const postApi = await postApiBisnisOwner({ url: "decrease-stock", data: bodyToPost })
             if (!postApi.status) {

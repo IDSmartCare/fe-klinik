@@ -4,7 +4,7 @@ import prisma from "@/db"
 import { DataInvoice, PembelianInterface } from "./interface/postInterface"
 import { revalidatePath } from "next/cache"
 
-export default async function simpanPOS(pembelian: PembelianInterface[], dataInvoice: DataInvoice | undefined) {
+export default async function simpanPOS(pembelian: PembelianInterface[], dataInvoice: DataInvoice | undefined, idFasyankes: string | undefined) {
     try {
         const transaksi = await prisma.$transaction(async (tx) => {
             const postToTransaksiPos = await tx.transaksiPOS.create({
@@ -19,6 +19,7 @@ export default async function simpanPOS(pembelian: PembelianInterface[], dataInv
                     subTotal: dataInvoice?.subTotal,
                     total: dataInvoice?.total,
                     totalBayar: dataInvoice?.totalBayar,
+                    idFasyankes,
                 }
             })
             const listBody: any = pembelian.map(item => {

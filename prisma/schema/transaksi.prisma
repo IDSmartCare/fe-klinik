@@ -49,6 +49,7 @@ model TransaksiPOS {
     namaPelanggan      String?              @db.VarChar(100)
     hpPelanggan        String?              @db.VarChar(100)
     biayaLainnya       String?              @db.VarChar(100)
+    idFasyankes        String?              @db.VarChar(50)
     createdAt          DateTime             @default(now()) @db.Timestamptz
     updatedAt          DateTime             @updatedAt @db.Timestamptz
     transaksiPosDetail TransaksiPOSDetail[]
