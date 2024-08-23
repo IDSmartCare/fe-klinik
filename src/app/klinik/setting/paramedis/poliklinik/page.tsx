@@ -5,6 +5,7 @@ import PoliTableColumn from "./PoliTableColumn"
 import prisma from "@/db"
 import { getServerSession } from "next-auth"
 import { authOption } from "@/auth"
+import PoliTableColumnTester from "./PoliTableColumnTester"
 
 const getDataPoli = async (idFasyankes: string) => {
     try {
@@ -26,7 +27,11 @@ const PagePoli = async () => {
         <>
             <AlertHeaderComponent message="List poliklinik" />
             <ModalAddPoli session={session} />
-            <TableFilterComponent rowsData={data} columnsData={PoliTableColumn} />
+            {session?.user.role === "tester" ?
+                <TableFilterComponent rowsData={data} columnsData={PoliTableColumnTester} />
+                :
+                <TableFilterComponent rowsData={data} columnsData={PoliTableColumn} />
+            }
         </>
     )
 }

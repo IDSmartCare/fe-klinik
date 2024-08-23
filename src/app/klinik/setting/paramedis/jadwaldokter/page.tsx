@@ -5,6 +5,7 @@ import JadwalTableColumn from "./JadwalTableColumn"
 import prisma from "@/db"
 import { getServerSession } from "next-auth"
 import { authOption } from "@/auth"
+import JadwalTableColumnTester from "./JadwalTableColumnTester"
 
 const getData = async (idFasyankes: string) => {
     try {
@@ -38,7 +39,10 @@ const PageMasterJadwalDokter = async () => {
         <>
             <AlertHeaderComponent message="List jadwal dokter" />
             <ModalAddJadwal session={session} />
-            <TableFilterComponent rowsData={data} columnsData={JadwalTableColumn} />
+            {session?.user.role === "tester" ?
+                <TableFilterComponent rowsData={data} columnsData={JadwalTableColumnTester} /> :
+                <TableFilterComponent rowsData={data} columnsData={JadwalTableColumn} />
+            }
         </>
     )
 }
