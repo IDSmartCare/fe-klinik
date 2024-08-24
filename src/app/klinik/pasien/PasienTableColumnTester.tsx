@@ -1,32 +1,12 @@
 'use client'
 import { createColumnHelper } from "@tanstack/table-core"
-import { ToastAlert } from "@/app/helper/ToastAlert"
 import { typeFormPasienBaru } from "./interface/typeFormPasienBaru"
 import { format } from "date-fns"
 import Link from "next/link"
 
 const columHelper = createColumnHelper<typeFormPasienBaru>()
-const onChange = async (e: any, id: any) => {
-    try {
-        const fetchBody = await fetch(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/pasien/${id}`, {
-            method: "PATCH",
-            body: JSON.stringify({ isAktif: e.target.checked }),
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
-            }
-        })
-        if (!fetchBody.ok) {
-            ToastAlert({ icon: 'error', title: "Error" })
-            return
-        }
-        ToastAlert({ icon: 'success', title: "Ok" })
-    } catch (error: any) {
-        ToastAlert({ icon: 'error', title: error.message })
-    }
-}
 
-const PasienTableColumn = [
+const PasienTableColumnTester = [
     columHelper.accessor(row => row.noRm, {
         cell: info => info.getValue(),
         header: "No. Rekam Medis"
@@ -55,10 +35,6 @@ const PasienTableColumn = [
     columHelper.accessor(row => row.kelurahan, {
         cell: info => info.getValue(),
         header: "Alamat"
-    }),
-    columHelper.accessor(row => [row.isAktif, row.id], {
-        cell: info => <input type="checkbox" onChange={(e) => onChange(e, info.getValue()[1])} className="toggle toggle-xs toggle-primary" defaultChecked={info.getValue()[0] ? true : false} />,
-        header: "Status"
     }),
     columHelper.accessor(row => row.id, {
         cell: info => <div className="flex gap-1 justify-center">
@@ -93,4 +69,4 @@ const PasienTableColumn = [
     }),
 ]
 
-export default PasienTableColumn
+export default PasienTableColumnTester

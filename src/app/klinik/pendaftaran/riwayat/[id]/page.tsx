@@ -1,73 +1,51 @@
 import PasienIdentitasComponent from "@/app/components/PasienIdentitasComponent";
-import { authOption } from "@/auth";
-import prisma from "@/db";
 import { format } from "date-fns";
-import { getServerSession } from "next-auth";
 
-const getData = async (id: string, idFasyankes: string) => {
+const getData = async (id: string) => {
     try {
-        const getDb = await prisma.pasien.findFirst({
-            where: {
-                id: Number(id),
-                idFasyankes
+        const getapi = await fetch(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/pasien/byid/${id}`, {
+            headers: {
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
             }
         })
-        return getDb
-    } catch (error) {
-        console.log(error);
-        return null
-    }
-}
-
-const getRegistrasi = async (id: string, idFasyankes: string) => {
-    try {
-        const getDb = await prisma.episodePendaftaran.findMany({
-            where: {
-                pasienId: Number(id),
-                idFasyankes
-            },
-            include: {
-                pendaftaran: {
-                    select: {
-                        penjamin: true,
-                        id: true,
-                        namaAsuransi: true,
-                        createdAt: true,
-                        jadwal: {
-
-                            include: {
-                                dokter: {
-                                    include: {
-                                        poliklinik: {
-                                            select: {
-                                                namaPoli: true
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        })
-        return getDb
+        if (!getapi.ok) {
+            return []
+        }
+        return getapi.json()
     } catch (error) {
         console.log(error);
         return []
     }
 }
+
+const getRegistrasi = async (id: string) => {
+
+    try {
+        const getapi = await fetch(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/pasien/riwayatregistrasi/${id}`, {
+            headers: {
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
+            }
+        })
+        if (!getapi.ok) {
+            return []
+        }
+        return getapi.json()
+    } catch (error) {
+        console.log(error);
+        return []
+    }
+
+}
 const PageRiwayatPendaftaran = async ({ params }: { params: { id: string } }) => {
-    const session = await getServerSession(authOption)
-    const resApi = await getData(params.id, session?.user.idFasyankes)
-    const regisTrasi = await getRegistrasi(params.id, session?.user.idFasyankes)
+    const resApi = await getData(params.id)
+    const regisTrasi = await getRegistrasi(params.id)
 
     return (
         <div className="flex flex-col gap-2">
             <PasienIdentitasComponent pasien={resApi} />
             <div className="card text-info-content border">
                 <div className="card-body">
-                    {regisTrasi.map((item) => {
+                    {regisTrasi.map((item: any) => {
                         return (
                             <table key={item.id} className="table table-zebra table-sm">
                                 <thead>
@@ -76,7 +54,7 @@ const PageRiwayatPendaftaran = async ({ params }: { params: { id: string } }) =>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {item.pendaftaran.map((reg) => {
+                                    {item.pendaftaran.map((reg: any) => {
                                         return (
                                             <tr key={reg.id}>
                                                 <td>

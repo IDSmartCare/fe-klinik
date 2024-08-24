@@ -3,22 +3,21 @@ import AlertHeaderComponent from "../setting/paramedis/components/AlertHeaderCom
 import FilterPasienComponent from "@/app/components/FilterPasienComponent"
 import ModalAddPasien from "./pageclient/ModalAddPasien"
 import PasienTableColumn from "./PasienTableColumn"
-import prisma from "@/db"
 import { getServerSession } from "next-auth"
 import { authOption } from "@/auth"
+import PasienTableColumnTester from "./PasienTableColumnTester"
 
 const getData = async (idFasyankes: string) => {
     try {
-        const getDb = await prisma.pasien.findMany({
-            where: {
-                idFasyankes
-            },
-            orderBy: {
-                id: 'desc'
-            },
-            take: 150
+        const getapi = await fetch(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/pasien/${idFasyankes}`, {
+            headers: {
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
+            }
         })
-        return getDb
+        if (!getapi.ok) {
+            return []
+        }
+        return getapi.json()
     } catch (error) {
         console.log(error);
         return []
@@ -32,7 +31,11 @@ const PagePasien = async () => {
             <FilterPasienComponent />
             <AlertHeaderComponent message="List 150 pasien terakhir" />
             <ModalAddPasien session={session} />
-            <TableFilterComponent rowsData={data} columnsData={PasienTableColumn} />
+            {session?.user.role === "tester" ?
+                <TableFilterComponent rowsData={data} columnsData={PasienTableColumnTester} />
+                :
+                <TableFilterComponent rowsData={data} columnsData={PasienTableColumn} />
+            }
         </>
     )
 }

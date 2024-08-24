@@ -6,9 +6,9 @@ import { typeFormPasienBaru } from "../interface/typeFormPasienBaru"
 import ButtonModalComponent, { icon } from "../../../components/ButtonModalComponent"
 import Select from 'react-select'
 import { useEffect, useId, useState } from "react"
-import { createPasien } from "../action"
 import { Session } from "next-auth"
 import AlertHeaderComponent from "../../setting/paramedis/components/AlertHeaderComponent"
+import { useRouter } from "next/navigation"
 
 const ModalAddPasien = ({ session }: { session: Session | null }) => {
     const uuid = useId()
@@ -52,6 +52,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
         }
         getProv()
     }, [])
+    const route = useRouter()
     const onSubmit: SubmitHandler<typeFormPasienBaru> = async (data) => {
 
         const alamat = {
@@ -100,15 +101,28 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
             statusMenikah: data.statusMenikah.value,
             ...alamat,
             ...(domisili && domisiliBody),
-            ...(!domisili && convertObtDomisili)
+            ...(!domisili && convertObtDomisili),
+            idFasyankes: session?.user.idFasyankes
 
         }
-        const post = await createPasien(bodyToPost, session?.user.idFasyankes)
-        if (post.status) {
-            ToastAlert({ icon: 'success', title: post.message as string })
+        try {
+            const postApi = await fetch(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/pasien`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
+                },
+                body: JSON.stringify(bodyToPost)
+            })
+            if (!postApi.ok) {
+                ToastAlert({ icon: 'error', title: 'Gagal simpan data!' })
+                return
+            }
+            ToastAlert({ icon: 'success', title: "Berhasil!" })
             reset()
-        } else {
-            ToastAlert({ icon: 'error', title: post.message as string })
+            route.refresh()
+        } catch (error: any) {
+            ToastAlert({ icon: 'error', title: error.message })
         }
     }
 
