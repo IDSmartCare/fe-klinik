@@ -122,6 +122,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
             reset()
             route.refresh()
         } catch (error: any) {
+            console.log(error);
             ToastAlert({ icon: 'error', title: error.message })
         }
     }
