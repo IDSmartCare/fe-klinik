@@ -106,12 +106,8 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
 
         }
         try {
-            const postApi = await fetch(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/pasien`, {
+            const postApi = await fetch(`/api/pasien/add`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
-                },
                 body: JSON.stringify(bodyToPost)
             })
             if (!postApi.ok) {
