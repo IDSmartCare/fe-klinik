@@ -1,5 +1,4 @@
 import PasienIdentitasComponent from "@/app/components/PasienIdentitasComponent"
-import prisma from "@/db"
 import AlertHeaderComponent from "../../setting/paramedis/components/AlertHeaderComponent"
 import FormAddCppt from "../pageclient/FormAddCppt"
 import { format } from "date-fns"
@@ -7,58 +6,33 @@ import { getServerSession } from "next-auth"
 import { authOption } from "@/auth"
 import QRCode from "react-qr-code";
 
-const getData = async (id: string, idFasyankes: string) => {
+const getData = async (id: string) => {
     try {
-        const getDb = await prisma.pasien.findFirst({
-            where: {
-                id: Number(id),
-                idFasyankes
+        const getapi = await fetch(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/pasien/byid/${id}`, {
+            headers: {
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
             }
         })
-        return getDb
+        if (!getapi.ok) {
+            return []
+        }
+        return getapi.json()
     } catch (error) {
         console.log(error);
-        return null
+        return []
     }
 }
 const getCppt = async (id: string, idFasyankes: string) => {
-    const totalRows = await prisma.sOAP.count({
-        where: {
-            idFasyankes,
-            pendaftaran: {
-                episodePendaftaran: {
-                    pasienId: Number(id)
-                }
-            }
-        }
-    });
-    const rowsToSkip = totalRows > 10 ? totalRows - 10 : 0;
     try {
-        const getDb = await prisma.sOAP.findMany({
-            take: 10,
-            skip: rowsToSkip,
-            orderBy: {
-                id: 'asc',
-            },
-            include: {
-                inputBy: {
-                    select: {
-                        id: true,
-                        namaLengkap: true
-                    }
-                },
-                resep: true
-            },
-            where: {
-                idFasyankes,
-                pendaftaran: {
-                    episodePendaftaran: {
-                        pasienId: Number(id)
-                    }
-                }
-            },
+        const getapi = await fetch(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/cppt/list/${id}/${idFasyankes}`, {
+            headers: {
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
+            }
         })
-        return getDb
+        if (!getapi.ok) {
+            return []
+        }
+        return getapi.json()
     } catch (error) {
         console.log(error);
         return []
@@ -69,7 +43,7 @@ const PageCPPT = async ({ params }: { params: { id: any } }) => {
     const idPasien = params.id[1]
     const session = await getServerSession(authOption)
 
-    const resApi = await getData(idPasien, session?.user.idFasyankes)
+    const resApi = await getData(idPasien)
     const getcppt = await getCppt(idPasien, session?.user.idFasyankes)
 
     return (
@@ -90,7 +64,7 @@ const PageCPPT = async ({ params }: { params: { id: any } }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {getcppt.map((item, index) => {
+                            {getcppt.map((item: any, index: number) => {
                                 return (
                                     <tr key={item.id}>
                                         <td>{index + 1}</td>
@@ -108,7 +82,7 @@ const PageCPPT = async ({ params }: { params: { id: any } }) => {
                                             <p>Diagnosa : {item.kodeDiagnosa}-{item.namaDiagnosa}</p>
                                             {item.profesi !== "Dokter" && <p className="mt-5 font-bold">Input by : {item.inputBy?.namaLengkap}</p>}
                                             {item.resep.length > 0 && <p className="font-bold mt-5">RESEP DOKTER</p>}
-                                            {item.resep.map((i) => {
+                                            {item.resep.map((i: any) => {
                                                 return (
                                                     <div key={i.id} className="italic mt-2" >
                                                         <p className="font-medium">R/</p>
@@ -141,7 +115,7 @@ const PageCPPT = async ({ params }: { params: { id: any } }) => {
                 </div>
             </div>
             <AlertHeaderComponent message="Tambah catatan baru" />
-            <FormAddCppt idregis={idRegis} idpasien={idPasien} session={session} />
+            <FormAddCppt idregis={idRegis} session={session} />
         </div>
     )
 }

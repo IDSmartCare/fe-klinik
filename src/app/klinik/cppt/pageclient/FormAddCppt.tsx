@@ -3,7 +3,6 @@
 import { SubmitButtonServer } from "@/app/components/SubmitButtonServerComponent"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { typeFormCppt } from "../interface/typeFormCppt"
-import { createCppt } from "../[...id]/actionAddCppt"
 import { ToastAlert } from "@/app/helper/ToastAlert"
 import { Session } from "next-auth"
 import { useId, useState } from "react"
@@ -11,8 +10,9 @@ import ErrorHeaderComponent from "@/app/components/ErrorHeaderComponent"
 import AsyncSelect from 'react-select/async';
 import { getApiBisnisOwner } from "@/app/lib/apiBisnisOwner"
 import { DiagnosaInterface, ObatInterface } from "../interface/typeFormResep"
+import { useRouter } from "next/navigation"
 
-const FormAddCppt = ({ idregis, idpasien, session }: { idregis: string, idpasien: string, session: Session | null }) => {
+const FormAddCppt = ({ idregis, session }: { idregis: string, session: Session | null }) => {
     const uuid = useId()
     const {
         register,
@@ -29,6 +29,7 @@ const FormAddCppt = ({ idregis, idpasien, session }: { idregis: string, idpasien
     const [aturanPakai, setAturanPakai] = useState("")
     const [waktu, setWaktu] = useState("")
     const [catatan, setCatatan] = useState("")
+    const route = useRouter()
 
     const onSubmit: SubmitHandler<typeFormCppt> = async (form) => {
         const namaDiagnosa = diagnosa.namaDiagnosa?.split("-")
@@ -42,14 +43,24 @@ const FormAddCppt = ({ idregis, idpasien, session }: { idregis: string, idpasien
             jamVerifDokter: session?.user.role === "dokter" ? new Date() : null,
             resep: listObat,
             kodeDiagnosa: diagnosa.kodeDiagnosa,
-            namaDiagnosa: namaDiagnosa?.[1]
+            namaDiagnosa: namaDiagnosa?.[1],
+            idFasyankes: session?.user.idFasyankes
         }
-        const post = await createCppt(body, idpasien, session?.user.idFasyankes)
-        if (post.status) {
-            ToastAlert({ icon: 'success', title: post.message as string })
+        try {
+            const postApi = await fetch(`/api/cppt/add`, {
+                method: "POST",
+                body: JSON.stringify(body)
+            })
+            if (!postApi.ok) {
+                ToastAlert({ icon: 'error', title: 'Gagal simpan data!' })
+                return
+            }
+            ToastAlert({ icon: 'success', title: "Berhasil!" })
             reset()
-        } else {
-            ToastAlert({ icon: 'error', title: post.message as string })
+            route.refresh()
+        } catch (error: any) {
+            console.log(error);
+            ToastAlert({ icon: 'error', title: error.message })
         }
         setListObat([])
     }
