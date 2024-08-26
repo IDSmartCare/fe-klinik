@@ -1,29 +1,30 @@
 import { calculateAge } from "@/app/helper/CalculateAge"
 import AlertHeaderComponent from "@/app/klinik/setting/paramedis/components/AlertHeaderComponent"
 import { authOption } from "@/auth"
-import prisma from "@/db"
 import { format } from "date-fns"
 import { getServerSession } from "next-auth"
 import SubMenuPasien from "../../components/SubMenuPasien"
 
-const getData = async (id: string, idFasyankes: string) => {
+const getData = async (id: string) => {
     try {
-        const getDb = await prisma.pasien.findFirst({
-            where: {
-                id: Number(id),
-                idFasyankes,
+        const getapi = await fetch(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/pasien/byid/${id}`, {
+            headers: {
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
             }
         })
-        return getDb
+        if (!getapi.ok) {
+            return []
+        }
+        return getapi.json()
     } catch (error) {
         console.log(error);
-        return null
+        return []
     }
 }
 const PageDetailPasien = async ({ params }: { params: { id: string } }) => {
     const session = await getServerSession(authOption)
-    const resApi = await getData(params.id, session?.user.idFasyankes)
-    const { years, months, days } = calculateAge(resApi?.tanggalLahir)
+    const resApi = await getData(params.id)
+    const { years, months, days } = calculateAge(new Date(resApi?.tanggalLahir))
     return (
         <>
             {

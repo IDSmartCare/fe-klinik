@@ -5,9 +5,9 @@ import { typeFormRegis } from '../interface/typeFormRegistrasi'
 import { useEffect, useId, useState } from 'react'
 import { SubmitButtonServer } from '@/app/components/SubmitButtonServerComponent'
 import { typeFormJadwal } from '../../setting/paramedis/jadwaldokter/interface/typeFormJadwal'
-import { createRegistrasi } from '../registrasi/[id]/action'
 import { ToastAlert } from '@/app/helper/ToastAlert'
 import { Session } from 'next-auth'
+import { useRouter } from 'next/navigation'
 const FormRegistrasi = ({ idpasien, session }: { idpasien: string, session: Session | null }) => {
     const [ifAsuransi, setIfAsuransi] = useState(false)
     const [namaAsuransi, setNamaAsuransi] = useState("")
@@ -21,6 +21,7 @@ const FormRegistrasi = ({ idpasien, session }: { idpasien: string, session: Sess
 
     const uuid = useId()
     const [dokter, setDokter] = useState<{ label: string, value: string }[]>([])
+    const route = useRouter()
 
     useEffect(() => {
         const getDokter = async () => {
@@ -47,15 +48,32 @@ const FormRegistrasi = ({ idpasien, session }: { idpasien: string, session: Sess
             pasienId: Number(idpasien),
             jadwalDokterId: data.jadwalDokterId.value,
             penjamin: data.penjamin.value,
-            namaAsuransi: namaAsuransi.length > 0 ? namaAsuransi : null
+            namaAsuransi: namaAsuransi.length > 0 ? namaAsuransi : null,
+            idFasyankes: session?.user.idFasyankes
         }
-        const post = await createRegistrasi(bodyPost, session?.user.idFasyankes)
-        if (post.status) {
-            ToastAlert({ icon: 'success', title: post.message as string })
+        try {
+            const postApi = await fetch(`/api/pasien/addregistrasi`, {
+                method: "POST",
+                body: JSON.stringify(bodyPost)
+            })
+            if (!postApi.ok) {
+                ToastAlert({ icon: 'error', title: 'Gagal simpan data!' })
+                return
+            }
+            ToastAlert({ icon: 'success', title: "Berhasil!" })
             reset()
-        } else {
-            ToastAlert({ icon: 'error', title: post.message as string })
+            route.refresh()
+        } catch (error: any) {
+            console.log(error);
+            ToastAlert({ icon: 'error', title: error.message })
         }
+        // const post = await createRegistrasi(bodyPost, session?.user.idFasyankes)
+        // if (post.status) {
+        //     ToastAlert({ icon: 'success', title: post.message as string })
+        //     reset()
+        // } else {
+        //     ToastAlert({ icon: 'error', title: post.message as string })
+        // }
 
     }
 
