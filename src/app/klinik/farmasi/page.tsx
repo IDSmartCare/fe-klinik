@@ -2,56 +2,18 @@ import AlertHeaderComponent from "../setting/paramedis/components/AlertHeaderCom
 import TableFilterComponent from "@/app/components/TableFilterComponent"
 import { getServerSession } from "next-auth"
 import { authOption } from "@/auth"
-import prisma from "@/db"
 import FarmasiTableColumn from "./FarmasiTableColumn"
 const getData = async (idFasyankes: string) => {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const tomorrow = new Date(today)
-    tomorrow.setDate(tomorrow.getDate() + 1)
     try {
-        const getDb = await prisma.sOAP.findMany({
-            where: {
-                idFasyankes,
-                profesi: 'dokter',
-                AND: [
-                    { createdAt: { gte: today } },
-                    { createdAt: { lt: tomorrow } },
-                ],
-            },
-            orderBy: {
-                id: 'desc',
-            },
-            include: {
-                pendaftaran: {
-                    include: {
-                        episodePendaftaran: {
-                            select: {
-                                pasien: {
-                                    select: {
-                                        noRm: true,
-                                        namaPasien: true,
-                                        jenisKelamin: true,
-                                        id: true
-                                    }
-                                }
-                            }
-                        },
-                        jadwal: {
-                            select: {
-                                dokter: {
-                                    select: {
-                                        namaLengkap: true
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
+        const getapi = await fetch(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/cppt/listfarmasi/${idFasyankes}`, {
+            headers: {
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
             }
         })
-        return getDb
+        if (!getapi.ok) {
+            return []
+        }
+        return getapi.json()
     } catch (error) {
         console.log(error);
         return []

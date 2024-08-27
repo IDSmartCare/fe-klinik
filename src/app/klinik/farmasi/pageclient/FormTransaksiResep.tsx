@@ -6,11 +6,11 @@ import AsyncSelect from 'react-select/async';
 import { getApiBisnisOwner, postApiBisnisOwner } from "@/app/lib/apiBisnisOwner";
 import { ObatInterface } from "../../cppt/interface/typeFormResep";
 import { Session } from "next-auth";
-import { addTransaksiObat } from "../addTransaksi";
 import { ToastAlert } from "@/app/helper/ToastAlert";
 import { getTransaksiFarmasi } from "./getTransaksi";
 import ModalPrintBillFarmasi from "./ModalPrintBillFarmasi";
 import { CetakBill } from "../interface/cetakBill";
+import { useRouter } from "next/navigation";
 
 const FormTransaksiResep = ({ data, session, soap, pendaftaranId, pasien }: {
     data: ListResepInterface[] | null, session: Session | null, soap: any,
@@ -21,6 +21,7 @@ const FormTransaksiResep = ({ data, session, soap, pendaftaranId, pasien }: {
     const [btnSimpan, setBtnSimpan] = useState(false)
     const [billFarmasi, setBillFarmasi] = useState<CetakBill>()
     const uuid = useId()
+    const route = useRouter()
 
     useEffect(() => {
         if (data) {
@@ -105,7 +106,8 @@ const FormTransaksiResep = ({ data, session, soap, pendaftaranId, pasien }: {
         const list = listResep?.map((item) => {
             return {
                 ...item,
-                total: Number(item.hargaJual) * Number(item.jumlah)
+                total: Number(item.hargaJual) * Number(item.jumlah),
+                pendaftaranId: pendaftaranId,
             }
         })
         const listToApi = listResep?.map((item) => {
@@ -123,12 +125,22 @@ const FormTransaksiResep = ({ data, session, soap, pendaftaranId, pasien }: {
             ToastAlert({ icon: 'error', title: postApi.message })
             return
         }
-        const post: any = await addTransaksiObat(list, pendaftaranId, soap.id)
-        if (post.status) {
-            ToastAlert({ icon: 'success', title: post.message as string })
-        } else {
-            ToastAlert({ icon: 'error', title: post.message as string })
+        try {
+            const postApi = await fetch(`/api/resep/add?idsoap=${soap.id}&idpendaftaran=${pendaftaranId}`, {
+                method: "POST",
+                body: JSON.stringify(list)
+            })
+            if (!postApi.ok) {
+                ToastAlert({ icon: 'error', title: 'Gagal simpan data!' })
+                return
+            }
+            ToastAlert({ icon: 'success', title: "Berhasil!" })
+            route.refresh()
+        } catch (error: any) {
+            console.log(error);
+            ToastAlert({ icon: 'error', title: error.message })
         }
+
     }
 
     const onChangeText = (e: any, jenisInput: string, id?: number) => {

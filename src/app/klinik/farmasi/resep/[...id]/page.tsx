@@ -1,59 +1,54 @@
 import PasienIdentitasComponent from "@/app/components/PasienIdentitasComponent";
 import AlertHeaderComponent from "@/app/klinik/setting/paramedis/components/AlertHeaderComponent";
 import { authOption } from "@/auth";
-import prisma from "@/db";
 import { getServerSession } from "next-auth";
 import FormTransaksiResep from "../../pageclient/FormTransaksiResep";
 import Link from "next/link";
 
 
-const getData = async (id: string, idFasyankes: string) => {
+const getData = async (id: string) => {
     try {
-        const getDb = await prisma.pasien.findFirst({
-            where: {
-                id: Number(id),
-                idFasyankes
+        const getapi = await fetch(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/pasien/byid/${id}`, {
+            headers: {
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
             }
         })
-        return getDb
+        if (!getapi.ok) {
+            return []
+        }
+        return getapi.json()
     } catch (error) {
         console.log(error);
-        return null
+        return []
     }
 }
 const getSoap = async (id: string) => {
     try {
-        const getDb = await prisma.sOAP.findFirst({
-            where: {
-                id: Number(id),
+        const getapi = await fetch(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/cppt/${id}`, {
+            headers: {
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
             }
         })
-        return getDb
+        if (!getapi.ok) {
+            return []
+        }
+        return getapi.json()
     } catch (error) {
         console.log(error);
-        return null
+        return []
     }
 }
 const getDataResep = async (id: string) => {
     try {
-        const getDb = await prisma.resepDokter.findMany({
-            where: {
-                sOAPId: Number(id)
-            },
-            include: {
-                SOAP: {
-                    include: {
-                        pendaftaran: {
-                            select: {
-                                id: true
-                            }
-                        }
-                    }
-                }
+        const getapi = await fetch(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/resep/bysoap/${id}`, {
+            headers: {
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
             }
-
         })
-        return getDb
+        if (!getapi.ok) {
+            return null
+        }
+        return getapi.json()
     } catch (error) {
         console.log(error);
         return null
@@ -67,7 +62,7 @@ const PageInputResep = async ({ params }: { params: { id: any } }) => {
     const session = await getServerSession(authOption)
     const data = await getDataResep(idSoap)
     const soap = await getSoap(idSoap)
-    const resApi = await getData(idPasien, session?.user.idFasyankes)
+    const resApi = await getData(idPasien)
     return (
         <div className="flex flex-col gap-2">
             <Link href={"/klinik/farmasi"}><button className="btn btn-sm btn-primary">
