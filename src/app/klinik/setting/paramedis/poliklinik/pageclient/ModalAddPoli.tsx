@@ -3,10 +3,10 @@
 import ButtonModalComponent, { icon } from "../../../../../components/ButtonModalComponent"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { typeFormPoliklinik } from "../interface/typeFormPoliklinik"
-import { createPoli } from "../action"
 import { ToastAlert } from "@/app/helper/ToastAlert"
 import { SubmitButtonServer } from "@/app/components/SubmitButtonServerComponent"
 import { Session } from "next-auth"
+import { useRouter } from "next/navigation"
 
 const ModalAddPoli = ({ session }: { session: Session | null }) => {
     const {
@@ -15,14 +15,29 @@ const ModalAddPoli = ({ session }: { session: Session | null }) => {
         formState: { errors },
         reset
     } = useForm<typeFormPoliklinik>()
+    const route = useRouter()
 
     const onSubmit: SubmitHandler<typeFormPoliklinik> = async (data) => {
-        const post = await createPoli(data, session?.user.idFasyankes)
-        if (post.status) {
-            ToastAlert({ icon: 'success', title: post.message as string })
+        const bodyToPost = {
+            namaPoli: data.namaPoli,
+            kodePoli: data.kodePoli,
+            idFasyankes: session?.user.idFasyankes
+        }
+        try {
+            const postApi = await fetch(`/api/poli/add`, {
+                method: "POST",
+                body: JSON.stringify(bodyToPost)
+            })
+            if (!postApi.ok) {
+                ToastAlert({ icon: 'error', title: 'Gagal simpan data!' })
+                return
+            }
+            ToastAlert({ icon: 'success', title: "Berhasil!" })
             reset()
-        } else {
-            ToastAlert({ icon: 'error', title: post.message as string })
+            route.refresh()
+        } catch (error: any) {
+            console.log(error);
+            ToastAlert({ icon: 'error', title: error.message })
         }
     }
     return (

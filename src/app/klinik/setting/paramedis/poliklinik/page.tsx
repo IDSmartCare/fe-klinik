@@ -2,20 +2,23 @@ import TableFilterComponent from "@/app/components/TableFilterComponent"
 import AlertHeaderComponent from "../components/AlertHeaderComponent"
 import ModalAddPoli from "./pageclient/ModalAddPoli"
 import PoliTableColumn from "./PoliTableColumn"
-import prisma from "@/db"
 import { getServerSession } from "next-auth"
 import { authOption } from "@/auth"
 import PoliTableColumnTester from "./PoliTableColumnTester"
 
 const getDataPoli = async (idFasyankes: string) => {
     try {
-        const getDb = await prisma.poliKlinik.findMany({
-            where: {
-                idFasyankes
+        const getapi = await fetch(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/setting/listpoli/${idFasyankes}`, {
+            headers: {
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
             }
         })
-        return getDb
+        if (!getapi.ok) {
+            return []
+        }
+        return getapi.json()
     } catch (error) {
+        console.log(error);
         return []
     }
 }

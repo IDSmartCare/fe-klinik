@@ -7,8 +7,8 @@ import { typeFormJadwal } from "../interface/typeFormJadwal"
 import { useEffect, useId, useState } from "react"
 import { typeFormDokter } from "../interface/typeFormDokter"
 import Select from 'react-select'
-import { createJadwal } from "../action"
 import { Session } from "next-auth"
+import { useRouter } from "next/navigation"
 
 const ModalAddJadwal = ({ session }: { session: Session | null }) => {
     const {
@@ -19,6 +19,7 @@ const ModalAddJadwal = ({ session }: { session: Session | null }) => {
         control
     } = useForm<typeFormJadwal>()
     const [listDokter, setListDokter] = useState<any[]>([])
+    const route = useRouter()
 
     useEffect(() => {
         async function getDokter() {
@@ -40,12 +41,28 @@ const ModalAddJadwal = ({ session }: { session: Session | null }) => {
     }, [session?.user.idFasyankes])
 
     const onSubmit: SubmitHandler<typeFormJadwal> = async (data) => {
-        const post = await createJadwal(data, session?.user.idFasyankes)
-        if (post.status) {
-            ToastAlert({ icon: 'success', title: post.message as string })
+        const bodyToPos = {
+            hari: data.kodeHari.label,
+            kodeHari: Number(data.kodeHari.value),
+            dokterId: Number(data.dokterId.value),
+            jamPraktek: `${data.jamDari}-${data.jamSampai}`,
+            idFasyankes: session?.user.idFasyankes
+        }
+        try {
+            const postApi = await fetch(`/api/jadwal/add`, {
+                method: "POST",
+                body: JSON.stringify(bodyToPos)
+            })
+            if (!postApi.ok) {
+                ToastAlert({ icon: 'error', title: 'Gagal simpan data!' })
+                return
+            }
+            ToastAlert({ icon: 'success', title: "Berhasil!" })
             reset()
-        } else {
-            ToastAlert({ icon: 'error', title: post.message as string })
+            route.refresh()
+        } catch (error: any) {
+            console.log(error);
+            ToastAlert({ icon: 'error', title: error.message })
         }
     }
     const uuid = useId()

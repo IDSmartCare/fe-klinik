@@ -2,32 +2,23 @@ import AlertHeaderComponent from "@/app/klinik/setting/paramedis/components/Aler
 import TableFilterComponent from "@/app/components/TableFilterComponent"
 import ModalAddJadwal from "./pageclient/ModalAddJadwal"
 import JadwalTableColumn from "./JadwalTableColumn"
-import prisma from "@/db"
 import { getServerSession } from "next-auth"
 import { authOption } from "@/auth"
 import JadwalTableColumnTester from "./JadwalTableColumnTester"
 
 const getData = async (idFasyankes: string) => {
     try {
-        const getDb = await prisma.jadwalDokter.findMany({
-            where: {
-                idFasyankes
-            },
-            include: {
-                dokter: {
-                    include: {
-                        poliklinik: {
-                            select: {
-                                namaPoli: true,
-                                kodePoli: true
-                            }
-                        }
-                    }
-                }
+        const getapi = await fetch(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/setting/listjadwal/${idFasyankes}`, {
+            headers: {
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
             }
         })
-        return getDb
+        if (!getapi.ok) {
+            return []
+        }
+        return getapi.json()
     } catch (error) {
+        console.log(error);
         return []
     }
 }
