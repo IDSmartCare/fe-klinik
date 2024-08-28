@@ -1,17 +1,17 @@
-import prisma from "@/db"
 import DetailBillPasien from "../../pageclient/DetailBillPasiten";
 
 const getData = async (pendaftaranId: string) => {
     try {
-        const getDb = await prisma.billPasien.findFirst({
-            where: {
-                pendaftaranId: Number(pendaftaranId)
+        const getapi = await fetch(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/kasir/getbyidpendaftaran/${pendaftaranId}`, {
+            headers: {
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
             },
-            include: {
-                billPasienDetail: true
-            }
+            cache: "no-cache"
         })
-        return getDb
+        if (!getapi.ok) {
+            return []
+        }
+        return getapi.json()
     } catch (error) {
         console.log(error);
         return []

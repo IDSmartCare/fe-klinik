@@ -1,56 +1,45 @@
 import PasienIdentitasComponent from "@/app/components/PasienIdentitasComponent"
 import { authOption } from "@/auth";
-import prisma from "@/db";
 import { getServerSession } from "next-auth";
 import ListBillingPasien from "../../components/ListBillingPasien";
 
-const getData = async (id: string, idFasyankes: string) => {
+const getData = async (id: string) => {
     try {
-        const getDb = await prisma.pasien.findFirst({
-            where: {
-                id: Number(id),
-                idFasyankes
+        const getapi = await fetch(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/pasien/byid/${id}`, {
+            headers: {
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
             }
         })
-        return getDb
+        if (!getapi.ok) {
+            return []
+        }
+        return getapi.json()
     } catch (error) {
         console.log(error);
-        return null
+        return []
     }
 }
 const getRegis = async (id: string, idFasyankes: string) => {
     try {
-        const registrasi = await prisma.pendaftaran.findMany({
-            where: {
-                episodePendaftaranId: Number(id),
-                idFasyankes
-            },
-            orderBy: {
-                id: 'desc'
-            },
-            include: {
-                jadwal: {
-                    include: {
-                        dokter: {
-                            include: {
-                                poliklinik: true
-                            }
-                        }
-                    }
-                }
+        const getapi = await fetch(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/pasien/riwayatregistrasi/byepisode/${id}/${idFasyankes}`, {
+            headers: {
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
             }
         })
-        return registrasi
+        if (!getapi.ok) {
+            return []
+        }
+        return getapi.json()
     } catch (error) {
         console.log(error);
-        return null
+        return []
     }
 }
 const BillingPasien = async ({ params }: { params: { id: any } }) => {
     const idPasien = params.id[0]
     const idEpisode = params.id[1]
     const session = await getServerSession(authOption)
-    const resApi = await getData(idPasien, session?.user.idFasyankes)
+    const resApi = await getData(idPasien)
     const getRegisData = await getRegis(idEpisode, session?.user.idFasyankes)
 
     return (

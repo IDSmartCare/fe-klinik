@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react"
 import { ToastAlert } from "@/app/helper/ToastAlert";
-import { actionPembayaran } from "./pembayaran";
 import { getBillingDetail } from "./getBilling";
 import ModalPrintKwintansi from "./ModalPrintKwitansi";
+import { useRouter } from "next/navigation";
 
 const DetailBillPasien = ({ detailBill }: { detailBill: any }) => {
     const [discount, setDiscount] = useState('');
@@ -16,6 +16,7 @@ const DetailBillPasien = ({ detailBill }: { detailBill: any }) => {
     const [totalDiskon, setTotalDiskon] = useState(0)
     const [totalPajak, setTotalPajak] = useState(0)
     const [billData, setBillData] = useState<any>()
+    const route = useRouter()
 
     useEffect(() => {
         setSubTotal(detailBill?.billPasienDetail.reduce((prev: any, next: any) => Number(prev) + Number(next.subTotal), 0))
@@ -56,12 +57,30 @@ const DetailBillPasien = ({ detailBill }: { detailBill: any }) => {
         } else if (bayar < total) {
             ToastAlert({ icon: 'error', title: 'Pembayaran harus lebih besar/sama dengan total tagihan!' })
         } else {
-            const post = await actionPembayaran(detailBill.id, detailBill.pendaftaranId,
-                bayar, total, totalDiskon, totalPajak, kembali)
-            if (post.status) {
-                ToastAlert({ icon: 'success', title: post.message as string })
-            } else {
-                ToastAlert({ icon: 'error', title: post.message as string })
+            const bodyToPost = {
+                id: detailBill.id,
+                pendaftaranId: detailBill.pendaftaranId,
+                bayar,
+                total,
+                totalDiskon,
+                totalPajak,
+                kembali,
+                tglBayar: new Date()
+            }
+            try {
+                const postApi = await fetch(`/api/kasir/bayar`, {
+                    method: "POST",
+                    body: JSON.stringify(bodyToPost)
+                })
+                if (!postApi.ok) {
+                    ToastAlert({ icon: 'error', title: 'Gagal simpan data!' })
+                    return
+                }
+                ToastAlert({ icon: 'success', title: "Berhasil!" })
+                route.refresh()
+            } catch (error: any) {
+                console.log(error);
+                ToastAlert({ icon: 'error', title: error.message })
             }
         }
     }

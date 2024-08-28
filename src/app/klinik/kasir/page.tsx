@@ -2,32 +2,20 @@ import TableFilterComponent from "@/app/components/TableFilterComponent"
 import AlertHeaderComponent from "../setting/paramedis/components/AlertHeaderComponent"
 import { getServerSession } from "next-auth"
 import { authOption } from "@/auth"
-import prisma from "@/db"
 import KasirTableCoulumn from "./KasirTableColumn"
 
 
 const getData = async (idFasyankes: string) => {
     try {
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
-        const tomorrow = new Date(today)
-        tomorrow.setDate(tomorrow.getDate() + 1)
-        const getDb = await prisma.episodePendaftaran.findMany({
-            where: {
-                AND: [
-                    { createdAt: { gte: today } },
-                    { createdAt: { lt: tomorrow } },
-                ],
-                idFasyankes
-            },
-            include: {
-                pasien: true
-            },
-            orderBy: {
-                id: 'desc',
-            },
+        const getapi = await fetch(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/pasien/riwayatregistrasi/byfaskes/${idFasyankes}`, {
+            headers: {
+                "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
+            }
         })
-        return getDb
+        if (!getapi.ok) {
+            return []
+        }
+        return getapi.json()
     } catch (error) {
         console.log(error);
         return []
