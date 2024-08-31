@@ -5,6 +5,10 @@ import { ListUserLoginInterface } from "./interface/listuserlogin"
 const columHelper = createColumnHelper<ListUserLoginInterface>()
 
 const UserTableColumn = [
+    columHelper.accessor(row => row.id_profile, {
+        cell: info => info.getValue(),
+        header: "ID"
+    }),
     columHelper.accessor(row => row.username, {
         cell: info => info.getValue(),
         header: "Username"
