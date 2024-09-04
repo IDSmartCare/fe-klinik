@@ -25,7 +25,8 @@ const ListBillingPasien = ({ dataRegis, session }: { dataRegis: any, session: Se
                     <div className="card bg-base-100 w-96 shadow-xl" key={item.id}>
                         <div className="card-body">
                             <h2 className="card-title">{format(item.createdAt, 'dd/MM/yyyy HH:mm')}</h2>
-                            <p>ID Registrasi : {item?.id}</p>
+                            <p>ID : {item.billPasien[0].id}</p>
+                            <p>PendaftaranID : {item?.id}</p>
                             <p>Penjamin : {item?.penjamin}</p>
                             <p>Poli : {item.jadwal?.dokter.poliklinik?.namaPoli}</p>
                             <p>Dokter : {item.jadwal?.dokter.namaLengkap}</p>

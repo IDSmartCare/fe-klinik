@@ -54,7 +54,8 @@ const ModalAddJadwal = ({ session }: { session: Session | null }) => {
                 body: JSON.stringify(bodyToPos)
             })
             if (!postApi.ok) {
-                ToastAlert({ icon: 'error', title: 'Gagal simpan data!' })
+                const resMessage = await postApi.json()
+                ToastAlert({ icon: 'error', title: resMessage.message })
                 return
             }
             ToastAlert({ icon: 'success', title: "Berhasil!" })

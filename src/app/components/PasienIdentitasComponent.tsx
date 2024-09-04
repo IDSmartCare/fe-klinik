@@ -26,6 +26,12 @@ const PasienIdentitasComponent = ({ pasien }: { pasien: any }) => {
                             <td>: {pasien?.bpjs}</td>
                         </tr>
                         <tr>
+                            <th>WARGANEGARA</th>
+                            <td>: {pasien?.wargaNegara}</td>
+                            <th>PASPOR</th>
+                            <td>: {pasien?.paspor}</td>
+                        </tr>
+                        <tr>
                             <th>STATUS PERNIKAHAN</th>
                             <td>: {pasien?.statusMenikah.replace("_", " ")}</td>
                             <th>AGAMA</th>

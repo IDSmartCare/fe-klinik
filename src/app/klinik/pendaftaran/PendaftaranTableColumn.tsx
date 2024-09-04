@@ -14,6 +14,10 @@ const PendaftaranTableCoulumn = [
         cell: info => info.getValue(),
         header: "Nama"
     }),
+    columHelper.accessor(row => row.episodePendaftaran.pasien.paspor, {
+        cell: info => info.getValue(),
+        header: "Paspor"
+    }),
     columHelper.accessor(row => row.episodePendaftaran.pasien.jenisKelamin, {
         cell: info => info.getValue(),
         header: "Jenis Kelamin"

@@ -16,6 +16,7 @@ export type typeListTerdaftar = {
             jenisKelamin: string
             kelurahan: string
             id: number
+            paspor: string
         }
     }
     namaAsuransi?: string
