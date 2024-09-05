@@ -6,8 +6,8 @@ import { NextAuthProvider } from "./layout/AuthLayout";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "CoreApp-idSmartCare",
-  description: "CoreApp-idSmartCare",
+  title: "CoreApp - idSmartCare",
+  description: "CoreApp - idSmartCare",
 };
 
 export default function RootLayout({
