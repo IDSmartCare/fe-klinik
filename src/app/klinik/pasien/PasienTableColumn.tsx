@@ -9,21 +9,11 @@ const columHelper = createColumnHelper<typeFormPasienBaru>();
 const onChange = async (e: any, id: any) => {
   try {
     const fetchBody = await fetch(
-      `${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/pasien/${id}`,
-      {
-        method: "PATCH",
-        body: JSON.stringify({ isAktif: e.target.checked }),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
-        },
-      }
+      `/api/pasien/editstatus?idpasien=${id}&target=${e.target.checked}`
     );
-    if (!fetchBody.ok) {
-      ToastAlert({ icon: "error", title: "Error" });
-      return;
+    if (fetchBody.ok) {
+      ToastAlert({ icon: "success", title: "Ok" });
     }
-    ToastAlert({ icon: "success", title: "Ok" });
   } catch (error: any) {
     ToastAlert({ icon: "error", title: error.message });
   }
