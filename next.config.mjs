@@ -11,22 +11,22 @@ const cspHeader = `
     form-action 'self';
     frame-ancestors 'none';
     upgrade-insecure-requests;
-`
+`;
 
 const nextConfig = {
-    async headers() {
-        return [
-            {
-                source: "/(.*)",
-                headers: [
-                    {
-                        key: 'Content-Security-Policy',
-                        value: cspHeader.replace(/\n/g, ''),
-                    }
-                ]
-            }
-        ]
-    }
+  // async headers() {
+  //     return [
+  //         {
+  //             source: "/(.*)",
+  //             headers: [
+  //                 {
+  //                     key: 'Content-Security-Policy',
+  //                     value: cspHeader.replace(/\n/g, ''),
+  //                 }
+  //             ]
+  //         }
+  //     ]
+  // }
 };
 
 export default nextConfig;

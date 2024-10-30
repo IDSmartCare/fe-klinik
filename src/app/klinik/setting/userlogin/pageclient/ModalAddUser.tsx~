@@ -66,23 +66,16 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
       });
       if (posttoApi.status) {
         ToastAlert({ icon: "success", title: posttoApi.message as string });
-        reset();
-        setTimeout(() => route.refresh(), 1000);
       } else {
         ToastAlert({ icon: "error", title: "Gagal" });
-
-        // Set API errors on specific fields
-        if (posttoApi.errors) {
-          Object.keys(posttoApi.errors).forEach((field) => {
-            setError(field as keyof FormAddUser, {
-              type: "api",
-              message: posttoApi.errors[field],
-            });
-          });
-        }
+        setError(posttoApi.errors);
       }
+      reset();
+      setTimeout(() => {
+        route.refresh();
+      }, 1000);
     } else {
-      ToastAlert({ icon: "error", title: post.message as string });
+      // ToastAlert({ icon: "error", title: posttoApi.message as string });
     }
   };
   const onChangeRole = (e: any) => {

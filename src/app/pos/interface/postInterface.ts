@@ -4,12 +4,12 @@ export interface StokBarangInterface {
     barang_id: string;
     stok: number;
     barang: Barang;
-    diskon: Diskon
+    diskon?: Diskon
 }
 
 interface Diskon {
     stok_barang_id: string
-    type: string
+    type?: string
     percent_disc: number
     amount_disc: string
     expired_disc: string
