@@ -1,1 +1,1 @@
-{"version":1,"functions":{"/api/paramedis/findalldokter":{},"/api/paramedis/findallpoli":{},"/api/paramedis/getpoliklinikbyid":{}}}
+{"version":1,"functions":{"/api/paramedis/findalldokter":{},"/api/paramedis/getpoliklinikbyid":{},"/api/paramedis/findallpoli":{}}}

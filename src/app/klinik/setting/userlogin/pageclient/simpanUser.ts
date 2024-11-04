@@ -34,3 +34,15 @@ export async function createUser(form: FormAddUser, idFasyankes: string) {
     };
   }
 }
+
+export async function checkUserExistsByRole(role: string, idFasyankes: string) {
+  const existingUser = await prisma.profile.count({
+    where: {
+      profesi: role.toUpperCase(),
+      unit: role.toUpperCase(),
+      idFasyankes,
+    },
+  });
+  console.log("Existing User:", existingUser); // Debug log
+  return existingUser;
+}

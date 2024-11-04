@@ -35,6 +35,7 @@ const FormAddCppt = ({
   const [aturanPakai, setAturanPakai] = useState("");
   const [waktu, setWaktu] = useState("");
   const [catatan, setCatatan] = useState("");
+  const [selectedObat, setSelectedObat] = useState(null);
   const route = useRouter();
 
   const onSubmit: SubmitHandler<typeFormCppt> = async (form) => {
@@ -87,9 +88,15 @@ const FormAddCppt = ({
       harga_jual: obat.harga_jual,
       stok: obat.stok,
     };
-    // if (aturanPakai === "" && waktu === "") {
-    // }
     setListObat([objtObat, ...listObat]);
+    setJumlah("");
+    setSigna1("");
+    setSigna2("");
+    setAturanPakai("");
+    setWaktu("");
+    setCatatan("");
+    setObat({} as ObatInterface); // Reset selected obat
+    setSelectedObat(null);
   };
   const removeResep = (i: number) => {
     const newList = listObat.filter((item, index) => index != i);
@@ -166,6 +173,7 @@ const FormAddCppt = ({
   };
 
   const onChangeObat = (e: any) => {
+    setSelectedObat(e);
     if (e) {
       setObat({
         namaObat: e.label,
@@ -307,6 +315,7 @@ const FormAddCppt = ({
                   onChange={(e) => onChangeObat(e)}
                   placeholder="Cari obat"
                   instanceId={uuid}
+                  value={selectedObat}
                 />
                 <div className="flex gap-2 items-center">
                   <input

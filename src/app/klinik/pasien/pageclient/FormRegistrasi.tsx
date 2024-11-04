@@ -33,7 +33,7 @@ const FormRegistrasi = ({
     const getDokter = async () => {
       const hari = new Date().getDay();
       const resDokter = await fetch(
-        `/api/paramedis/getjadwaldokter?hari=${hari}&idFasyankes=${session?.user.idFasyankes}`,
+        `/api/paramedis/getjadwaldokter?hari=${hari}&idFasyankes=${session?.user.idFasyankes}`
       );
       if (!resDokter.ok) {
         setDokter([]);
@@ -52,28 +52,43 @@ const FormRegistrasi = ({
   }, [session?.user.idFasyankes]);
   const onSubmit: SubmitHandler<typeFormRegis> = async (data) => {
     const bodyPost = {
-      pasienId: Number(idpasien),
-      jadwalDokterId: data.jadwalDokterId.value,
-      penjamin: data.penjamin.value,
-      namaAsuransi: namaAsuransi.length > 0 ? namaAsuransi : null,
-      idFasyankes: session?.user.idFasyankes,
+      pasienData: {
+        pasienId: Number(idpasien),
+        jadwalDokterId: data.jadwalDokterId.value,
+        penjamin: data.penjamin.value,
+        namaAsuransi: namaAsuransi.length > 0 ? namaAsuransi : null,
+        idFasyankes: session?.user.idFasyankes,
+      },
+      userRole: session?.user.role,
+      userPackage: session?.user.package,
     };
+
     try {
       const postApi = await fetch(`/api/pasien/addregistrasi`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Important to specify content type
+        },
         body: JSON.stringify(bodyPost),
       });
+
+      // Handle server-side validation error
       if (!postApi.ok) {
-        ToastAlert({ icon: "error", title: "Gagal simpan data!" });
+        const errorResponse = await postApi.json();
+        if (errorResponse.message) {
+          ToastAlert({ icon: "error", title: errorResponse.message });
+        } else {
+          ToastAlert({ icon: "error", title: "Gagal simpan data!" });
+        }
         return;
       }
 
       ToastAlert({ icon: "success", title: "Berhasil!" });
       reset();
       route.refresh();
-    } catch (error: any) {
+    } catch (error) {
       console.log(error);
-      ToastAlert({ icon: "error", title: error.message });
+      ToastAlert({ icon: "error", title: "Gagal!" });
     }
     // const post = await createRegistrasi(bodyPost, session?.user.idFasyankes)
     // if (post.status) {

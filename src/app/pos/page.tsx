@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getApiBisnisOwner, postApiBisnisOwner } from "../lib/apiBisnisOwner";
 import { useSession } from "next-auth/react";
 import {
@@ -13,6 +13,7 @@ import Link from "next/link";
 import GetPosByGroupId from "./getPos";
 import { TransaksiAfterSubmit } from "./interface/listAfterSubmit";
 import ModalPrintBill from "./pageclient/ModalPrintBill";
+import { formatRupiah, formatRupiahEdit } from "../utils/formatRupiah";
 
 const PagePos = () => {
   const { data } = useSession();
@@ -31,20 +32,43 @@ const PagePos = () => {
   const [hpPelanggan, setHpPelanggan] = useState("");
   const [namaPelanggan, setNamaPelanggan] = useState("");
   const [jenisDiskon, setJenisDiskon] = useState("");
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+  const [isEditing, setIsEditing] = useState(false);
   const [resAfterSubmit, setResAfterSubmit] = useState<
     TransaksiAfterSubmit | null | undefined
   >();
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
-    const getApiBarang = async (wfid: string) => {
-      const apiRes = await getApiBisnisOwner({
-        url: `master-barang?wfid=${wfid}`,
-      });
-      setBarang(apiRes.data.data);
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+    return () => {
+      clearTimeout(handler);
     };
+  }, [search]);
+
+  useEffect(() => {
     const wfid = data?.user.wfid;
-    getApiBarang(wfid);
-  }, [data?.user]);
+    const getApiBarang = async (search: string) => {
+      const apiRes = await getApiBisnisOwner({
+        url: `master-barang?wfid=${wfid}&search=${search}`,
+      });
+
+      setBarang(apiRes?.data?.data);
+    };
+    if (wfid) {
+      getApiBarang(search);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.user, debouncedSearch]); // Tambahkan search jika diperlukan
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value); // Update state dengan nilai input
+    console.log("Search value:", e.target.value);
+  };
 
   const onClickTambah = (barang: StokBarangInterface) => {
     const existingItem = pembelian.find(
@@ -114,18 +138,61 @@ const PagePos = () => {
   };
 
   const onChangeBiayaLain = (e: string) => {
-    setBiayaLain(e);
-    calculatorTotal(Number(pajak), Number(e), Number(diskon));
+    const rawValue = e.replace(/[^0-9]/g, ""); // Get numeric value
+    if (rawValue) {
+      setBiayaLain(rawValue); // Store the raw numeric value
+      calculatorTotal(Number(pajak), Number(rawValue), Number(diskon));
+    } else {
+      setBiayaLain("");
+      calculatorTotal(Number(pajak), 0, Number(diskon));
+    }
   };
 
   const onChangePajak = (e: string) => {
-    setPajak(e);
-    calculatorTotal(Number(e), Number(biayaLain), Number(diskon));
+    if (/^\d*$/.test(e)) {
+      setPajak(e);
+      calculatorTotal(Number(e), Number(biayaLain), Number(diskon));
+    } else {
+      setPajak("");
+      calculatorTotal(0, Number(biayaLain), Number(diskon));
+    }
   };
 
+  // const onChangeDiskon = (e: string) => {
+  //   if (jenisDiskon === "rp" && /^\d*$/.test(e)) {
+  //     setDiskon(e);
+  //     calculatorTotal(Number(pajak), Number(biayaLain), Number(e));
+  //   } else if (jenisDiskon === "percent" && /^\d*$/.test(e) && e.length <= 2) {
+  //     setDiskon(e);
+  //     calculatorTotal(Number(pajak), Number(biayaLain), Number(e));
+  //   } else {
+  //     setDiskon("");
+  //     calculatorTotal(Number(pajak), Number(biayaLain), 0);
+  //   }
+  // };
+
   const onChangeDiskon = (e: string) => {
-    setDiskon(e);
-    calculatorTotal(Number(pajak), Number(biayaLain), Number(e));
+    const rawValue = e.replace(/[^\d]/g, ""); // Hapus semua karakter kecuali angka
+    if (jenisDiskon === "rp") {
+      setDiskon(formatRupiahEdit(rawValue)); // Format rupiah saat mengetik
+      calculatorTotal(Number(pajak), Number(biayaLain), Number(rawValue));
+    } else if (jenisDiskon === "percent" && rawValue.length <= 2) {
+      setDiskon(rawValue); // Batas 2 karakter untuk persen
+      calculatorTotal(Number(pajak), Number(biayaLain), Number(rawValue));
+    }
+  };
+
+  const handleRadioChange = (e: string) => {
+    setJenisDiskon(e);
+
+    setDiskon(""); // Reset the diskon state to empty string
+    // Ensure the input field is also cleared (if needed)
+    if (inputRef.current) {
+      inputRef.current.value = ""; // Clear the input value directly
+    }
+
+    // Optionally call calculatorTotal with 0 to reset the calculation
+    calculatorTotal(Number(pajak), Number(biayaLain), 0);
   };
 
   const calculatorTotal = (
@@ -145,7 +212,7 @@ const PagePos = () => {
       discountAmount = diskon;
       setHargaDiskon(diskon);
     }
-    let newTotal = total - discountAmount + biayalain;
+    let newTotal = total - discountAmount + Number(biayalain);
     setTotal(newTotal);
   };
 
@@ -167,6 +234,7 @@ const PagePos = () => {
     const listToApi = pembelian?.map((item) => {
       return {
         barang_id: item.barang_id,
+        nama_obat: item.nama_barang,
         qty: item.qty,
       };
     });
@@ -193,17 +261,20 @@ const PagePos = () => {
         total: total.toString(),
         totalBayar: bayar,
       },
-      data?.user.idFasyankes
+      data?.user.idFasyankes,
+      data?.user.package
     );
     if (post.status) {
       const postApi = await postApiBisnisOwner({
         url: "decrease-stock",
         data: bodyToPost,
       });
+
       if (!postApi.status) {
         ToastAlert({ icon: "error", title: postApi.message });
         return;
       }
+
       ToastAlert({ icon: "success", title: post.message as string });
       const modal: any = document?.getElementById("modal-pos");
       modal.close();
@@ -230,9 +301,10 @@ const PagePos = () => {
     setPembelian(list);
   };
 
-  const onChangePembayaran = (e: string) => {
-    setBayar(e);
-    setKembalian(Number(e) - total);
+  const onChangePembayaran = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const numericValue = e.target.value.replace(/[^0-9]/g, "");
+    setBayar(numericValue);
+    setKembalian(Number(numericValue) - total);
   };
 
   return (
@@ -272,7 +344,13 @@ const PagePos = () => {
       </div>
       <div className="flex gap-2">
         <div className="w-2/3 h-full flex flex-col min-h-screen p-2">
-          {/* <input placeholder="Cari obat" className="input input-primary w-full join-item" /> */}
+          <input
+            type="text" // Tambahkan type untuk input
+            placeholder="Cari obat"
+            className="input input-primary w-full join-item"
+            value={search} // Set nilai input berdasarkan state
+            onChange={handleSearchChange} // Panggil handler saat nilai input berubah
+          />
           <div className="overflow-x-auto">
             <table className="table">
               <thead>
@@ -419,7 +497,7 @@ const PagePos = () => {
                 <p className="font-medium label-text">Sub Total</p>
                 <input
                   type="text"
-                  value={subTotal}
+                  value={formatRupiah(subTotal)}
                   readOnly
                   className="input input-bordered w-full max-w-xs"
                 />
@@ -427,8 +505,8 @@ const PagePos = () => {
               <div className="flex items-center justify-between">
                 <p className="font-medium label-text">Pajak %</p>
                 <input
-                  type="number"
-                  max={100}
+                  type="text"
+                  maxLength={2}
                   value={pajak}
                   onChange={(e) => onChangePajak(e.target.value)}
                   className="input input-bordered w-full max-w-xs"
@@ -440,7 +518,7 @@ const PagePos = () => {
                 <input
                   type="radio"
                   className="radio radio-primary"
-                  onChange={(e) => setJenisDiskon(e.target.value)}
+                  onChange={() => handleRadioChange("percent")}
                   name="diskon"
                   value={"percent"}
                 />
@@ -448,13 +526,21 @@ const PagePos = () => {
                 <input
                   type="radio"
                   className="radio radio-primary"
-                  onChange={(e) => setJenisDiskon(e.target.value)}
+                  onChange={() => handleRadioChange("rp")}
                   name="diskon"
                   value={"rp"}
                 />
                 <input
+                  ref={inputRef}
                   type="text"
-                  value={diskon}
+                  value={
+                    jenisDiskon === "percent"
+                      ? diskon
+                      : formatRupiahEdit(diskon) // Menampilkan format rupiah saat tidak mengedit
+                  }
+                  onFocus={() => setIsEditing(true)}
+                  onBlur={() => setIsEditing(false)}
+                  maxLength={jenisDiskon === "percent" ? 2 : undefined}
                   onChange={(e) => onChangeDiskon(e.target.value)}
                   className="input input-bordered w-full max-w-xs"
                 />
@@ -462,8 +548,10 @@ const PagePos = () => {
               <div className="flex items-center justify-between">
                 <p className="font-medium label-text">Biaya Lainnya</p>
                 <input
-                  type="number"
-                  value={biayaLain}
+                  type="text"
+                  value={formatRupiahEdit(biayaLain)} // Always format for display
+                  onFocus={() => setIsEditing(true)}
+                  onBlur={() => setIsEditing(false)}
                   onChange={(e) => onChangeBiayaLain(e.target.value)}
                   className="input input-bordered w-full max-w-xs"
                 />
@@ -496,20 +584,20 @@ const PagePos = () => {
             <div className="flex items-center">
               <p className="w-1/3">Total</p>
               <input
-                type="number"
+                type="text"
                 readOnly
-                value={total.toString()}
+                value={formatRupiah(total)}
                 className="input input-primary"
               />
             </div>
             <div className="flex items-center">
               <p className="w-1/3">Bayar</p>
               <input
-                type="number"
+                type="text"
                 required
-                value={bayar}
+                value={formatRupiah(bayar)}
                 name="bayar"
-                onChange={(e) => onChangePembayaran(e.target.value)}
+                onChange={onChangePembayaran}
                 autoFocus
                 className="input input-primary"
               />
@@ -517,8 +605,8 @@ const PagePos = () => {
             <div className="flex items-center">
               <p className="w-1/3">Kembali</p>
               <input
-                type="number"
-                value={kembalian}
+                type="text"
+                value={formatRupiah(kembalian)}
                 readOnly
                 className="input input-primary"
               />

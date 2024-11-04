@@ -9,7 +9,7 @@ import Select from "react-select";
 import { typeFormPoliklinik } from "../../paramedis/poliklinik/interface/typeFormPoliklinik";
 import { Session } from "next-auth";
 import { FormAddUser } from "../interface/typeFormUser";
-import { createUser } from "./simpanUser";
+import { checkUserExistsByRole, createUser } from "./simpanUser";
 import { ToastAlert } from "@/app/helper/ToastAlert";
 import { postApiBisnisOwner } from "@/app/lib/apiBisnisOwner";
 import { useRouter } from "next/navigation";
@@ -31,7 +31,7 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
   useEffect(() => {
     async function getListPoli() {
       const getRes = await fetch(
-        `/api/paramedis/findallpoli?idFasyankes=${session?.user.idFasyankes}`,
+        `/api/paramedis/findallpoli?idFasyankes=${session?.user.idFasyankes}`
       );
       if (!getRes.ok) {
         setOption([]);
@@ -49,6 +49,42 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
     getListPoli();
   }, [session?.user.idFasyankes]);
   const onSubmit: SubmitHandler<FormAddUser> = async (data) => {
+    // Jika package FREE, lakukan pengecekan hanya untuk role yang dipilih
+    if (session?.user.package === "FREE") {
+      const roleToAdd = data.role.value; // Ambil role yang ingin ditambahkan
+
+      // Cek apakah sudah ada user untuk role yang dipilih
+      const existingUser = await checkUserExistsByRole(
+        roleToAdd,
+        session?.user.idFasyankes
+      );
+
+      // Batasi setiap role untuk hanya memiliki satu user
+      if (existingUser >= 1) {
+        return ToastAlert({
+          icon: "error",
+          title: `Paket FREE hanya mengizinkan 1 pengguna untuk role ${data.role.label}.`,
+        });
+      }
+    } else if (session?.user.package === "plus") {
+      const roleToAdd = data.role.value; // Ambil role yang ingin ditambahkan
+
+      // Cek apakah sudah ada user untuk role yang dipilih
+      const existingUser = await checkUserExistsByRole(
+        roleToAdd,
+        session?.user.idFasyankes
+      );
+
+      // Batasi setiap role untuk hanya memiliki satu user
+      if (existingUser >= 4) {
+        return ToastAlert({
+          icon: "error",
+          title: `Paket PLUS hanya mengizinkan 4 pengguna untuk role ${data.role.label}.`,
+        });
+      }
+    }
+
+    // Jika tidak ada pembatasan atau role belum mencapai limit, lanjutkan dengan proses penambahan pengguna
     const post = await createUser(data, session?.user.idFasyankes);
     if (post.status) {
       const body = {
@@ -69,7 +105,7 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
         reset();
         setTimeout(() => route.refresh(), 1000);
       } else {
-        ToastAlert({ icon: "error", title: "Gagal" });
+        ToastAlert({ icon: "error", title: "Gagal Menambahkan User" });
 
         // Set API errors on specific fields
         if (posttoApi.errors) {
@@ -82,9 +118,10 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
         }
       }
     } else {
-      ToastAlert({ icon: "error", title: post.message as string });
+      ToastAlert({ icon: "error", title: "Gagal Menambahkan User" });
     }
   };
+
   const onChangeRole = (e: any) => {
     if (e.target.value) {
       const val = e.target.value;
@@ -187,14 +224,18 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
                     instanceId={uuid}
                     className="w-full"
                     isClearable
-                    options={[
-                      { value: "admin", label: "Admin" },
-                      { value: "admisi", label: "Pendaftaran" },
-                      { value: "dokter", label: "Dokter" },
-                      { value: "perawat", label: "Perawat" },
-                      { value: "farmasi", label: "Farmasi" },
-                      { value: "kasir", label: "Kasir" },
-                    ]}
+                    options={
+                      session?.user.type === "Apotek"
+                        ? [{ value: "kasir", label: "Kasir" }]
+                        : [
+                            { value: "admin", label: "Admin" },
+                            { value: "admisi", label: "Pendaftaran" },
+                            { value: "dokter", label: "Dokter" },
+                            { value: "perawat", label: "Perawat" },
+                            { value: "farmasi", label: "Farmasi" },
+                            { value: "kasir", label: "Kasir" },
+                          ]
+                    }
                   />
                 )}
               />

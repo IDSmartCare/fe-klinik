@@ -1,5 +1,12 @@
+import { authOption } from "@/auth";
+import { getServerSession } from "next-auth";
+
 export default async function Home() {
+  const session = await getServerSession(authOption);
+
   return (
-    <p>Dashboard</p>
-  )
+    <p>
+      {session?.user.package} {session?.user.type} {session?.user.role}
+    </p>
+  );
 }

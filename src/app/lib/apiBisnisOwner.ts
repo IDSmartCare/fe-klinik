@@ -42,3 +42,4 @@ export const postApiBisnisOwner = async ({
     return null;
   }
 };
+
