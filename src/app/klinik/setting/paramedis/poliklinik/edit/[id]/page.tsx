@@ -9,14 +9,15 @@ const getDataPoli = async (id: string) => {
       `${process.env.NEXT_PUBLIC_URL_BE}/api/paramedis/getpoliklinikbyid?idpoli=${id}`
     );
     const res = await getDb.json();
+
     return res;
   } catch (error) {
     return null;
   }
 };
 const EditPoli = async ({ params }: { params: { id: string } }) => {
+  const session = await getServerSession(authOption);
   const dataPoli = await getDataPoli(params.id);
-  const session = await await getServerSession(authOption);
   return (
     <div className="flex flex-col gap-2 items-center">
       <AlertHeaderComponent message="Edit Poliklinik" />

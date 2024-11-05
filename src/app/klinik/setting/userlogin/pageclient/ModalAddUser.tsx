@@ -67,7 +67,7 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
         });
       }
     } else if (
-      session?.user.package === "plus" &&
+      session?.user.package === "Plus" &&
       session?.user.type === "Klinik"
     ) {
       const roleToAdd = data.role.value; // Ambil role yang ingin ditambahkan
