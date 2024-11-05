@@ -109,6 +109,11 @@ export const listMenu = [
         title: "User Login",
         url: "/klinik/setting/userlogin",
       },
+      {
+        id: 4,
+        title: "Master SOAP",
+        url: "/klinik/setting/mastersoap",
+      },
     ],
   },
 ];

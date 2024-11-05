@@ -11,7 +11,7 @@ import { AddMasterTarif } from "../interface/typeFormAddTarif";
 // import { createTarif } from "./simpanMasterTarif";
 import { ToastAlert } from "@/app/helper/ToastAlert";
 import { useRouter } from "next/navigation";
-import { postApiMasterTarif } from "../../../../lib/apiMasterTarif";
+import { postApiMasterTarif } from "../../../../api/mastertarif/apiMasterTarif";
 import { formatRupiahEdit } from "@/app/utils/formatRupiah";
 
 const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {

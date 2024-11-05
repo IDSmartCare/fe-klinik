@@ -48,6 +48,14 @@ const BaseLayoutComponent = ({
                 return null; // Do not render the Setting menu
               }
 
+              const isFreeApotekKasir =
+                session?.user.role === "kasir" &&
+                session?.user.package === "FREE" &&
+                session?.user.type === "Apotek";
+
+              // Show only "Kasir" menu with "POS" and "History POS" submenus for Free Apotek Kasir users
+              if (isFreeApotekKasir && item.menu !== "Kasir") return null;
+
               return (
                 <li key={item.id}>
                   {item.submenu && item.submenu.length > 0 ? (

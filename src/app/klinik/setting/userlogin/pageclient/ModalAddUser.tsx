@@ -66,7 +66,10 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
           title: `Paket FREE hanya mengizinkan 1 pengguna untuk role ${data.role.label}.`,
         });
       }
-    } else if (session?.user.package === "plus") {
+    } else if (
+      session?.user.package === "plus" &&
+      session?.user.type === "Klinik"
+    ) {
       const roleToAdd = data.role.value; // Ambil role yang ingin ditambahkan
 
       // Cek apakah sudah ada user untuk role yang dipilih

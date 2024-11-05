@@ -38,6 +38,8 @@ const FormAddCppt = ({
   const [selectedObat, setSelectedObat] = useState(null);
   const route = useRouter();
 
+  const isEmpty = (obj: ObatInterface) => Object.keys(obj).length === 0;
+
   const onSubmit: SubmitHandler<typeFormCppt> = async (form) => {
     const namaDiagnosa = diagnosa.namaDiagnosa?.split("-");
 
@@ -197,7 +199,7 @@ const FormAddCppt = ({
       className="flex items-center flex-col gap-2"
     >
       <div className="join gap-2">
-        <div className="form-control">
+        <div className="form-control relative">
           <div className="label">
             <span className="label-text">Subjective</span>
           </div>
@@ -213,8 +215,16 @@ const FormAddCppt = ({
               </span>
             </label>
           )}
+          {session?.user.role === "dokter" && (
+            <button
+              type="button"
+              className=" btn absolute bottom-2 right-2 btn-primary text-white rounded-full btn-sm"
+            >
+              +
+            </button>
+          )}
         </div>
-        <div className="form-control">
+        <div className="form-control relative">
           <div className="label">
             <span className="label-text">Objective</span>
           </div>
@@ -230,8 +240,16 @@ const FormAddCppt = ({
               </span>
             </label>
           )}
+          {session?.user.role === "dokter" && (
+            <button
+              type="button"
+              className=" btn absolute bottom-2 right-2 btn-primary text-white rounded-full btn-sm"
+            >
+              +
+            </button>
+          )}
         </div>
-        <div className="form-control">
+        <div className="form-control relative">
           <div className="label">
             <span className="label-text">Assesment</span>
           </div>
@@ -247,8 +265,16 @@ const FormAddCppt = ({
               </span>
             </label>
           )}
+          {session?.user.role === "dokter" && (
+            <button
+              type="button"
+              className=" btn absolute bottom-2 right-2 btn-primary text-white rounded-full btn-sm"
+            >
+              +
+            </button>
+          )}
         </div>
-        <div className="form-control">
+        <div className="form-control relative">
           <div className="label">
             <span className="label-text">Plan</span>
           </div>
@@ -263,6 +289,14 @@ const FormAddCppt = ({
                 {errors.plan.message}
               </span>
             </label>
+          )}
+          {session?.user.role === "dokter" && (
+            <button
+              type="button"
+              className=" btn absolute bottom-2 right-2 btn-primary text-white rounded-full btn-sm"
+            >
+              +
+            </button>
           )}
         </div>
         <div className="form-control">
@@ -370,7 +404,7 @@ const FormAddCppt = ({
                   onClick={() => onClickResep()}
                   className="btn btn-sm btn-warning"
                   type="button"
-                  disabled={aturanPakai === "" || waktu === ""}
+                  disabled={aturanPakai === "" || waktu === "" || isEmpty(obat)}
                 >
                   Tambah
                 </button>
