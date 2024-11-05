@@ -6,7 +6,7 @@ import { getServerSession } from "next-auth";
 const getDataPoli = async (id: string) => {
   try {
     const getDb = await fetch(
-      `${process.env.NEXT_PUBLIC_URL_BE}/api/paramedis/getpoliklinikbyid?idpoli=${id}`
+      `${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/api/paramedis/getpoliklinikbyid?idpoli=${id}`
     );
     const res = await getDb.json();
 

@@ -34,7 +34,6 @@ const PagePoli = async () => {
     <>
       <AlertHeaderComponent message="List poliklinik" />
       <ModalAddPoli session={session} />
-      <div></div>
       {session?.user.role === "tester" ? (
         <TableFilterComponent
           rowsData={data}
