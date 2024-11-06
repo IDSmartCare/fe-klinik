@@ -29,6 +29,9 @@ const FormEditPoli = ({
       if (res.id) {
         ToastAlert({ icon: "success", title: "Berhasil!" });
         route.refresh();
+        setTimeout(() => {
+          route.push("/klinik/setting/paramedis/poliklinik");
+        }, 500);
       } else {
         ToastAlert({ icon: "error", title: "Error" });
       }
