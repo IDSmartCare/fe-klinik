@@ -11,17 +11,5 @@ export async function GET(req: Request) {
     },
   });
 
-  // Create a response with CORS headers
-  const response = new Response(JSON.stringify(data), {
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*", // Change * to your allowed origin if needed
-      "Access-Control-Allow-Methods": "GET, POST, OPTIONS", // Adjust methods based on your needs
-      "Access-Control-Allow-Headers": "Content-Type", // Specify allowed headers
-    },
-  });
-
-  return response;
+  return Response.json(data);
 }
-
-export const dynamic = "force-dynamic";
