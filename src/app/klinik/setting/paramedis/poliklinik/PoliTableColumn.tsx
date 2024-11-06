@@ -103,7 +103,7 @@ const PoliTableColumn = [
         </div>
         <div data-tip="Edit Poli" className="tooltip">
           <Link
-            href={`/klinik/setting/paramedis/poliklinik/edit/${info.getValue()}`}
+          href={`/klinik/setting/paramedis/poliklinik/edit/${info.getValue()}`}
             className="btn btn-circle btn-info btn-xs"
           >
             <svg

@@ -11,7 +11,6 @@ import { AddMasterTarif } from "../interface/typeFormAddTarif";
 // import { createTarif } from "./simpanMasterTarif";
 import { ToastAlert } from "@/app/helper/ToastAlert";
 import { useRouter } from "next/navigation";
-import { postApiMasterTarif } from "../../../../api/mastertarif/apiMasterTarif";
 import { formatRupiahEdit } from "@/app/utils/formatRupiah";
 
 const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
@@ -29,7 +28,6 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
 
   const onSubmit: SubmitHandler<AddMasterTarif> = async (data) => {
-    // const post = await createTarif(data, session?.user.idFasyankes);
     if (data) {
       const body = {
         namaTarif: data.namaTarif,
@@ -39,37 +37,55 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
         idFasyankes: session?.user.idFasyankes,
       };
 
-      const posttoApi = await postApiMasterTarif({
-        url: "master-tarif/create",
-        data: body,
-      });
+      try {
+        const posttoApi = await fetch("/api/mastertarif", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
 
-      if (posttoApi) {
-        if (modalRef.current) {
-          modalRef.current.close();
-        }
-        ToastAlert({ icon: "success", title: "Berhasil Menambahkan Tarif" });
-        reset();
-        setTimeout(() => {
-          route.refresh(), 1000;
-          document.location.reload();
-        }, 2000);
-      } else {
-        ToastAlert({ icon: "error", title: "Gagal Menambahkan Tarif" });
-        console.log(posttoApi);
+        if (posttoApi.ok) {
+          ToastAlert({ icon: "success", title: "Berhasil Menambahkan Tarif" });
 
-        // Set API errors on specific fields
-        if (posttoApi.errors) {
-          Object.keys(posttoApi.errors).forEach((field) => {
-            setError(field as keyof AddMasterTarif, {
-              type: "api",
-              message: posttoApi.errors[field],
-            });
+          if (modalRef.current) {
+            modalRef.current.close();
+          }
+
+          reset();
+          setTimeout(() => {
+            route.refresh();
+            document.location.reload();
+          }, 2000);
+        } else {
+          const errorResponse = await posttoApi.json();
+          // Handle errors from API response
+          ToastAlert({
+            icon: "error",
+            title: errorResponse.message || "Gagal Menambahkan Tarif",
           });
+
+          // Set API errors on specific fields
+          if (errorResponse.errors) {
+            Object.keys(errorResponse.errors).forEach((field) => {
+              setError(field as keyof AddMasterTarif, {
+                type: "api",
+                message: errorResponse.errors[field],
+              });
+            });
+          }
         }
+      } catch (error: any) {
+        // Handle fetch or unexpected errors
+        ToastAlert({
+          icon: "error",
+          title: error.message || "Terjadi Kesalahan",
+        });
+        console.error(error);
       }
     } else {
-      ToastAlert({ icon: "error", title: data as string });
+      ToastAlert({ icon: "error", title: "Data tidak valid" });
     }
   };
 
