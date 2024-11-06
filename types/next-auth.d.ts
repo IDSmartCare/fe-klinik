@@ -4,7 +4,7 @@ declare module "next-auth" {
   interface User {
     username: string;
     role: string;
-    id_profile: number | null;
+    id_profile: any;
     is_active: string;
     created_by: string;
     created_at: string;

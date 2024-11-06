@@ -27,6 +27,7 @@ const getDataDokter = async (idFasyankes: string) => {
         return []
     }
 }
+
 const PageDokter = async () => {
     const session = await getServerSession(authOption)
     const data = await getDataDokter(session?.user.idFasyankes)

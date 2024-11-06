@@ -10,6 +10,7 @@ const getDataPoli = async (id: string) => {
       `${process.env.NEXT_PUBLIC_URL_BE}/api/paramedis/getpoliklinikbyid?idpoli=${id}`
     );
     const res = await getDb.json();
+    console.log("Response data:", res); // Log response
 
     return res;
   } catch (error) {
@@ -18,6 +19,7 @@ const getDataPoli = async (id: string) => {
 };
 const EditPoli = async ({ params }: { params: { id: string } }) => {
   const session = await getServerSession(authOption);
+  console.log("Session data:", session);
   const dataPoli = await getDataPoli(params.id);
   return (
     <div className="flex flex-col gap-2 items-center">

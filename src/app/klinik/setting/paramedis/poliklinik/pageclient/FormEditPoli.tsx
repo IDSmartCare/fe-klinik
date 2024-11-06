@@ -46,7 +46,7 @@ const FormEditPoli = ({
           <input
             type="text"
             readOnly
-            value={data?.kodePoli}
+            value={data?.kodePoli || "Tidak ada data"}
             className="input input-bordered w-full input-sm"
           />
         </div>
@@ -56,7 +56,7 @@ const FormEditPoli = ({
           </div>
           <input
             type="text"
-            defaultValue={data?.namaPoli}
+            defaultValue={data?.namaPoli || "Tidak ada data"}
             name="namaPoli"
             className="input input-primary w-full input-sm"
           />
