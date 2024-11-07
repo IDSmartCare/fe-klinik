@@ -9,7 +9,7 @@ import Select from "react-select";
 import { typeFormPoliklinik } from "../../paramedis/poliklinik/interface/typeFormPoliklinik";
 import { Session } from "next-auth";
 import { FormAddUser } from "../interface/typeFormUser";
-import { checkUserExistsByRole, createUser } from "./simpanUser";
+import { checkUserExistsByRole, createUser, deleteUser } from "./simpanUser";
 import { ToastAlert } from "@/app/helper/ToastAlert";
 import { postApiBisnisOwner } from "@/app/lib/apiBisnisOwner";
 import { useRouter } from "next/navigation";
@@ -49,17 +49,13 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
     getListPoli();
   }, [session?.user.idFasyankes]);
   const onSubmit: SubmitHandler<FormAddUser> = async (data) => {
-    // Jika package FREE, lakukan pengecekan hanya untuk role yang dipilih
     if (session?.user.package === "FREE") {
-      const roleToAdd = data.role.value; // Ambil role yang ingin ditambahkan
-
-      // Cek apakah sudah ada user untuk role yang dipilih
+      const roleToAdd = data.role.value;
       const existingUser = await checkUserExistsByRole(
         roleToAdd,
         session?.user.idFasyankes
       );
 
-      // Batasi setiap role untuk hanya memiliki satu user
       if (existingUser >= 1) {
         return ToastAlert({
           icon: "error",
@@ -70,15 +66,12 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
       session?.user.package === "Plus" &&
       session?.user.type === "Klinik"
     ) {
-      const roleToAdd = data.role.value; // Ambil role yang ingin ditambahkan
-
-      // Cek apakah sudah ada user untuk role yang dipilih
+      const roleToAdd = data.role.value;
       const existingUser = await checkUserExistsByRole(
         roleToAdd,
         session?.user.idFasyankes
       );
 
-      // Batasi setiap role untuk hanya memiliki satu user
       if (existingUser >= 4) {
         return ToastAlert({
           icon: "error",
@@ -87,7 +80,7 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
       }
     }
 
-    // Jika tidak ada pembatasan atau role belum mencapai limit, lanjutkan dengan proses penambahan pengguna
+    // Panggil createUser untuk mendapatkan id_profile
     const post = await createUser(data, session?.user.idFasyankes);
     if (post.status) {
       const body = {
@@ -97,20 +90,24 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
         created_by: data.createdBy,
         role: data.role.value,
         fasyankes_id: session?.user.idFasyankes,
-        id_profile: post.data?.id,
+        id_profile: post.data?.id, // Ambil id_profile dari hasil createUser
       };
+
+      // Lanjutkan dengan postApiBisnisOwner menggunakan id_profile dari createUser
       const posttoApi = await postApiBisnisOwner({
         url: "access-fasyankes/store",
         data: body,
       });
+
       if (posttoApi.status) {
         ToastAlert({ icon: "success", title: posttoApi.message as string });
         reset();
         setTimeout(() => route.refresh(), 1000);
       } else {
+        // Hapus user yang dibuat jika postApiBisnisOwner gagal
+        await deleteUser(post.data?.id.toString() as string);
         ToastAlert({ icon: "error", title: "Gagal Menambahkan User" });
 
-        // Set API errors on specific fields
         if (posttoApi.errors) {
           Object.keys(posttoApi.errors).forEach((field) => {
             setError(field as keyof FormAddUser, {

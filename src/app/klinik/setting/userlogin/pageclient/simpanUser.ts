@@ -35,6 +35,27 @@ export async function createUser(form: FormAddUser, idFasyankes: string) {
   }
 }
 
+export async function deleteUser(profileId: string) {
+  try {
+    await prisma.profile.delete({
+      where: {
+        id: Number(profileId),
+      },
+    });
+    revalidatePath("/klinik/setting/userlogin");
+    return {
+      status: true,
+      message: "User berhasil dihapus",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: false,
+      message: error,
+    };
+  }
+}
+
 export async function checkUserExistsByRole(role: string, idFasyankes: string) {
   const existingUser = await prisma.profile.count({
     where: {

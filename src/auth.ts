@@ -46,6 +46,7 @@ export const authOption: NextAuthOptions = {
         token.package = user.fasyankes.package;
         // token.package = "plus";
         token.type = user.fasyankes.type;
+        // token.type = "Klinik";
       }
       return token;
     },

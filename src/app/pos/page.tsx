@@ -87,7 +87,10 @@ const PagePos = () => {
           } else {
             totalDiskon =
               Number(barang.barang.harga_jual) -
-              Number(barang.diskon?.amount_disc);
+              Number(barang.diskon?.amount_disc)
+                ? Number(barang.barang.harga_jual) -
+                  Number(barang.diskon?.amount_disc)
+                : Number(barang.barang.harga_jual);
           }
           return {
             ...item,
@@ -109,7 +112,10 @@ const PagePos = () => {
         totalDiskon = subTotal;
       } else {
         totalDiskon =
-          Number(barang.barang.harga_jual) - Number(barang.diskon?.amount_disc);
+          Number(barang.barang.harga_jual) - Number(barang.diskon?.amount_disc)
+            ? Number(barang.barang.harga_jual) -
+              Number(barang.diskon?.amount_disc)
+            : Number(barang.barang.harga_jual);
       }
       const addBarang: any = {
         barang_id: barang.barang_id,
@@ -119,10 +125,13 @@ const PagePos = () => {
         totalHarga: totalDiskon,
         diskonFromBo: barang.diskon?.amount_disc
           ? barang.diskon.amount_disc
-          : Number(barang.barang.harga_jual) *
-            (Number(barang.diskon?.percent_disc) / 100),
+          : barang.diskon?.percent_disc
+          ? Number(barang.barang.harga_jual) *
+            (Number(barang.diskon.percent_disc) / 100)
+          : 0, // Set to 0 if no diskon information is available
       };
       let allBarang = [...pembelian, addBarang];
+      console.log(addBarang);
       setPembelian([...pembelian, addBarang]);
       subTotalCalculate(allBarang);
     }
@@ -229,7 +238,6 @@ const PagePos = () => {
 
   const onSubmitData = async (e: any) => {
     e.preventDefault();
-    const bayar = e.target.bayar.value;
     let groupId = new Date().valueOf().toString();
     const listToApi = pembelian?.map((item) => {
       return {
@@ -243,7 +251,7 @@ const PagePos = () => {
       wfid: data?.user.wfid,
     };
 
-    if (bayar < total) {
+    if (Number(bayar) < total) {
       ToastAlert({ icon: "error", title: "Pembayaran tidak boleh kurang" });
       return;
     }
@@ -304,6 +312,7 @@ const PagePos = () => {
   const onChangePembayaran = (e: React.ChangeEvent<HTMLInputElement>) => {
     const numericValue = e.target.value.replace(/[^0-9]/g, "");
     setBayar(numericValue);
+    console.log("Bayar value:", numericValue);
     setKembalian(Number(numericValue) - total);
   };
 
@@ -464,7 +473,7 @@ const PagePos = () => {
                         {new Intl.NumberFormat("id-ID", {
                           style: "currency",
                           currency: "IDR",
-                        }).format(item.totalHarga)}
+                        }).format(Number(item.totalHarga))}
                       </td>
                       <td>
                         <button
@@ -595,7 +604,7 @@ const PagePos = () => {
               <input
                 type="text"
                 required
-                value={formatRupiah(bayar)}
+                value={formatRupiahEdit(bayar)}
                 name="bayar"
                 onChange={onChangePembayaran}
                 autoFocus
