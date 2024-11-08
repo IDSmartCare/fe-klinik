@@ -133,9 +133,6 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
     try {
       const postApi = await fetch(`/api/pasien/add`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json", // Important to specify content type
-        },
         body: JSON.stringify(bodyToPost),
       });
 
