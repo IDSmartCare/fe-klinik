@@ -11,7 +11,7 @@ import { AddMasterTarif } from "../interface/typeFormAddTarif";
 // import { createTarif } from "./simpanMasterTarif";
 import { ToastAlert } from "@/app/helper/ToastAlert";
 import { useRouter } from "next/navigation";
-import { formatRupiahEdit } from "@/app/utils/formatRupiah";
+import { formatRupiahEdit } from "@/app/helper/formatRupiah";
 
 const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
   const {
@@ -39,10 +39,6 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
 
       try {
         const posttoApi = await fetch("/api/mastertarif", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
           body: JSON.stringify(body),
         });
 
@@ -206,9 +202,9 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
                       placeholder="Pilih Penjamin"
                       instanceId={uuid}
                       options={[
-                        { value: "bpjs", label: "BPJS" },
-                        { value: "pribadi", label: "PRIBADI" },
-                        { value: "asuransi", label: "ASURANSI" },
+                        { value: "BPJS", label: "BPJS" },
+                        { value: "PRIBADI", label: "PRIBADI" },
+                        { value: "ASURANSI", label: "ASURANSI" },
                       ]}
                     />
                     {errors.penjamin && (

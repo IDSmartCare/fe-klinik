@@ -11,7 +11,7 @@ const onChange = async (e: any, id: any) => {
     const fetchBody = await fetch(
       `/api/pasien/editstatus?idpasien=${id}&target=${e.target.checked}`
     );
-    if (fetchBody.ok) {
+    if (fetchBody) {
       ToastAlert({ icon: "success", title: "Ok" });
     }
   } catch (error: any) {

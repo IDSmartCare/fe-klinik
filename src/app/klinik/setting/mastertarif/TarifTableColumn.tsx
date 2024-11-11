@@ -2,7 +2,7 @@
 import { createColumnHelper } from "@tanstack/table-core";
 import { ListTarifInterface } from "./interface/listTarif";
 import Link from "next/link";
-import { formatRupiah } from "@/app/utils/formatRupiah";
+import { formatRupiah } from "@/app/helper/formatRupiah";
 
 const columHelper = createColumnHelper<ListTarifInterface>();
 

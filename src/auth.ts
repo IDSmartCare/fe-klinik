@@ -43,8 +43,8 @@ export const authOption: NextAuthOptions = {
         token.username = user.username;
         token.wfid = user.wfid;
         token.idProfile = user.id_profile;
-        token.package = user.fasyankes.package;
-        // token.package = "plus";
+        // token.package = user.fasyankes.package;
+        token.package = "plus";
         token.type = user.fasyankes.type;
         // token.type = "Klinik";
       }

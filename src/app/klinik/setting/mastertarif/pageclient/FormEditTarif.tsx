@@ -6,7 +6,7 @@ import { ToastAlert } from "@/app/helper/ToastAlert";
 import EditAction from "../edit/editAction";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { formatRupiahEdit } from "@/app/utils/formatRupiah";
+import { formatRupiahEdit } from "@/app/helper/formatRupiah";
 
 const FormEditTarif = ({ dataForm }: { dataForm: any }) => {
   const [rawHargaTarif, setRawHargaTarif] = useState(dataForm.hargaTarif);

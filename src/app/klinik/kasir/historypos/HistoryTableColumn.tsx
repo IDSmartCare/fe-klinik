@@ -3,7 +3,7 @@ import { createColumnHelper } from "@tanstack/table-core";
 import { format } from "date-fns";
 import Link from "next/link";
 import { TransaksiPosInterface } from "../interface/listHistoryPos";
-import { formatRupiah } from "@/app/utils/formatRupiah";
+import { formatRupiah } from "@/app/helper/formatRupiah";
 
 const columHelper = createColumnHelper<TransaksiPosInterface>();
 

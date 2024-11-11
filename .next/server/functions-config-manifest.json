@@ -1,1 +1,1 @@
-{"version":1,"functions":{"/api/paramedis/findallpoli":{},"/api/paramedis/findalldokter":{}}}
+{"version":1,"functions":{"/api/paramedis/findalldokter":{},"/api/paramedis/findallpoli":{}}}

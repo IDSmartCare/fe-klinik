@@ -1,7 +1,7 @@
 import AlertHeaderComponent from "@/app/klinik/setting/paramedis/components/AlertHeaderComponent";
 import prisma from "@/db";
 import { TransaksiPOSDetail } from "../../../interface/listHistoryPos";
-import { formatRupiah } from "@/app/utils/formatRupiah";
+import { formatRupiah } from "@/app/helper/formatRupiah";
 
 const getData = async (id: string) => {
   try {
@@ -19,7 +19,7 @@ const getData = async (id: string) => {
     return [];
   }
 };
-const DetailPos = async ({ params }: { params: { id: any } }) => {
+const DetailPos = async ({ params }: { params: { id: string } }) => {
   const id = params.id[0];
   const data: any = await getData(id);
   return (

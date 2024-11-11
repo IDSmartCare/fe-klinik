@@ -13,7 +13,7 @@ import Link from "next/link";
 import GetPosByGroupId from "./getPos";
 import { TransaksiAfterSubmit } from "./interface/listAfterSubmit";
 import ModalPrintBill from "./pageclient/ModalPrintBill";
-import { formatRupiah, formatRupiahEdit } from "../utils/formatRupiah";
+import { formatRupiah, formatRupiahEdit } from "../helper/formatRupiah";
 
 const PagePos = () => {
   const { data } = useSession();
@@ -67,7 +67,6 @@ const PagePos = () => {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value); // Update state dengan nilai input
-    console.log("Search value:", e.target.value);
   };
 
   const onClickTambah = (barang: StokBarangInterface) => {
@@ -296,7 +295,7 @@ const PagePos = () => {
       setResAfterSubmit(getDataAfterSubmit.data as any);
       setTimeout(() => {
         const modal: any = document?.getElementById("modal-pos-print");
-        modal.show();
+        modal?.show();
       }, 2000);
     } else {
       ToastAlert({ icon: "error", title: post.message as string });
@@ -372,6 +371,14 @@ const PagePos = () => {
               </thead>
               <tbody>
                 {barang?.map((item) => {
+                  const existingItem = pembelian.find(
+                    (pembelianItem) =>
+                      pembelianItem.barang_id === item.barang_id
+                  );
+                  const isOutOfStock = existingItem
+                    ? existingItem.qty >= item.stok
+                    : false;
+
                   return (
                     <tr key={item?.barang_id}>
                       <td>
@@ -408,6 +415,7 @@ const PagePos = () => {
                         <button
                           onClick={() => onClickTambah(item)}
                           className="btn btn-primary"
+                          disabled={isOutOfStock || item?.stok === 0}
                         >
                           Tambah
                         </button>
@@ -569,6 +577,7 @@ const PagePos = () => {
               <div>
                 <button
                   onClick={() => onBayar()}
+                  disabled={total === 0}
                   className="btn btn-info btn-block"
                 >
                   BAYAR{" "}

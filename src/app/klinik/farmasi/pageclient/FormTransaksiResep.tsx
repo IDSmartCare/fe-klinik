@@ -15,6 +15,7 @@ import ModalPrintBillFarmasi from "./ModalPrintBillFarmasi";
 import { CetakBill } from "../interface/cetakBill";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
+import { set } from "date-fns";
 
 const FormTransaksiResep = ({
   data,
@@ -34,14 +35,17 @@ const FormTransaksiResep = ({
   const [btnSimpan, setBtnSimpan] = useState(false);
   const [isObatSelected, setIsObatSelected] = useState(false);
   const [billFarmasi, setBillFarmasi] = useState<CetakBill>();
+  const [isTransaction, setIsTransaction] = useState(false);
   const uuid = useId();
   const route = useRouter();
 
   useEffect(() => {
-    if (data) {
-      setListResep([...data]);
+    if (isTransaction) {
+      setListResep([]);
+    } else {
+      setListResep(data ?? []);
     }
-  }, [data, btnSimpan]);
+  }, [data, isTransaction]);
 
   const optionCariObat = (inputValue: string) =>
     new Promise<[]>((resolve) => {
@@ -126,10 +130,18 @@ const FormTransaksiResep = ({
     if (listResep) {
       const filter = listResep.filter((i) => i.id !== id);
       setListResep([...filter]);
+    } else {
+      setListResep([]);
     }
   };
   const onClickSimpan = async () => {
     setBtnSimpan(!btnSimpan);
+
+    const invalidItems = listResep?.some((item) => Number(item.jumlah) === 0);
+    if (invalidItems) {
+      ToastAlert({ icon: "error", title: "Barang tidak boleh berjumlah 0!" });
+      return;
+    }
 
     const list = listResep?.map((item) => ({
       ...item,
@@ -173,7 +185,12 @@ const FormTransaksiResep = ({
       });
 
       if (!hitApi.status) {
-        ToastAlert({ icon: "error", title: hitApi.message });
+        ToastAlert({
+          icon: "error",
+          title: hitApi.message
+            ? hitApi.message
+            : "Silahkan pilih obat terlebih dahulu",
+        });
         return;
       }
 
@@ -196,6 +213,7 @@ const FormTransaksiResep = ({
       // Success toast for the second API call
       ToastAlert({ icon: "success", title: "Berhasil!" });
       route.refresh(); // Refresh route on successful post
+      setIsTransaction(true);
     } catch (error: any) {
       console.log(error);
       ToastAlert({
@@ -244,171 +262,178 @@ const FormTransaksiResep = ({
 
   return (
     <div className="flex flex-col">
-      {session?.user.role !== "admin" && (
-        <table className="table table-sm table-zebra mb-8">
-          <thead className="bg-base-200">
-            <tr>
-              <th colSpan={2}>Tambah Obat Baru</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="bg-info">
-              <td>
-                <div className="flex items-center">
-                  <AsyncSelect
-                    className="select-info w-full"
-                    required
-                    isClearable
-                    name="obat"
-                    loadOptions={optionCariObat}
-                    defaultOptions
-                    onChange={(e) => onChangeObat(e)}
-                    placeholder="Cari obat"
-                    instanceId={uuid}
-                  />
-                  {session?.user.role !== "tester" &&
-                    session?.user.role !== "admin" && (
-                      <div
-                        className="tooltip tooltip-left w-20"
-                        data-tip="Tambah Resep"
-                      >
-                        <button
-                          className="btn btn-sm btn-circle btn-primary"
-                          disabled={!isObatSelected}
-                          onClick={() => onAddResep()}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 16 16"
-                            fill="currentColor"
-                            className="size-4"
+      {!soap.isBillingFarmasi && (
+        <div>
+          {session?.user.role !== "admin" && (
+            <table className="table table-sm table-zebra mb-8">
+              <thead className="bg-base-200">
+                <tr>
+                  <th colSpan={2}>Tambah Obat Baru</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="bg-info">
+                  <td>
+                    <div className="flex items-center">
+                      <AsyncSelect
+                        className="select-info w-full"
+                        required
+                        isClearable
+                        name="obat"
+                        loadOptions={optionCariObat}
+                        defaultOptions
+                        onChange={(e) => onChangeObat(e)}
+                        placeholder="Cari obat"
+                        instanceId={uuid}
+                      />
+                      {session?.user.role !== "tester" &&
+                        session?.user.role !== "admin" && (
+                          <div
+                            className="tooltip tooltip-left w-20"
+                            data-tip="Tambah Resep"
                           >
-                            <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
-                          </svg>
-                        </button>
-                      </div>
-                    )}
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      )}
-      <table className="table table-sm table-zebra">
-        <thead className="bg-base-200">
-          <tr>
-            <th>No</th>
-            <th>Nama Obat</th>
-            <th>Jumlah</th>
-            <th>Satuan</th>
-            <th>Signa 1</th>
-            <th></th>
-            <th>Signa 2</th>
-            <th>Aturan</th>
-            <th>Waktu</th>
-            <th>Catatan</th>
-            {session?.user.role !== "admin" &&
-              session?.user.role !== "tester" && <th>Aksi</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {listResep?.map((i, index) => {
-            return (
-              <tr key={i.obatId}>
-                <td>{index + 1}</td>
-                <td>
-                  <div className="font-bold">
-                    {i?.namaObat?.toString() || "Unknown Obat"}
-                  </div>
-                  <div className="text-sm opacity-50">
-                    Stok: {i?.stok ?? "N/A"}
-                  </div>
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    onChange={(e) =>
-                      onChangeText(e.target.value, "jumlah", i.id)
-                    }
-                    className="input input-sm input-primary w-14"
-                    defaultValue={i.jumlah?.toString()}
-                  />
-                </td>
-                <td>{i.satuan}</td>
-                <td>
-                  <input
-                    type="text"
-                    onChange={(e) =>
-                      onChangeText(e.target.value, "signa1", i.id)
-                    }
-                    className="input input-sm input-primary w-14"
-                    defaultValue={i.signa1?.toString()}
-                  />
-                </td>
-                <td>X</td>
-                <td>
-                  <input
-                    type="text"
-                    onChange={(e) =>
-                      onChangeText(e.target.value, "signa2", i.id)
-                    }
-                    className="input input-sm input-primary w-14"
-                    defaultValue={i.signa2?.toString()}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    onChange={(e) =>
-                      onChangeText(e.target.value, "aturanPakai", i.id)
-                    }
-                    className="input input-sm input-primary w-40"
-                    defaultValue={i.aturanPakai?.toString()}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    onChange={(e) =>
-                      onChangeText(e.target.value, "waktu", i.id)
-                    }
-                    className="input input-sm input-primary w-32"
-                    defaultValue={i.waktu?.toString()}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    onChange={(e) =>
-                      onChangeText(e.target.value, "catatan", i.id)
-                    }
-                    className="input input-sm input-primary w-32"
-                    defaultValue={i.catatan?.toString()}
-                  />
-                </td>
+                            <button
+                              className="btn btn-sm btn-circle btn-primary"
+                              disabled={!isObatSelected}
+                              onClick={() => onAddResep()}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 16 16"
+                                fill="currentColor"
+                                className="size-4"
+                              >
+                                <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
+                              </svg>
+                            </button>
+                          </div>
+                        )}
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          )}
+          <table className="table table-sm table-zebra">
+            <thead className="bg-base-200">
+              <tr>
+                <th>No</th>
+                <th>Nama Obat</th>
+                <th>Jumlah</th>
+                <th>Satuan</th>
+                <th>Signa 1</th>
+                <th></th>
+                <th>Signa 2</th>
+                <th>Aturan</th>
+                <th>Waktu</th>
+                <th>Catatan</th>
                 {session?.user.role !== "admin" &&
-                  session?.user.role !== "tester" && (
-                    <td className="tooltip tooltip-left" data-tip="Hapus Resep">
-                      <button
-                        onClick={() => onDeleteResep(Number(i.id))}
-                        className="btn btn-xs btn-error btn-circle "
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 16 16"
-                          fill="currentColor"
-                          className="size-4"
-                        >
-                          <path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
-                        </svg>
-                      </button>
-                    </td>
-                  )}
+                  session?.user.role !== "tester" && <th>Aksi</th>}
               </tr>
-            );
-          })}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {listResep?.map((i, index) => {
+                return (
+                  <tr key={i.obatId}>
+                    <td>{index + 1}</td>
+                    <td>
+                      <div className="font-bold">
+                        {i?.namaObat?.toString() || "Unknown Obat"}
+                      </div>
+                      <div className="text-sm opacity-50">
+                        Stok: {i?.stok ?? "N/A"}
+                      </div>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        onChange={(e) =>
+                          onChangeText(e.target.value, "jumlah", i.id)
+                        }
+                        className="input input-sm input-primary w-14"
+                        defaultValue={i.jumlah?.toString()}
+                      />
+                    </td>
+                    <td>{i.satuan}</td>
+                    <td>
+                      <input
+                        type="text"
+                        onChange={(e) =>
+                          onChangeText(e.target.value, "signa1", i.id)
+                        }
+                        className="input input-sm input-primary w-14"
+                        defaultValue={i.signa1?.toString()}
+                      />
+                    </td>
+                    <td>X</td>
+                    <td>
+                      <input
+                        type="text"
+                        onChange={(e) =>
+                          onChangeText(e.target.value, "signa2", i.id)
+                        }
+                        className="input input-sm input-primary w-14"
+                        defaultValue={i.signa2?.toString()}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        onChange={(e) =>
+                          onChangeText(e.target.value, "aturanPakai", i.id)
+                        }
+                        className="input input-sm input-primary w-40"
+                        defaultValue={i.aturanPakai?.toString()}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        onChange={(e) =>
+                          onChangeText(e.target.value, "waktu", i.id)
+                        }
+                        className="input input-sm input-primary w-32"
+                        defaultValue={i.waktu?.toString()}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        onChange={(e) =>
+                          onChangeText(e.target.value, "catatan", i.id)
+                        }
+                        className="input input-sm input-primary w-32"
+                        defaultValue={i.catatan?.toString()}
+                      />
+                    </td>
+                    {session?.user.role !== "admin" &&
+                      session?.user.role !== "tester" && (
+                        <td
+                          className="tooltip tooltip-left"
+                          data-tip="Hapus Resep"
+                        >
+                          <button
+                            onClick={() => onDeleteResep(Number(i.id))}
+                            className="btn btn-xs btn-error btn-circle "
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 16 16"
+                              fill="currentColor"
+                              className="size-4"
+                            >
+                              <path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
+                            </svg>
+                          </button>
+                        </td>
+                      )}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
       {soap.isBillingFarmasi ? (
         <div className="flex flex-col gap-3 mt-5">
           <button className="btn btn-error btn-sm">SUDAH TRANSAKSI</button>
