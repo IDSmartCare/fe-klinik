@@ -39,6 +39,10 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
 
       try {
         const posttoApi = await fetch("/api/mastertarif", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(body),
         });
 

@@ -43,7 +43,7 @@ const onDeleteData = async (id: any) => {
           method: "DELETE",
           body: JSON.stringify({ id }),
           headers: {
-            "conten-type": "application/json",
+            "content-type": "application/json",
           },
         });
         const res = await fetchBody.json();
