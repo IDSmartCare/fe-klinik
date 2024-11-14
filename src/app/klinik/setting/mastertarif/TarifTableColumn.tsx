@@ -47,7 +47,7 @@ const TarifTableColumn = [
         </Link>
       </div>
     ),
-    header: "Edit",
+    header: "Aksi",
   }),
 ];
 

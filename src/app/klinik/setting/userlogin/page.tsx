@@ -44,15 +44,9 @@ const UserLoginPage = async () => {
   const session = await getServerSession(authOption);
   const data = await getDb(session?.user.idFasyankes);
 
-  // const isFreePackageAdmin =
-  //   session?.user.role === "admin" &&
-  //   session?.user.package === "FREE" &&
-  //   session?.user.type === "Klinik";
-
   return (
     <div className="flex flex-col gap-2">
       <AlertHeaderComponent message="List User Login" />
-      {/* {!isFreePackageAdmin && <ModalAddUser session={session} />} */}
       <ModalAddUser session={session} />
       <TableFilterComponent rowsData={data} columnsData={UserTableColumn} />
     </div>

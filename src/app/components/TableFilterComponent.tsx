@@ -36,14 +36,14 @@ function TableFilterComponent({
   rowsData,
   columnsData,
 }: {
-  readonly rowsData: any[];
+  readonly rowsData: any[] | null;
   readonly columnsData: any[];
 }) {
   const [globalFilter, setGlobalFilter] = useState("");
   const columns = useMemo(() => columnsData, [columnsData]);
 
   const table = useReactTable({
-    data: rowsData,
+    data: rowsData || [],
     columns,
     state: {
       globalFilter,
@@ -59,7 +59,7 @@ function TableFilterComponent({
   });
 
   return (
-    <div className="overflow-x-auto gap-2 flex flex-col h-full p-2">
+    <div className="overflow-x-auto gap-2 flex flex-col h-full py-2">
       <DebouncedInput
         value={globalFilter ?? ""}
         className="input input-info input-sm max-w-xs self-end"
@@ -213,7 +213,7 @@ function TableFilterComponent({
           </button>
         </div>
         <span className="flex items-center gap-1">
-          <p> Go to page:</p>
+          <p> Go to page :</p>
           <input
             type="number"
             defaultValue={table.getState().pagination.pageIndex + 1}

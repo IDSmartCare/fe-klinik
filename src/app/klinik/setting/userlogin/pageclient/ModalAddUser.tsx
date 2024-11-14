@@ -27,6 +27,7 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
   const route = useRouter();
   const [showFieldDokter, setShowFieldDokter] = useState(false);
   const [option, setOption] = useState<any[]>([]);
+  const [namaPoli, setNamaPoli] = useState("");
 
   useEffect(() => {
     async function getListPoli() {
@@ -90,16 +91,39 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
         created_by: data.createdBy,
         role: data.role.value,
         fasyankes_id: session?.user.idFasyankes,
-        id_profile: post.data?.id, // Ambil id_profile dari hasil createUser
+        id_profile: post.data?.id,
       };
 
-      // Lanjutkan dengan postApiBisnisOwner menggunakan id_profile dari createUser
       const posttoApi = await postApiBisnisOwner({
         url: "access-fasyankes/store",
         data: body,
       });
 
       if (posttoApi.status) {
+        if (data.role.value === "dokter") {
+          const body = {
+            idFasyankes: session?.user.idFasyankes,
+            idProfile: post.data?.id, // Ambil id_profile dari hasil createUser
+            name: data.namaLengkap,
+            str: data.str,
+            sip: data.sip,
+            phone: data.phone,
+            unit: namaPoli,
+            idPoliKlinik: Number(data.poliklinik?.value) || null,
+          };
+          const postDokter = await fetch("/api/dokter/tambahdokter", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+          });
+          if (!postDokter.ok) {
+            ToastAlert({ icon: "error", title: "Gagal Menambahkan User" });
+            return;
+          }
+        }
+
         ToastAlert({ icon: "success", title: posttoApi.message as string });
         reset();
         setTimeout(() => route.refresh(), 1000);
@@ -287,6 +311,33 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
               <>
                 <div className="form-control w-full">
                   <div className="label">
+                    <span className="label-text">Nomor Telepon</span>
+                  </div>
+                  <input
+                    type="number"
+                    {...register("phone", {
+                      required: "*Tidak boleh kosong",
+                      minLength: {
+                        value: 10,
+                        message: "Minimal 10 angka",
+                      },
+                      maxLength: {
+                        value: 16,
+                        message: "Maksimal 16 angka",
+                      },
+                    })}
+                    className="input input-sm input-primary w-full"
+                  />
+                  {errors.phone && (
+                    <label className="label">
+                      <span className="label-text-alt text-error">
+                        {errors.phone.message}
+                      </span>
+                    </label>
+                  )}
+                </div>
+                <div className="form-control w-full">
+                  <div className="label">
                     <span className="label-text">Pilih Poli Dokter</span>
                   </div>
                   <Controller
@@ -303,6 +354,10 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
                           placeholder="Pilih poli dokter"
                           instanceId={uuid}
                           options={option}
+                          onChange={(selectedOption) => {
+                            field.onChange(selectedOption);
+                            setNamaPoli(selectedOption?.label || "");
+                          }}
                         />
                         {errors.poliklinik && (
                           <label className="label">
@@ -371,7 +426,7 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
               </>
             )}
             {session?.user.role !== "tester" && (
-              <button className="btn btn-primary btn-block btn-sm">
+              <button className="btn btn-primary btn-block btn-sm mt-4">
                 Simpan
               </button>
             )}

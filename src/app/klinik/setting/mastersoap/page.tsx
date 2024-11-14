@@ -1,11 +1,15 @@
 import React from "react";
 import AlertHeaderComponent from "../paramedis/components/AlertHeaderComponent";
+import FormAddSOAP from "./pageclient/FormAddSOAP";
+import TableFilterComponent from "@/app/components/TableFilterComponent";
+import MasterSOAPColumn from "./MasterSOAPColumn";
 
 const Page = () => {
   return (
     <>
       <AlertHeaderComponent message="Master SOAP" />
-      <div>Master SOAP</div>
+      <FormAddSOAP />
+      <TableFilterComponent rowsData={[]} columnsData={MasterSOAPColumn} />
     </>
   );
 };

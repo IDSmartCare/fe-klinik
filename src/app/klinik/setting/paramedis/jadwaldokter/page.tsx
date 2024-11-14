@@ -9,7 +9,7 @@ import JadwalTableColumnTester from "./JadwalTableColumnTester";
 const getData = async (idFasyankes: string) => {
   try {
     const getapi = await fetch(
-      `${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/setting/listjadwal/${idFasyankes}`,
+      `${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/dokter/jadwaldokter/${idFasyankes}`,
       {
         headers: {
           Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,

@@ -6,7 +6,8 @@ export type FormAddUser = {
   createdBy: string;
   namaLengkap: string;
   kodedokter?: string;
-  poliklinik?: { value: string };
+  poliklinik?: { value: string; label: string };
+  phone?: string;
   str?: string;
   sip?: string;
 };

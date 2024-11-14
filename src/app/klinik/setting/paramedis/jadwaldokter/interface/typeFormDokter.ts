@@ -1,10 +1,10 @@
 export type typeFormDokter = {
-    id?: number
-    namaLengkap: string
-    kodeDokter: string
-    isAktif: string
-    poliKlinikId?: number
-    poliklinik?: {
-        namaPoli: string
-    }
-}
+  id?: number;
+  name: string;
+  kodeDokter: string;
+  isAktif: string;
+  poliKlinikId?: number;
+  poliklinik?: {
+    namaPoli: string;
+  };
+};
