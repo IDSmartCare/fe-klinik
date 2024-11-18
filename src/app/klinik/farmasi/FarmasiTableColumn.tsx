@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 import { ListFarmasiInterface } from "./interface/typeListFarmasi";
 
-const columHelper = createColumnHelper<ListFarmasiInterface>();
+const columHelper = createColumnHelper<any>();
 
 const FarmasiTableColumn = [
   columHelper.accessor(
@@ -32,7 +32,7 @@ const FarmasiTableColumn = [
     cell: (info) => info.getValue(),
     header: "Penjamin",
   }),
-  columHelper.accessor((row) => row.pendaftaran.jadwal.dokter.namaLengkap, {
+  columHelper.accessor((row) => row.pendaftaran.doctor.name, {
     cell: (info) => info.getValue(),
     header: "Dokter",
   }),

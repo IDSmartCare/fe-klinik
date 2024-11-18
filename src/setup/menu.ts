@@ -114,6 +114,11 @@ export const listMenu = [
         title: "Master SOAP",
         url: "/klinik/setting/mastersoap",
       },
+      {
+        id: 5,
+        title: "Master Asuransi",
+        url: "/klinik/setting/masterasuransi",
+      },
     ],
   },
 ];

@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 import { typeListTerdaftar } from "../perawat/interface/typeListTerdaftar";
 
-const columHelper = createColumnHelper<typeListTerdaftar>();
+const columHelper = createColumnHelper<any>();
 
 const ListPasienDokter = [
   columHelper.accessor((row) => row.episodePendaftaran.pasien.noRm, {
@@ -23,7 +23,7 @@ const ListPasienDokter = [
     cell: (info) => info.getValue(),
     header: "Penjamin",
   }),
-  columHelper.accessor((row) => row.jadwal.dokter.namaLengkap, {
+  columHelper.accessor((row) => row.doctor.name, {
     cell: (info) => info.getValue(),
     header: "Dokter",
   }),

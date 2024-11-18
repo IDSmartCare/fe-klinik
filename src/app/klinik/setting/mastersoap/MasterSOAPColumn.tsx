@@ -31,7 +31,7 @@ const MasterSOAPColumn = [
   columHelper.accessor((row) => row.id, {
     cell: (info) => (
       <div className="flex gap-2 justify-center">
-        <div className="tooltip" data-tip="Edit Jadwal Dokter">
+        <div className="tooltip" data-tip="Ubah Pertanyaan">
           <Link
             className="btn btn-outline btn-success btn-circle btn-xs"
             href={`/klinik/setting/paramedis/jadwaldokter/edit/${info.getValue()}`}
@@ -47,9 +47,9 @@ const MasterSOAPColumn = [
             </svg>
           </Link>
         </div>
-        <div className="tooltip" data-tip="Detail Jadwal Dokter">
+        <div className="tooltip" data-tip="Hapus Pertanyaan">
           <Link
-            className="btn btn-outline btn-primary btn-circle btn-xs"
+            className="btn btn-outline btn-info btn-circle btn-xs"
             href={`/klinik/setting/paramedis/jadwaldokter/detail/${info.getValue()}`}
           >
             <svg
@@ -66,10 +66,40 @@ const MasterSOAPColumn = [
               <g id="SVGRepo_iconCarrier">
                 {" "}
                 <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M12 7C12.8284 7 13.5 6.32843 13.5 5.5C13.5 4.67157 12.8284 4 12 4C11.1716 4 10.5 4.67157 10.5 5.5C10.5 6.32843 11.1716 7 12 7ZM11 9C10.4477 9 10 9.44772 10 10C10 10.5523 10.4477 11 11 11V19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19V10C13 9.44772 12.5523 9 12 9H11Z"
-                  fill="#5d61d5"
+                  d="M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6"
+                  stroke="#e82121"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>{" "}
+              </g>
+            </svg>
+          </Link>
+        </div>
+        <div className="tooltip" data-tip="Tambah Jawaban">
+          <Link
+            className="btn btn-outline btn-info btn-circle btn-xs"
+            href={`/klinik/setting/paramedis/jadwaldokter/detail/${info.getValue()}`}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+              <g
+                id="SVGRepo_tracerCarrier"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></g>
+              <g id="SVGRepo_iconCarrier">
+                {" "}
+                <path
+                  d="M6 12H18M12 6V18"
+                  stroke="#7e38ff"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
                 ></path>{" "}
               </g>
             </svg>

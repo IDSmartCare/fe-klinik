@@ -4,7 +4,7 @@ import FormAddSOAP from "./pageclient/FormAddSOAP";
 import TableFilterComponent from "@/app/components/TableFilterComponent";
 import MasterSOAPColumn from "./MasterSOAPColumn";
 
-const Page = () => {
+const MasterSOAP = () => {
   return (
     <>
       <AlertHeaderComponent message="Master SOAP" />
@@ -14,4 +14,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default MasterSOAP;

@@ -10,7 +10,7 @@ export async function GET(req: Request) {
             kodeHari: Number(hari),
             isAktif: true,
             idFasyankes
-        },
+        },  
         include: {
             dokter: {
                 select: {

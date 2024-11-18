@@ -1,339 +1,50 @@
 {
   "pages": {
-    "/_not-found/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/app/_not-found/page-2eed7f50ec139b1b.js"
-    ],
-    "/layout": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/css/3bac840279fdb7c9.css",
-      "static/chunks/998-b806d489f2419b10.js",
-      "static/chunks/app/layout-b567bc2bbcfa227f.js"
-    ],
-    "/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/231-6bc1242aed16695d.js",
-      "static/chunks/8173-bfa4231b92fe968e.js",
-      "static/chunks/app/page-8e78dd2485500919.js"
-    ],
-    "/pos/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/41ade5dc-26b7b9c8642cbbd5.js",
-      "static/chunks/b2d98e07-0f2e8c80ebb12ba2.js",
-      "static/chunks/ff804112-085da37df18ff23a.js",
-      "static/chunks/7064611b-89df84ea26e78b87.js",
-      "static/chunks/231-6bc1242aed16695d.js",
-      "static/chunks/1968-224ebba041facac2.js",
-      "static/chunks/998-b806d489f2419b10.js",
-      "static/chunks/2353-40b91863773b7bdd.js",
-      "static/chunks/app/pos/page-50a9a6996a6a081f.js"
-    ],
-    "/klinik/cppt/[...id]/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/41ade5dc-26b7b9c8642cbbd5.js",
-      "static/chunks/9343-7293e3d6a6075f4c.js",
-      "static/chunks/5670-7884d73de3c1f130.js",
-      "static/chunks/app/klinik/cppt/[...id]/page-2d92030c25e7d4b1.js"
+    "/klinik/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/klinik/page.js"
     ],
     "/klinik/layout": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/231-6bc1242aed16695d.js",
-      "static/chunks/998-b806d489f2419b10.js",
-      "static/chunks/8173-bfa4231b92fe968e.js",
-      "static/chunks/app/klinik/layout-6ec21a6f85efef44.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/klinik/layout.js"
     ],
-    "/klinik/dashboard/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/app/klinik/dashboard/page-bcc5ddbce83f8d03.js"
-    ],
-    "/klinik/dokter/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/41ade5dc-26b7b9c8642cbbd5.js",
-      "static/chunks/231-6bc1242aed16695d.js",
-      "static/chunks/7363-0f5e9eb74ab8709a.js",
-      "static/chunks/9343-7293e3d6a6075f4c.js",
-      "static/chunks/1968-224ebba041facac2.js",
-      "static/chunks/998-b806d489f2419b10.js",
-      "static/chunks/3573-150f0b3ab3f0e489.js",
-      "static/chunks/app/klinik/dokter/page-27ce9cd97c9469c5.js"
-    ],
-    "/klinik/farmasi/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/231-6bc1242aed16695d.js",
-      "static/chunks/7363-0f5e9eb74ab8709a.js",
-      "static/chunks/1968-224ebba041facac2.js",
-      "static/chunks/app/klinik/farmasi/page-9040ae900c496b56.js"
-    ],
-    "/klinik/kasir/billing/[...id]/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/b2d98e07-0f2e8c80ebb12ba2.js",
-      "static/chunks/ff804112-085da37df18ff23a.js",
-      "static/chunks/7064611b-89df84ea26e78b87.js",
-      "static/chunks/231-6bc1242aed16695d.js",
-      "static/chunks/1968-224ebba041facac2.js",
-      "static/chunks/2353-40b91863773b7bdd.js",
-      "static/chunks/app/klinik/kasir/billing/[...id]/page-37a232377d135f6c.js"
-    ],
-    "/klinik/kasir/detail/[...id]/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/41ade5dc-26b7b9c8642cbbd5.js",
-      "static/chunks/b2d98e07-0f2e8c80ebb12ba2.js",
-      "static/chunks/ff804112-085da37df18ff23a.js",
-      "static/chunks/7064611b-89df84ea26e78b87.js",
-      "static/chunks/2353-40b91863773b7bdd.js",
-      "static/chunks/app/klinik/kasir/detail/[...id]/page-3ff926b833614b9d.js"
-    ],
-    "/klinik/farmasi/resep/[...id]/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/41ade5dc-26b7b9c8642cbbd5.js",
-      "static/chunks/b2d98e07-0f2e8c80ebb12ba2.js",
-      "static/chunks/ff804112-085da37df18ff23a.js",
-      "static/chunks/7064611b-89df84ea26e78b87.js",
-      "static/chunks/231-6bc1242aed16695d.js",
-      "static/chunks/5670-7884d73de3c1f130.js",
-      "static/chunks/2353-40b91863773b7bdd.js",
-      "static/chunks/app/klinik/farmasi/resep/[...id]/page-c30b3d8dbe737f51.js"
-    ],
-    "/klinik/kasir/historypos/detail/[...id]/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/app/klinik/kasir/historypos/detail/[...id]/page-6223fbc40bf2cf15.js"
-    ],
-    "/klinik/kasir/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/231-6bc1242aed16695d.js",
-      "static/chunks/7363-0f5e9eb74ab8709a.js",
-      "static/chunks/1968-224ebba041facac2.js",
-      "static/chunks/app/klinik/kasir/page-6f15f8fc16577d5d.js"
-    ],
-    "/klinik/kasir/historypos/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/231-6bc1242aed16695d.js",
-      "static/chunks/7363-0f5e9eb74ab8709a.js",
-      "static/chunks/1968-224ebba041facac2.js",
-      "static/chunks/app/klinik/kasir/historypos/page-01330623a995d672.js"
-    ],
-    "/klinik/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/app/klinik/page-1f884362a9cf228b.js"
-    ],
-    "/klinik/pasien/detail/[id]/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/231-6bc1242aed16695d.js",
-      "static/chunks/app/klinik/pasien/detail/[id]/page-45ae16043cdeb1c4.js"
-    ],
-    "/klinik/pasien/registrasi/[id]/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/41ade5dc-26b7b9c8642cbbd5.js",
-      "static/chunks/9343-7293e3d6a6075f4c.js",
-      "static/chunks/5670-7884d73de3c1f130.js",
-      "static/chunks/app/klinik/pasien/registrasi/[id]/page-9fc68364540f0731.js"
-    ],
-    "/klinik/pasien/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/41ade5dc-26b7b9c8642cbbd5.js",
-      "static/chunks/231-6bc1242aed16695d.js",
-      "static/chunks/7363-0f5e9eb74ab8709a.js",
-      "static/chunks/9343-7293e3d6a6075f4c.js",
-      "static/chunks/1968-224ebba041facac2.js",
-      "static/chunks/5670-7884d73de3c1f130.js",
-      "static/chunks/998-b806d489f2419b10.js",
-      "static/chunks/3573-150f0b3ab3f0e489.js",
-      "static/chunks/app/klinik/pasien/page-2fc852daddf1feba.js"
-    ],
-    "/klinik/pendaftaran/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/7363-0f5e9eb74ab8709a.js",
-      "static/chunks/1968-224ebba041facac2.js",
-      "static/chunks/app/klinik/pendaftaran/page-6ac8cbafe90fd035.js"
-    ],
-    "/klinik/pendaftaran/riwayat/[id]/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/app/klinik/pendaftaran/riwayat/[id]/page-3aea135764541609.js"
-    ],
-    "/klinik/setting/mastersoap/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/231-6bc1242aed16695d.js",
-      "static/chunks/7363-0f5e9eb74ab8709a.js",
-      "static/chunks/9343-7293e3d6a6075f4c.js",
-      "static/chunks/5670-7884d73de3c1f130.js",
-      "static/chunks/app/klinik/setting/mastersoap/page-45ab29452f5029ce.js"
-    ],
-    "/klinik/perawat/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/41ade5dc-26b7b9c8642cbbd5.js",
-      "static/chunks/231-6bc1242aed16695d.js",
-      "static/chunks/7363-0f5e9eb74ab8709a.js",
-      "static/chunks/9343-7293e3d6a6075f4c.js",
-      "static/chunks/1968-224ebba041facac2.js",
-      "static/chunks/998-b806d489f2419b10.js",
-      "static/chunks/3573-150f0b3ab3f0e489.js",
-      "static/chunks/app/klinik/perawat/page-842ff57b6b8d8f70.js"
+    "/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/layout.css",
+      "static/chunks/app/layout.js"
     ],
     "/klinik/setting/mastertarif/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/41ade5dc-26b7b9c8642cbbd5.js",
-      "static/chunks/231-6bc1242aed16695d.js",
-      "static/chunks/7363-0f5e9eb74ab8709a.js",
-      "static/chunks/9343-7293e3d6a6075f4c.js",
-      "static/chunks/5670-7884d73de3c1f130.js",
-      "static/chunks/app/klinik/setting/mastertarif/page-b94c8e9070babbec.js"
-    ],
-    "/klinik/setting/mastertarif/edit/[id]/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/41ade5dc-26b7b9c8642cbbd5.js",
-      "static/chunks/9343-7293e3d6a6075f4c.js",
-      "static/chunks/998-b806d489f2419b10.js",
-      "static/chunks/app/klinik/setting/mastertarif/edit/[id]/page-08d91f65192a0cdd.js"
-    ],
-    "/klinik/setting/userlogin/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/41ade5dc-26b7b9c8642cbbd5.js",
-      "static/chunks/7363-0f5e9eb74ab8709a.js",
-      "static/chunks/9343-7293e3d6a6075f4c.js",
-      "static/chunks/5670-7884d73de3c1f130.js",
-      "static/chunks/app/klinik/setting/userlogin/page-bddd5746b12614e1.js"
-    ],
-    "/klinik/setting/paramedis/dokter/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/41ade5dc-26b7b9c8642cbbd5.js",
-      "static/chunks/7363-0f5e9eb74ab8709a.js",
-      "static/chunks/app/klinik/setting/paramedis/dokter/page-947121de85f4cf36.js"
-    ],
-    "/klinik/setting/paramedis/layout": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/231-6bc1242aed16695d.js",
-      "static/chunks/app/klinik/setting/paramedis/layout-d1f11ea88a00eb44.js"
-    ],
-    "/klinik/setting/paramedis/jadwaldokter/edit/[...id]/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/app/klinik/setting/paramedis/jadwaldokter/edit/[...id]/page-513eb81354a5f579.js"
-    ],
-    "/klinik/setting/paramedis/jadwaldokter/detail/[...id]/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/231-6bc1242aed16695d.js",
-      "static/chunks/7363-0f5e9eb74ab8709a.js",
-      "static/chunks/app/klinik/setting/paramedis/jadwaldokter/detail/[...id]/page-fe450e69e24a1c8f.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/klinik/setting/mastertarif/page.js"
     ],
     "/klinik/setting/paramedis/jadwaldokter/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/41ade5dc-26b7b9c8642cbbd5.js",
-      "static/chunks/231-6bc1242aed16695d.js",
-      "static/chunks/7363-0f5e9eb74ab8709a.js",
-      "static/chunks/9343-7293e3d6a6075f4c.js",
-      "static/chunks/5670-7884d73de3c1f130.js",
-      "static/chunks/app/klinik/setting/paramedis/jadwaldokter/page-b35ceebb41844456.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/klinik/setting/paramedis/jadwaldokter/page.js"
     ],
-    "/klinik/setting/paramedis/poliklinik/edit/[id]/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/41ade5dc-26b7b9c8642cbbd5.js",
-      "static/chunks/app/klinik/setting/paramedis/poliklinik/edit/[id]/page-0dc37591d1eb3476.js"
+    "/klinik/setting/paramedis/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/klinik/setting/paramedis/layout.js"
     ],
-    "/klinik/setting/paramedis/poliklinik/page": [
-      "static/chunks/webpack-c94ca9f7af43d119.js",
-      "static/chunks/fd9d1056-2a484dbff2a7e17c.js",
-      "static/chunks/7023-8af09c611eb063fc.js",
-      "static/chunks/main-app-78608a1f738b002c.js",
-      "static/chunks/41ade5dc-26b7b9c8642cbbd5.js",
-      "static/chunks/231-6bc1242aed16695d.js",
-      "static/chunks/7363-0f5e9eb74ab8709a.js",
-      "static/chunks/9343-7293e3d6a6075f4c.js",
-      "static/chunks/app/klinik/setting/paramedis/poliklinik/page-a05eed400741b84e.js"
+    "/klinik/setting/mastersoap/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/klinik/setting/mastersoap/page.js"
+    ],
+    "/klinik/setting/masterasuransi/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/klinik/setting/masterasuransi/page.js"
+    ],
+    "/klinik/setting/userlogin/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/klinik/setting/userlogin/page.js"
     ]
   }
 }

@@ -48,6 +48,16 @@ const PageRegistrasi = async ({ params }: { params: { id: string } }) => {
   const session = await getServerSession(authOption);
   const resApi = await getData(params.id);
   const regisTrasi = await getRegistrasi(params.id);
+
+  // Log Object in Array
+  regisTrasi.forEach((item: any, index: any) => {
+    console.log(`Item ${index + 1} - Pendaftaran:`, item.pendaftaran);
+
+    item.pendaftaran.forEach((pendaftaran: any, idx: any) => {
+      console.log(`Pendaftaran ${idx + 1}:`, pendaftaran.riwayat);
+    });
+  });
+
   return (
     <div className="flex flex-col gap-2">
       <PasienIdentitasComponent pasien={resApi} />
@@ -85,10 +95,8 @@ const PageRegistrasi = async ({ params }: { params: { id: string } }) => {
                               Tgl Regis (
                               {format(reg.createdAt, "dd/MM/yyyy HH:mm")})
                             </p>
-                            <p>Dokter ({reg.jadwal?.dokter.namaLengkap})</p>
-                            <p>
-                              Poli ({reg.jadwal?.dokter.poliklinik?.namaPoli})
-                            </p>
+                            <p>Dokter ({reg.riwayat?.doctor?.name})</p>
+                            <p>Poli ({reg.riwayat?.doctor?.unit})</p>
                           </div>
                         );
                       })}

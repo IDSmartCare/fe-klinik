@@ -8,7 +8,6 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import Select from "react-select";
 import { Session } from "next-auth";
 import { AddMasterTarif } from "../interface/typeFormAddTarif";
-// import { createTarif } from "./simpanMasterTarif";
 import { ToastAlert } from "@/app/helper/ToastAlert";
 import { useRouter } from "next/navigation";
 import { formatRupiahEdit } from "@/app/helper/formatRupiah";

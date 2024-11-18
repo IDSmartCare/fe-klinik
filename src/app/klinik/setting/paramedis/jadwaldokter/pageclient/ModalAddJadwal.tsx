@@ -77,7 +77,7 @@ const ModalAddJadwal = ({ session }: { session: Session | null }) => {
         return;
       }
       const data = await getApi.json();
-      const newData = data.data.map((item: typeFormDokter) => {
+      const newData = data.data ?.map((item: typeFormDokter) => {
         return {
           label: item.name,
           value: item.id,

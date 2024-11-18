@@ -6,7 +6,8 @@ export default async function Home() {
 
   return (
     <p>
-      {session?.user.package} {session?.user.type} {session?.user.role}
+      {session?.user.package} {session?.user.type} {session?.user.role}{" "}
+      {session?.user.idFasyankes}
     </p>
   );
 }

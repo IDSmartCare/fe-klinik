@@ -36,8 +36,8 @@ const ListBillingPasien = ({
               <p>ID : {item.billPasien[0].id}</p>
               <p>PendaftaranID : {item?.id}</p>
               <p>Penjamin : {item?.penjamin}</p>
-              <p>Poli : {item.jadwal?.dokter.poliklinik?.namaPoli}</p>
-              <p>Dokter : {item.jadwal?.dokter.namaLengkap}</p>
+              <p>Poli : {item.doctor?.poliKlinik.namaPoli}</p>
+              <p>Dokter : {item.doctor?.name}</p>
               <div className="card-actions justify-end">
                 <button
                   className="btn btn-sm btn-info"
