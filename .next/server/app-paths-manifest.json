@@ -1,5 +1,0 @@
-{
-  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/klinik/page": "app/klinik/page.js",
-  "/klinik/setting/mastertarif/page": "app/klinik/setting/mastertarif/page.js"
-}
