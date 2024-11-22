@@ -75,11 +75,6 @@ const FormEditJadwal = ({
     }
   }, [data, reset]);
 
-  const pilihSesi = Array.from({ length: 12 }, (_, i) => {
-    const value = (i + 1) * 5;
-    return { value, label: `${value} Menit` };
-  });
-
   const onSubmit: SubmitHandler<typeFormJadwal> = async (data) => {
     const bodyToPos = {
       dokter_id: Number(data.dokterId.value),
@@ -176,7 +171,16 @@ const FormEditJadwal = ({
                 {...field}
                 isClearable
                 placeholder="Pilih Sesi"
-                options={pilihSesi}
+                options={[
+                  {
+                    label: "60 Menit",
+                    value: 60,
+                  },
+                  {
+                    label: "90 Menit",
+                    value: 90,
+                  },
+                ]}
               />
             )}
           />

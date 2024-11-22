@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/klinik/page": [
+    "/klinik/setting/mastersoap/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/klinik/page.js"
+      "static/chunks/app/klinik/setting/mastersoap/page.js"
     ],
     "/klinik/layout": [
       "static/chunks/webpack.js",
@@ -16,35 +16,25 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/klinik/setting/mastertarif/page": [
+    "/klinik/setting/mastersoap/add/[...id]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/klinik/setting/mastertarif/page.js"
+      "static/chunks/app/klinik/setting/mastersoap/add/[...id]/page.js"
     ],
-    "/klinik/setting/paramedis/jadwaldokter/page": [
+    "/klinik/setting/paramedis/jadwaldokter/detail/[...id]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/klinik/setting/paramedis/jadwaldokter/page.js"
+      "static/chunks/app/klinik/setting/paramedis/jadwaldokter/detail/[...id]/page.js"
     ],
     "/klinik/setting/paramedis/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/klinik/setting/paramedis/layout.js"
     ],
-    "/klinik/setting/mastersoap/page": [
+    "/klinik/setting/paramedis/jadwaldokter/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/klinik/setting/mastersoap/page.js"
-    ],
-    "/klinik/setting/masterasuransi/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/klinik/setting/masterasuransi/page.js"
-    ],
-    "/klinik/setting/userlogin/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/klinik/setting/userlogin/page.js"
+      "static/chunks/app/klinik/setting/paramedis/jadwaldokter/page.js"
     ]
   }
 }

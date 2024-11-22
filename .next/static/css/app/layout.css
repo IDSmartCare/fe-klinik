@@ -2274,6 +2274,16 @@ details.collapse summary::-webkit-details-marker {
   border-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity)));
   outline-color: var(--fallback-in,oklch(var(--in)/1));
 }
+.input-error {
+  --tw-border-opacity: 1;
+  border-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity)));
+}
+.input-error:focus,
+    .input-error:focus-within {
+  --tw-border-opacity: 1;
+  border-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity)));
+  outline-color: var(--fallback-er,oklch(var(--er)/1));
+}
 .input:has(> input[disabled]),
   .input-disabled,
   .input:disabled,
@@ -3369,9 +3379,6 @@ html:has(.drawer-toggle:checked) {
 .w-20 {
   width: 5rem;
 }
-.w-3\/12 {
-  width: 25%;
-}
 .w-32 {
   width: 8rem;
 }
@@ -3620,6 +3627,10 @@ html:has(.drawer-toggle:checked) {
   --tw-text-opacity: 1;
   color: var(--fallback-inc,oklch(var(--inc)/var(--tw-text-opacity)));
 }
+.text-red-500 {
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity));
+}
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
@@ -3678,6 +3689,10 @@ html:has(.drawer-toggle:checked) {
   }
 }
 @media (min-width: 768px) {
+
+  .md\:w-3\/12 {
+    width: 25%;
+  }
 
   .md\:w-4\/12 {
     width: 33.333333%;

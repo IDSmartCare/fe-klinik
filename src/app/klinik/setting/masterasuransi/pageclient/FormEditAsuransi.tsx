@@ -27,11 +27,24 @@ const FormEditAsuransi = ({
   const uuid = useId();
   const route = useRouter();
 
-  const onSubmit: SubmitHandler<typeFormAsuransi> = async (data) => {
+  const onSubmit: SubmitHandler<typeFormAsuransi> = async (formData) => {
+    const bodyToPost = {
+      ...data,
+      idFasyankes: session?.user.idFasyankes, // Retrieve from session
+      namaPic: formData.namaPic,
+      picEmail: formData.picEmail,
+      picPhone: formData.picPhone,
+      alamat: formData.alamat,
+      from: formData.from,
+      to: formData.to,
+    };
+
+    console.log(bodyToPost);
+
     try {
-      const response = await fetch(`/api/jadwal/edit`, {
-        method: "PUT",
-        // body: JSON.stringify(bodyToPos),
+      const response = await fetch(`/api/masterasuransi/edit`, {
+        method: "PATCH",
+        body: JSON.stringify(bodyToPost),
         headers: {
           "Content-Type": "application/json",
         },
@@ -51,7 +64,7 @@ const FormEditAsuransi = ({
         icon: "success",
         title: resData.message,
       });
-      route.push("/klinik/setting/paramedis/jadwaldokter");
+      route.push("/klinik/setting/masterasuransi");
       route.refresh();
     } catch (error) {
       console.log(error);
@@ -82,6 +95,8 @@ const FormEditAsuransi = ({
             {...register("namaAsuransi", {
               required: "*Tidak boleh kosong",
             })}
+            disabled
+            defaultValue={data?.namaAsuransi}
             className="input input-sm input-primary w-full "
           />
           {errors.namaAsuransi && (
@@ -102,6 +117,7 @@ const FormEditAsuransi = ({
             {...register("alamat", {
               required: "*Tidak boleh kosong",
             })}
+            defaultValue={data?.alamat}
             className="input input-sm input-primary w-full "
           />
           {errors.alamat && (
@@ -119,15 +135,16 @@ const FormEditAsuransi = ({
           </div>
           <input
             type="text"
-            {...register("namaPIC", {
+            {...register("namaPic", {
               required: "*Tidak boleh kosong",
             })}
+            defaultValue={data?.namaPic}
             className="input input-sm input-primary w-full "
           />
-          {errors.namaPIC && (
+          {errors.namaPic && (
             <label className="label">
               <span className="label-text-alt text-error">
-                {errors.namaPIC.message}
+                {errors.namaPic.message}
               </span>
             </label>
           )}
@@ -139,15 +156,16 @@ const FormEditAsuransi = ({
           </div>
           <input
             type="email"
-            {...register("emailPIC", {
+            {...register("picEmail", {
               required: "*Tidak boleh kosong",
             })}
+            defaultValue={data?.picEmail}
             className="input input-sm input-primary w-full "
           />
-          {errors.emailPIC && (
+          {errors.picEmail && (
             <label className="label">
               <span className="label-text-alt text-error">
-                {errors.emailPIC.message}
+                {errors.picEmail.message}
               </span>
             </label>
           )}
@@ -159,7 +177,7 @@ const FormEditAsuransi = ({
           </div>
           <input
             type="number"
-            {...register("noPIC", {
+            {...register("picPhone", {
               required: "*Tidak boleh kosong",
               minLength: {
                 value: 10,
@@ -170,12 +188,13 @@ const FormEditAsuransi = ({
                 message: "Maksimal 16 angka",
               },
             })}
+            defaultValue={data?.picPhone}
             className="input input-sm input-primary w-full "
           />
-          {errors.noPIC && (
+          {errors.picPhone && (
             <label className="label">
               <span className="label-text-alt text-error">
-                {errors.noPIC.message}
+                {errors.picPhone.message}
               </span>
             </label>
           )}
@@ -189,7 +208,8 @@ const FormEditAsuransi = ({
             <input
               id="tglDari"
               type="date"
-              {...register("tglDari", { required: "Tidak boleh kosong!" })}
+              defaultValue={data?.from}
+              {...register("from", { required: "Tidak boleh kosong!" })}
               className="input input-sm input-bordered input-primary w-full max-w-xs"
             />
           </div>
@@ -203,13 +223,15 @@ const FormEditAsuransi = ({
             <input
               id="tglSampai"
               type="date"
-              {...register("tglSampai", {
+              defaultValue={data?.to}
+              {...register("to", {
                 required: "Tidak boleh kosong!",
               })}
               className="input input-sm input-bordered input-primary w-full max-w-xs"
             />
           </div>
         </div>
+
         {session?.user.role != "tester" && (
           <button type="submit" className="btn btn-primary btn-sm">
             Submit

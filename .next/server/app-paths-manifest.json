@@ -1,5 +1,8 @@
 {
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/klinik/page": "app/klinik/page.js",
-  "/klinik/setting/mastertarif/page": "app/klinik/setting/mastertarif/page.js"
+  "/api/mastersoap/inputjawaban/route": "app/api/mastersoap/inputjawaban/route.js",
+  "/klinik/setting/mastersoap/page": "app/klinik/setting/mastersoap/page.js",
+  "/klinik/setting/mastersoap/add/[...id]/page": "app/klinik/setting/mastersoap/add/[...id]/page.js",
+  "/klinik/setting/paramedis/jadwaldokter/detail/[...id]/page": "app/klinik/setting/paramedis/jadwaldokter/detail/[...id]/page.js",
+  "/klinik/setting/paramedis/jadwaldokter/page": "app/klinik/setting/paramedis/jadwaldokter/page.js"
 }

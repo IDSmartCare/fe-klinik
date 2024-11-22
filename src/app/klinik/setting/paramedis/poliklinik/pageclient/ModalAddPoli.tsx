@@ -53,7 +53,7 @@ const ModalAddPoli = ({ session }: { session: Session | null }) => {
         title="Poli Baru"
       />
       <dialog id="add-poli" className="modal">
-        <div className="modal-box w-3/12 max-w-md">
+        <div className="modal-box w-8/12 md:w-3/12 max-w-md">
           <form method="dialog">
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
               ✕

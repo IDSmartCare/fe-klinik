@@ -124,7 +124,7 @@ const ModalAddAsuransi = ({ session }: { session: Session | null }) => {
                 {...register("namaAsuransi", {
                   required: "*Tidak boleh kosong",
                 })}
-                className="input input-sm input-primary w-full "
+                className="input input-sm input-primary w-full"
               />
               {errors.namaAsuransi && (
                 <label className="label">

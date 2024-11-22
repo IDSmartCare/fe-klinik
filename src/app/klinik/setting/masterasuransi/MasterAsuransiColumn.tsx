@@ -1,13 +1,12 @@
 "use client";
 import { ToastAlert } from "@/app/helper/ToastAlert";
 import { createColumnHelper } from "@tanstack/table-core";
+import { format } from "date-fns";
 import Link from "next/link";
 import Swal from "sweetalert2";
 const columHelper = createColumnHelper<any>();
 
 const onDeleteData = async (id: string, idFasyankes: string) => {
-  console.log("Delete button clicked", id); // Add this line
-
   Swal.fire({
     title: "Apakah anda yakin?",
     text: "Data yang terhapus tidak bisa di kembalikan!",
@@ -72,10 +71,17 @@ const MasterAsuransiColumn = [
     cell: (info) => info.getValue(),
     header: "Nomor Telepon PIC",
   }),
-  columHelper.accessor((row) => `${row.from} - ${row.to}`, {
-    cell: (info) => info.getValue(),
-    header: "Tanggal Kerjasama",
-  }),
+  columHelper.accessor(
+    (row) =>
+      `${format(new Date(row.from), "dd/MM/yyyy")} - ${format(
+        new Date(row.to),
+        "dd/MM/yyyy"
+      )}`,
+    {
+      cell: (info) => info.getValue(),
+      header: "Tanggal Kerjasama",
+    }
+  ),
   columHelper.accessor((row) => row.id, {
     cell: (info) => (
       <div className="flex gap-2 justify-center">

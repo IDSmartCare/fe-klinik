@@ -1,5 +1,6 @@
 export type typeFormAsuransi = {
-  idAsuransi: number;
+  id?: number;
+  idAsuransi?: number;
   namaAsuransi: string;
   alamat: string;
   namaPic: string;
@@ -7,6 +8,6 @@ export type typeFormAsuransi = {
   picPhone: number;
   from: string;
   to: string;
-  isAktif: boolean;
+  isAktif?: boolean;
   idFasyankes: string;
 };

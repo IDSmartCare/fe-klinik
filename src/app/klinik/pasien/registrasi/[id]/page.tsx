@@ -50,13 +50,13 @@ const PageRegistrasi = async ({ params }: { params: { id: string } }) => {
   const regisTrasi = await getRegistrasi(params.id);
 
   // Log Object in Array
-  regisTrasi.forEach((item: any, index: any) => {
-    console.log(`Item ${index + 1} - Pendaftaran:`, item.pendaftaran);
+  // regisTrasi.forEach((item: any, index: any) => {
+  //   console.log(`Item ${index + 1} - Pendaftaran:`, item.pendaftaran);
 
-    item.pendaftaran.forEach((pendaftaran: any, idx: any) => {
-      console.log(`Pendaftaran ${idx + 1}:`, pendaftaran.riwayat);
-    });
-  });
+  //   item.pendaftaran.forEach((pendaftaran: any, idx: any) => {
+  //     console.log(`Pendaftaran ${idx + 1}:`, pendaftaran.riwayat);
+  //   });
+  // });
 
   return (
     <div className="flex flex-col gap-2">

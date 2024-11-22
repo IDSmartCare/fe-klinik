@@ -55,11 +55,13 @@ const FormRegistrasi = ({
         return;
       }
 
+      console.log("test", dataDokter);
+
       // Sesuaikan format data dokter
       const newArr = dataDokter.data?.flatMap((item: any) => {
         return item.jam_praktek.map((jam: any) => ({
           value: item.id,
-          label: `${item.name} (${jam.from} - ${jam.to})`,
+          label: `${item.name} -  ${item.unit} (${jam.from} - ${jam.to})`,
           idHari: item.hari.id,
           idJamPraktek: jam.id,
         }));
@@ -67,6 +69,7 @@ const FormRegistrasi = ({
 
       setDokter([...newArr]);
     };
+
     getDokter();
   }, [session?.user.idFasyankes]);
 
@@ -103,8 +106,6 @@ const FormRegistrasi = ({
     getAsuransi();
   }, [session?.user.idFasyankes]);
 
-  console.log(asuransi);
-
   const onSubmit: SubmitHandler<typeFormRegis> = async (data) => {
     const bodyPost = {
       pasienData: {
@@ -121,7 +122,6 @@ const FormRegistrasi = ({
       userRole: session?.user.role,
       userPackage: session?.user.package,
     };
-    console.log(bodyPost);
 
     try {
       const postApi = await fetch(`/api/pasien/addregistrasi`, {

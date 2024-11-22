@@ -77,7 +77,7 @@ const ModalAddJadwal = ({ session }: { session: Session | null }) => {
         return;
       }
       const data = await getApi.json();
-      const newData = data.data ?.map((item: typeFormDokter) => {
+      const newData = data.data?.map((item: typeFormDokter) => {
         return {
           label: item.name,
           value: item.id,
@@ -88,10 +88,10 @@ const ModalAddJadwal = ({ session }: { session: Session | null }) => {
     getDokter();
   }, [session?.user.idFasyankes]);
 
-  const pilihSesi = Array.from({ length: 12 }, (_, i) => {
-    const value = (i + 1) * 5;
-    return { value, label: `${value} Menit` };
-  });
+  // const pilihSesi = Array.from({ length: 12 }, (_, i) => {
+  //   const value = (i + 1) * 5;
+  //   return { value, label: `${value} Menit` };
+  // });
 
   const onSubmit: SubmitHandler<typeFormJadwal> = async (data) => {
     const bodyToPos = {
@@ -208,7 +208,16 @@ const ModalAddJadwal = ({ session }: { session: Session | null }) => {
                     {...field}
                     isClearable
                     placeholder="Pilih Sesi"
-                    options={pilihSesi}
+                    options={[
+                      {
+                        label: "60 Menit",
+                        value: 60,
+                      },
+                      {
+                        label: "90 Menit",
+                        value: 90,
+                      },
+                    ]}
                   />
                 )}
               />

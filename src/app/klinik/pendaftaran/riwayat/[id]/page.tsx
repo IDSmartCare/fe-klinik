@@ -49,7 +49,11 @@ const PageRiwayatPendaftaran = async ({
   const resApi = await getData(params.id);
   const regisTrasi = await getRegistrasi(params.id);
 
-  console.log(regisTrasi);
+  // console.log(regisTrasi);
+
+  // regisTrasi.forEach((item: any, index: any) => {
+  //   console.log(`Item ${index + 1} - Pendaftaran:`, item.pendaftaran);
+  // });
 
   return (
     <div className="flex flex-col gap-2">
@@ -80,7 +84,12 @@ const PageRiwayatPendaftaran = async ({
                               <p>POLIKLINIK</p>
                               <p>JAM PRAKTEK</p>
                               <p>PENJAMIN</p>
-                              <p>NAMA ASURANSI</p>
+                              {reg.namaAsuransi && reg.nomorAsuransi && (
+                                <>
+                                  <p>NAMA ASURANSI</p>
+                                  <p>NOMOR ASURANSI</p>
+                                </>
+                              )}
                             </div>
                             <div className="w-full flex flex-col gap-2">
                               <p>: {reg.id}</p>
@@ -95,7 +104,12 @@ const PageRiwayatPendaftaran = async ({
                                 {reg.riwayat?.availableTime?.to}
                               </p>
                               <p>: {reg.penjamin}</p>
-                              <p>: {reg.namaAsuransi ?? "-"}</p>
+                              {reg.namaAsuransi && reg.nomorAsuransi && (
+                                <>
+                                  <p>: {reg.namaAsuransi ?? "-"}</p>
+                                  <p>: {reg.nomorAsuransi ?? "-"}</p>
+                                </>
+                              )}
                             </div>
                           </div>
                         </td>
