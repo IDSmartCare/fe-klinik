@@ -5,7 +5,6 @@ import TableFilterComponent from "@/app/components/TableFilterComponent";
 import MasterSOAPColumn from "./MasterSOAPColumn";
 import { getServerSession } from "next-auth";
 import { authOption } from "@/auth";
-import ModalEdit from "./pageclient/ModalEditPertanyaan";
 
 const getSOAP = async (idFasyankes: string) => {
   try {

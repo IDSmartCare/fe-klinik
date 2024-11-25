@@ -6,26 +6,23 @@ import { typeListTerdaftar } from "../perawat/interface/typeListTerdaftar";
 const columHelper = createColumnHelper<any>();
 
 const PendaftaranTableCoulumn = [
-  columHelper.accessor(
-    (row) => row.episodePendaftaran?.pendaftaran?.antrian?.nomor,
-    {
-      cell: (info) => info.getValue(),
-      header: "Antrian Admisi",
-    }
-  ),
-  columHelper.accessor((row) => row.episodePendaftaran.pasien.noRm, {
+  columHelper.accessor((row) => row.antrian?.nomor, {
+    cell: (info) => info.getValue(),
+    header: "Antrian Admisi",
+  }),
+  columHelper.accessor((row) => row.episodePendaftaran.pasien?.noRm, {
     cell: (info) => info.getValue(),
     header: "No. Rekam Medis",
   }),
-  columHelper.accessor((row) => row.episodePendaftaran.pasien.namaPasien, {
+  columHelper.accessor((row) => row.episodePendaftaran.pasien?.namaPasien, {
     cell: (info) => info.getValue(),
     header: "Nama",
   }),
-  columHelper.accessor((row) => row.episodePendaftaran.pasien.paspor, {
+  columHelper.accessor((row) => row.episodePendaftaran.pasien?.paspor, {
     cell: (info) => info.getValue(),
     header: "Paspor",
   }),
-  columHelper.accessor((row) => row.episodePendaftaran.pasien.jenisKelamin, {
+  columHelper.accessor((row) => row.episodePendaftaran.pasien?.jenisKelamin, {
     cell: (info) => info.getValue(),
     header: "Jenis Kelamin",
   }),

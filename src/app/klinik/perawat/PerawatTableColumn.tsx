@@ -7,6 +7,10 @@ import Link from "next/link";
 const columHelper = createColumnHelper<any>();
 
 const PerawatTableColumn = [
+  columHelper.accessor((row) => row.antrian.nomor, {
+    cell: (info) => info.getValue(),
+    header: "Antrian Pasien",
+  }),
   columHelper.accessor((row) => row.episodePendaftaran.pasien.noRm, {
     cell: (info) => info.getValue(),
     header: "No. Rekam Medis",

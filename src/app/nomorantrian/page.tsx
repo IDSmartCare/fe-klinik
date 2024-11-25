@@ -22,6 +22,26 @@ const CardAntrian = (props: CardAntrianProps) => {
   );
 };
 
+const getData = async (idFasyankes: string) => {
+  try {
+    const getapi = await fetch(
+      `${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/antrian/admisi/${idFasyankes}`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+        },
+      }
+    );
+    if (!getapi.ok) {
+      return [];
+    }
+    return getapi.json();
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};
+
 const NomorAntrian = async () => {
   const session = await getServerSession(authOption);
 
