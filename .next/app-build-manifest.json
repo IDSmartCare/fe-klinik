@@ -1,14 +1,9 @@
 {
   "pages": {
-    "/klinik/page": [
+    "/antrian/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/klinik/page.js"
-    ],
-    "/klinik/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/klinik/layout.js"
+      "static/chunks/app/antrian/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -21,25 +16,20 @@
       "static/chunks/main-app.js",
       "static/chunks/app/klinik/perawat/page.js"
     ],
-    "/klinik/pasien/page": [
+    "/klinik/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/klinik/pasien/page.js"
-    ],
-    "/klinik/pasien/registrasi/[id]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/klinik/pasien/registrasi/[id]/page.js"
+      "static/chunks/app/klinik/layout.js"
     ],
     "/klinik/pendaftaran/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/klinik/pendaftaran/page.js"
     ],
-    "/antrian/page": [
+    "/nomorantrian/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/antrian/page.js"
+      "static/chunks/app/nomorantrian/page.js"
     ]
   }
 }

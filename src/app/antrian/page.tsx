@@ -117,7 +117,7 @@ const Antrian = () => {
             >
               <CardComponent
                 src="/new-patient.png"
-                title="Pasien Baru"
+                title="Registrasi Pasien"
                 onClick={() => handleCardClick("new-patient")}
               />
               <CardComponent
@@ -206,7 +206,7 @@ const TicketComponent = ({ onBatalClick }: { onBatalClick: () => void }) => {
       </div>
       <div className="absolute top-96 flex flex-col gap-5">
         <span className="text-lg font-bold">Silahkan Menuju Administrasi</span>
-        <button className="btn btn-sm btn-primary">Print Ticket</button>
+        <button className="btn btn-sm btn-primary">Print Tiket</button>
         <button
           className="btn btn-sm btn-error text-white"
           onClick={onBatalClick}

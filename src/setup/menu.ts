@@ -141,7 +141,7 @@ export const listMenu = [
       {
         id: 2,
         title: "Nomor Antrian",
-        url: "#",
+        url: "/nomorantrian",
       },
     ],
   },

@@ -8,6 +8,10 @@ const columHelper = createColumnHelper<any>();
 const PendaftaranTableCoulumn = [
   columHelper.accessor((row) => row.episodePendaftaran.pasien.noRm, {
     cell: (info) => info.getValue(),
+    header: "Antrian Admisi",
+  }),
+  columHelper.accessor((row) => row.episodePendaftaran.pasien.noRm, {
+    cell: (info) => info.getValue(),
     header: "No. Rekam Medis",
   }),
   columHelper.accessor((row) => row.episodePendaftaran.pasien.namaPasien, {
@@ -33,6 +37,10 @@ const PendaftaranTableCoulumn = [
   columHelper.accessor((row) => row.createdAt, {
     cell: (info) => format(info.getValue(), "dd/MM/yyyy HH:mm"),
     header: "Jam Regis",
+  }),
+  columHelper.accessor((row) => row.createdAt, {
+    cell: (info) => format(info.getValue(), "dd/MM/yyyy HH:mm"),
+    header: "Aksi",
   }),
 ];
 
