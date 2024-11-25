@@ -3,19 +3,59 @@
 import { createColumnHelper } from "@tanstack/table-core";
 import Link from "next/link";
 import { format } from "date-fns";
+import Swal from "sweetalert2";
+import { ToastAlert } from "@/app/helper/ToastAlert";
 
-const columHelper = createColumnHelper<any>();
+const columnHelper = createColumnHelper<any>();
+
+const onDeleteData = async (id: any, category: string) => {
+  const endpoint = `${category}-answer`.toLowerCase();
+  console.log("endpoint", endpoint);
+  Swal.fire({
+    title: "Are you sure?",
+    text: "Data yang terhapus tidak bisa di kembalikan!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "Tidak",
+    confirmButtonText: "Ya, Hapus!",
+  }).then(async (result: any) => {
+    if (result.isConfirmed) {
+      try {
+        const fetchBody = await fetch("/api/mastersoap/hapusjawaban", {
+          method: "DELETE",
+          body: JSON.stringify({ id, endpoint }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const res = await fetchBody.json();
+        if (res.id) {
+          ToastAlert({ icon: "success", title: "Berhasil" });
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        } else {
+          ToastAlert({ icon: "error", title: res });
+        }
+      } catch (error: any) {
+        ToastAlert({ icon: "error", title: error.message });
+      }
+    }
+  });
+};
 
 const TambahJawabanColumn = [
-  columHelper.accessor((row) => row.answer, {
+  columnHelper.accessor((row) => row.answer, {
     cell: (info) => info.getValue(),
     header: "Keyword",
   }),
-  columHelper.accessor((row) => row.createdAt, {
+  columnHelper.accessor((row) => row.updatedAt, {
     cell: (info) => format(info.getValue(), "dd/MM/yyyy HH:mm"),
     header: "Dibuat tanggal",
   }),
-  columHelper.accessor(
+  columnHelper.accessor(
     (row) => {
       const capitalizeWords = (str: string) =>
         str.replace(/\b\w/g, (char) => char.toUpperCase());
@@ -27,14 +67,16 @@ const TambahJawabanColumn = [
     }
   ),
 
-  columHelper.accessor((row) => row.id, {
+  columnHelper.accessor((row) => row.id, {
     cell: (info) => {
+      const category = info.row.original.question.category.toLowerCase();
+
       return (
         <div className="flex gap-2 justify-center">
-          <div className="tooltip" data-tip="Ubah Pertanyaan">
+          <div className="tooltip" data-tip="Ubah Keyword">
             <Link
               className="btn btn-outline btn-success btn-circle btn-xs"
-              href={`/klinik/setting/paramedis/jadwaldokter/edit/${info.getValue()}`}
+              href={`/klinik/setting/mastersoap/editanswer/${info.getValue()}?category=${category}`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -48,9 +90,9 @@ const TambahJawabanColumn = [
             </Link>
           </div>
           <div className="tooltip" data-tip="Hapus Pertanyaan">
-            <Link
-              className="btn btn-outline btn-error btn-circle btn-xs"
-              href={`/klinik/setting/paramedis/jadwaldokter/detail/${info.getValue()}`}
+            <button
+              className="btn btn-circle btn-outline btn-error btn-xs"
+              onClick={() => onDeleteData(info.getValue(), category)}
             >
               <svg
                 viewBox="0 0 24 24"
@@ -61,12 +103,12 @@ const TambahJawabanColumn = [
                 <path
                   d="M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6"
                   stroke="#e82121"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 ></path>
               </svg>
-            </Link>
+            </button>
           </div>
         </div>
       );

@@ -72,11 +72,8 @@ const MasterAsuransiColumn = [
     header: "Nomor Telepon PIC",
   }),
   columHelper.accessor(
-    (row) =>
-      `${format(new Date(row.from), "dd/MM/yyyy")} - ${format(
-        new Date(row.to),
-        "dd/MM/yyyy"
-      )}`,
+    (row) => 
+      `${format(row.from, "dd/MM/yyyy")} - ${format(row.to, "dd/MM/yyyy")}`,
     {
       cell: (info) => info.getValue(),
       header: "Tanggal Kerjasama",

@@ -5,7 +5,6 @@ import FormInputJawaban from "../../pageclient/FormInputJawaban";
 import TambahJawabanColumn from "./TambahJawabanColumn";
 import { getServerSession } from "next-auth";
 import { authOption } from "@/auth";
-import { useRouter } from "next/router";
 
 const getData = async (id: string, endPoint: string) => {
   try {
@@ -37,7 +36,6 @@ const TambahJawaban = async ({
   params: { id: string };
   searchParams: { category: string };
 }) => {
-  
   const category = searchParams.category || "";
   const newEndpoint = `master-${category}`.toLowerCase();
   const session = await getServerSession(authOption);

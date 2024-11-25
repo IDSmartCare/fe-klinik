@@ -40,11 +40,12 @@ export const authOption: NextAuthOptions = {
       if (user) {
         token.role = user.role;
         token.idFasyankes = String(user.fasyankes.fasyankesId);
+        token.nameFasyankes = user.fasyankes.name;
         token.username = user.username;
         token.wfid = user.wfid;
         token.idProfile = user.id_profile;
         // token.package = user.fasyankes.package;
-        token.package = "plus"
+        token.package = "plus";
         token.type = user.fasyankes.type;
         // token.type = "Klinik";
       }
@@ -53,6 +54,7 @@ export const authOption: NextAuthOptions = {
     async session({ session, token }) {
       session.user.role = token.role;
       session.user.idFasyankes = token.idFasyankes;
+      session.user.nameFasyankes = token.nameFasyankes;
       session.user.username = token.username;
       session.user.wfid = token.wfid;
       session.user.idProfile = token.idProfile;

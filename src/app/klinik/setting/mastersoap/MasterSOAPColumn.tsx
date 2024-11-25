@@ -30,7 +30,7 @@ const MasterSOAPColumn = [
       header: "Tipe Pertanyaan",
     }
   ),
-  columHelper.accessor((row) => row.createdAt, {
+  columHelper.accessor((row) => row.updatedAt, {
     cell: (info) => format(info.getValue(), "dd/MM/yyyy HH:mm"),
     header: "Dibuat tanggal",
   }),
@@ -51,7 +51,7 @@ const MasterSOAPColumn = [
     cell: (info) => {
       const rowData = info.row.original.questionType;
       const category = info.row.original.category;
-      const formattedCategory = category.replace(/\s+/g, "-");
+      const newCategory = category.toLowerCase();
       const shouldShowTambahJawaban =
         rowData !== "number" && rowData !== "date";
 
@@ -60,7 +60,7 @@ const MasterSOAPColumn = [
           <div className="tooltip" data-tip="Ubah Pertanyaan">
             <Link
               className="btn btn-outline btn-success btn-circle btn-xs"
-              href={`/klinik/setting/mastersoap/add/${info.getValue()}`}
+              href={`/klinik/setting/mastersoap/edit/${info.getValue()}?category=${newCategory}`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -77,7 +77,7 @@ const MasterSOAPColumn = [
             <div className="tooltip" data-tip="Tambah Jawaban">
               <Link
                 className="btn btn-outline btn-info btn-circle btn-xs"
-                href={`/klinik/setting/mastersoap/add/${info.getValue()}?category=${category}`}
+                href={`/klinik/setting/mastersoap/add/${info.getValue()}?category=${newCategory}`}
               >
                 <svg
                   viewBox="0 0 24 24"

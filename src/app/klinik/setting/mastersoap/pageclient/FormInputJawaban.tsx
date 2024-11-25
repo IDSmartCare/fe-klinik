@@ -29,8 +29,6 @@ const FormInputJawaban = ({
     const soapCategory = data.category?.toLowerCase();
     const endpoint = `${soapCategory}-answer`;
 
-    console.log(endpoint);
-
     const body = {
       questionId: Number(data.id),
       answer: formData.answer,
