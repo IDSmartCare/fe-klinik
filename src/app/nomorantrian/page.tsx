@@ -10,12 +10,12 @@ interface CardAntrianProps {
 
 const CardAntrian = (props: CardAntrianProps) => {
   return (
-    <div className="px-10 py-10 rounded-xl justify-center items-center bg-white flex flex-col gap-14">
-      <span className="font-bold text-3xl text-primary">
+    <div className="px-20 py-16 rounded-xl justify-center items-center bg-white flex flex-col gap-16">
+      <span className="font-bold text-4xl text-primary">
         Antrian {props.title}
       </span>
       <span className="font-bold text-8xl text-primary">{props.nomor}</span>
-      <span className="text-primary text-xl">
+      <span className="text-primary text-2xl">
         Silahkan Menuju <span className="font-bold">{props.desc}</span>
       </span>
     </div>
@@ -33,8 +33,8 @@ const NomorAntrian = async () => {
         backgroundSize: "cover",
       }}
     >
-      <div className="text-white mt-32">
-        <h1 className="font-bold text-4xl">
+      <div className="text-white mt-28">
+        <h1 className="font-bold text-5xl">
           {`Klinik ${session?.user.nameFasyankes}`}
         </h1>
       </div>

@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/antrian/page": [
+    "/nomorantrian/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/antrian/page.js"
+      "static/chunks/app/nomorantrian/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -11,25 +11,40 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/klinik/perawat/page": [
+    "/klinik/pendaftaran/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/klinik/perawat/page.js"
+      "static/chunks/app/klinik/pendaftaran/page.js"
     ],
     "/klinik/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/klinik/layout.js"
     ],
-    "/klinik/pendaftaran/page": [
+    "/antrian/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/klinik/pendaftaran/page.js"
+      "static/chunks/app/antrian/page.js"
     ],
-    "/nomorantrian/page": [
+    "/klinik/perawat/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/nomorantrian/page.js"
+      "static/chunks/app/klinik/perawat/page.js"
+    ],
+    "/klinik/pasien/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/klinik/pasien/page.js"
+    ],
+    "/klinik/pasien/registrasi/[id]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/klinik/pasien/registrasi/[id]/page.js"
+    ],
+    "/klinik/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/klinik/page.js"
     ]
   }
 }
