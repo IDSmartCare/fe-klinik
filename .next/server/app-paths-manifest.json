@@ -1,8 +1,10 @@
 {
-  "/nomorantrian/page": "app/nomorantrian/page.js",
   "/antrian/page": "app/antrian/page.js",
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/klinik/pasien/page": "app/klinik/pasien/page.js",
-  "/klinik/pasien/registrasi/[id]/page": "app/klinik/pasien/registrasi/[id]/page.js",
-  "/klinik/perawat/page": "app/klinik/perawat/page.js"
+  "/api/wilayah/provinsi/route": "app/api/wilayah/provinsi/route.js",
+  "/antrian/nomorantrian/page": "app/antrian/nomorantrian/page.js",
+  "/klinik/pendaftaran/page": "app/klinik/pendaftaran/page.js",
+  "/klinik/antrianadmisi/page": "app/klinik/antrianadmisi/page.js",
+  "/klinik/perawat/page": "app/klinik/perawat/page.js",
+  "/klinik/pasien/page": "app/klinik/pasien/page.js"
 }

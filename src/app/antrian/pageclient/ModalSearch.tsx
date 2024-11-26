@@ -15,6 +15,7 @@ const ModalSearch = ({ session }: { session: Session | null }) => {
 
   const handleToggle = (option: string) => {
     setActiveOption(option);
+    reset();
   };
 
   const onSubmit: SubmitHandler<any> = async (data) => {
@@ -96,7 +97,7 @@ const ModalSearch = ({ session }: { session: Session | null }) => {
               </button>
             </form>
 
-            <button className="btn btn-primary btn-md rounded-xl">
+            <button type="submit" className="btn btn-primary btn-md rounded-xl">
               Submit
             </button>
           </div>

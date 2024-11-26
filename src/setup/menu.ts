@@ -1,6 +1,30 @@
 export const listMenu = [
   {
     id: 1,
+    menu: "Antrian",
+    link: "#",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" />
+</svg>
+
+
+`,
+    roles: ["admin", "tester", "kasir"],
+    submenu: [
+      {
+        id: 1,
+        title: "Ambil Nomor Antrian",
+        url: "/antrian",
+      },
+      {
+        id: 2,
+        title: "Nomor Antrian",
+        url: "/antrian/nomorantrian",
+      },
+    ],
+  },
+  {
+    id: 2,
     menu: "Pendaftaran",
     link: "#",
     icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -11,18 +35,23 @@ export const listMenu = [
     submenu: [
       {
         id: 1,
+        title: "Antrian Admisi",
+        url: "/klinik/antrianadmisi",
+      },
+      {
+        id: 2,
         title: "Data Pasien",
         url: "/klinik/pasien",
       },
       {
-        id: 2,
+        id: 3,
         title: "Pasien Terdaftar",
         url: "/klinik/pendaftaran",
       },
     ],
   },
   {
-    id: 5,
+    id: 3,
     menu: "Perawat",
     link: "/klinik/perawat",
     icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -33,7 +62,7 @@ export const listMenu = [
     submenu: [],
   },
   {
-    id: 2,
+    id: 4,
     menu: "Dokter",
     link: "/klinik/dokter",
     icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -45,7 +74,7 @@ export const listMenu = [
     submenu: [],
   },
   {
-    id: 3,
+    id: 5,
     menu: "Farmasi",
     link: "/klinik/farmasi",
     icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -56,7 +85,7 @@ export const listMenu = [
     submenu: [],
   },
   {
-    id: 4,
+    id: 6,
     menu: "Kasir",
     link: "#",
     icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -83,7 +112,7 @@ export const listMenu = [
     ],
   },
   {
-    id: 6,
+    id: 7,
     menu: "Setting",
     link: "#",
     icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -118,30 +147,6 @@ export const listMenu = [
         id: 5,
         title: "Master Asuransi",
         url: "/klinik/setting/masterasuransi",
-      },
-    ],
-  },
-  {
-    id: 7,
-    menu: "Antrian",
-    link: "#",
-    icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" />
-</svg>
-
-
-`,
-    roles: ["admin", "tester", "kasir"],
-    submenu: [
-      {
-        id: 1,
-        title: "Ambil Nomor Antrian",
-        url: "/antrian",
-      },
-      {
-        id: 2,
-        title: "Nomor Antrian",
-        url: "/nomorantrian",
       },
     ],
   },
