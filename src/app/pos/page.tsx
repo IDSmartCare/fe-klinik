@@ -1,19 +1,16 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState } from "react";
-import { getApiBisnisOwner, postApiBisnisOwner } from "../lib/apiBisnisOwner";
-import { useSession } from "next-auth/react";
-import {
-  PembelianInterface,
-  StokBarangInterface,
-} from "./interface/postInterface";
-import { ToastAlert } from "../helper/ToastAlert";
-import simpanPOS from "./actionSimpanPos";
-import Link from "next/link";
-import GetPosByGroupId from "./getPos";
-import { TransaksiAfterSubmit } from "./interface/listAfterSubmit";
-import ModalPrintBill from "./pageclient/ModalPrintBill";
-import { formatRupiah, formatRupiahEdit } from "../helper/formatRupiah";
+import { useEffect, useRef, useState } from 'react';
+import { getApiBisnisOwner, postApiBisnisOwner } from '../lib/apiBisnisOwner';
+import { useSession } from 'next-auth/react';
+import { PembelianInterface, StokBarangInterface } from './interface/postInterface';
+import { ToastAlert } from '../helper/ToastAlert';
+import simpanPOS from './actionSimpanPos';
+import Link from 'next/link';
+import GetPosByGroupId from './getPos';
+import { TransaksiAfterSubmit } from './interface/listAfterSubmit';
+import ModalPrintBill from './pageclient/ModalPrintBill';
+import { formatRupiah, formatRupiahEdit } from '../helper/formatRupiah';
 
 const PagePos = () => {
   const { data } = useSession();
@@ -21,23 +18,21 @@ const PagePos = () => {
   const [pembelian, setPembelian] = useState<PembelianInterface[]>([]);
   const [subTotal, setSubTotal] = useState(0);
   const [total, setTotal] = useState(0);
-  const [biayaLain, setBiayaLain] = useState("");
-  const [pajak, setPajak] = useState("");
-  const [diskon, setDiskon] = useState("");
+  const [biayaLain, setBiayaLain] = useState('');
+  const [pajak, setPajak] = useState('');
+  const [diskon, setDiskon] = useState('');
   const [kembalian, setKembalian] = useState(0);
   const [hargaDiskon, setHargaDiskon] = useState(0);
   const [hargaPajak, setHargaPajak] = useState(0);
-  const [bayar, setBayar] = useState("");
-  const [email, setEmail] = useState("");
-  const [hpPelanggan, setHpPelanggan] = useState("");
-  const [namaPelanggan, setNamaPelanggan] = useState("");
-  const [jenisDiskon, setJenisDiskon] = useState("");
-  const [search, setSearch] = useState("");
+  const [bayar, setBayar] = useState('');
+  const [email, setEmail] = useState('');
+  const [hpPelanggan, setHpPelanggan] = useState('');
+  const [namaPelanggan, setNamaPelanggan] = useState('');
+  const [jenisDiskon, setJenisDiskon] = useState('');
+  const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   const [isEditing, setIsEditing] = useState(false);
-  const [resAfterSubmit, setResAfterSubmit] = useState<
-    TransaksiAfterSubmit | null | undefined
-  >();
+  const [resAfterSubmit, setResAfterSubmit] = useState<TransaksiAfterSubmit | null | undefined>();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -70,25 +65,19 @@ const PagePos = () => {
   };
 
   const onClickTambah = (barang: StokBarangInterface) => {
-    const existingItem = pembelian.find(
-      (item) => item.barang_id === barang.barang_id
-    );
+    const existingItem = pembelian.find((item) => item.barang_id === barang.barang_id);
     if (existingItem) {
       const updatedItems = pembelian.map((item) => {
         if (item.barang_id === barang.barang_id) {
           let totalDiskon = 0;
           if (barang.diskon?.percent_disc) {
-            const diskon =
-              Number(barang.barang.harga_jual) *
-              (Number(barang.diskon.percent_disc) / 100);
+            const diskon = Number(barang.barang.harga_jual) * (Number(barang.diskon.percent_disc) / 100);
             const subTotal = Number(barang.barang.harga_jual) - diskon;
             totalDiskon = subTotal;
           } else {
             totalDiskon =
-              Number(barang.barang.harga_jual) -
-              Number(barang.diskon?.amount_disc)
-                ? Number(barang.barang.harga_jual) -
-                  Number(barang.diskon?.amount_disc)
+              Number(barang.barang.harga_jual) - Number(barang.diskon?.amount_disc)
+                ? Number(barang.barang.harga_jual) - Number(barang.diskon?.amount_disc)
                 : Number(barang.barang.harga_jual);
           }
           return {
@@ -104,16 +93,13 @@ const PagePos = () => {
     } else {
       let totalDiskon = 0;
       if (barang.diskon?.percent_disc) {
-        const diskon =
-          Number(barang.barang.harga_jual) *
-          (Number(barang.diskon.percent_disc) / 100);
+        const diskon = Number(barang.barang.harga_jual) * (Number(barang.diskon.percent_disc) / 100);
         const subTotal = Number(barang.barang.harga_jual) - diskon;
         totalDiskon = subTotal;
       } else {
         totalDiskon =
           Number(barang.barang.harga_jual) - Number(barang.diskon?.amount_disc)
-            ? Number(barang.barang.harga_jual) -
-              Number(barang.diskon?.amount_disc)
+            ? Number(barang.barang.harga_jual) - Number(barang.diskon?.amount_disc)
             : Number(barang.barang.harga_jual);
       }
       const addBarang: any = {
@@ -125,8 +111,7 @@ const PagePos = () => {
         diskonFromBo: barang.diskon?.amount_disc
           ? barang.diskon.amount_disc
           : barang.diskon?.percent_disc
-          ? Number(barang.barang.harga_jual) *
-            (Number(barang.diskon.percent_disc) / 100)
+          ? Number(barang.barang.harga_jual) * (Number(barang.diskon.percent_disc) / 100)
           : 0, // Set to 0 if no diskon information is available
       };
       let allBarang = [...pembelian, addBarang];
@@ -137,21 +122,18 @@ const PagePos = () => {
   };
 
   const subTotalCalculate = (pembelian: PembelianInterface[]) => {
-    let subTotalNow = pembelian.reduce(
-      (prev, next) => prev + next.totalHarga,
-      0
-    );
+    let subTotalNow = pembelian.reduce((prev, next) => prev + next.totalHarga, 0);
     setSubTotal(subTotalNow);
     setTotal(subTotalNow);
   };
 
   const onChangeBiayaLain = (e: string) => {
-    const rawValue = e.replace(/[^0-9]/g, ""); // Get numeric value
+    const rawValue = e.replace(/[^0-9]/g, ''); // Get numeric value
     if (rawValue) {
       setBiayaLain(rawValue); // Store the raw numeric value
       calculatorTotal(Number(pajak), Number(rawValue), Number(diskon));
     } else {
-      setBiayaLain("");
+      setBiayaLain('');
       calculatorTotal(Number(pajak), 0, Number(diskon));
     }
   };
@@ -161,7 +143,7 @@ const PagePos = () => {
       setPajak(e);
       calculatorTotal(Number(e), Number(biayaLain), Number(diskon));
     } else {
-      setPajak("");
+      setPajak('');
       calculatorTotal(0, Number(biayaLain), Number(diskon));
     }
   };
@@ -180,11 +162,11 @@ const PagePos = () => {
   // };
 
   const onChangeDiskon = (e: string) => {
-    const rawValue = e.replace(/[^\d]/g, ""); // Hapus semua karakter kecuali angka
-    if (jenisDiskon === "rp") {
+    const rawValue = e.replace(/[^\d]/g, ''); // Hapus semua karakter kecuali angka
+    if (jenisDiskon === 'rp') {
       setDiskon(formatRupiahEdit(rawValue)); // Format rupiah saat mengetik
       calculatorTotal(Number(pajak), Number(biayaLain), Number(rawValue));
-    } else if (jenisDiskon === "percent" && rawValue.length <= 2) {
+    } else if (jenisDiskon === 'percent' && rawValue.length <= 2) {
       setDiskon(rawValue); // Batas 2 karakter untuk persen
       calculatorTotal(Number(pajak), Number(biayaLain), Number(rawValue));
     }
@@ -193,27 +175,23 @@ const PagePos = () => {
   const handleRadioChange = (e: string) => {
     setJenisDiskon(e);
 
-    setDiskon(""); // Reset the diskon state to empty string
+    setDiskon(''); // Reset the diskon state to empty string
     // Ensure the input field is also cleared (if needed)
     if (inputRef.current) {
-      inputRef.current.value = ""; // Clear the input value directly
+      inputRef.current.value = ''; // Clear the input value directly
     }
 
     // Optionally call calculatorTotal with 0 to reset the calculation
     calculatorTotal(Number(pajak), Number(biayaLain), 0);
   };
 
-  const calculatorTotal = (
-    pajak: number,
-    biayalain: number,
-    diskon: number
-  ) => {
+  const calculatorTotal = (pajak: number, biayalain: number, diskon: number) => {
     let discountAmount = 0;
     let total = subTotal;
     let taxAmount = total * (pajak / 100);
     setHargaPajak(taxAmount);
     total = subTotal + taxAmount;
-    if (jenisDiskon === "percent") {
+    if (jenisDiskon === 'percent') {
       discountAmount = total * (diskon / 100);
       setHargaDiskon(discountAmount);
     } else {
@@ -226,12 +204,12 @@ const PagePos = () => {
 
   const onBayar = () => {
     if (!namaPelanggan) {
-      ToastAlert({ icon: "error", title: "Silahkan isi nama pelanggan!" });
+      ToastAlert({ icon: 'error', title: 'Silahkan isi nama pelanggan!' });
       return;
     }
-    const modal: any = document?.getElementById("modal-pos");
+    const modal: any = document?.getElementById('modal-pos');
     modal.showModal();
-    setBayar("");
+    setBayar('');
     setKembalian(0);
   };
 
@@ -251,7 +229,7 @@ const PagePos = () => {
     };
 
     if (Number(bayar) < total) {
-      ToastAlert({ icon: "error", title: "Pembayaran tidak boleh kurang" });
+      ToastAlert({ icon: 'error', title: 'Pembayaran tidak boleh kurang' });
       return;
     }
     const post = await simpanPOS(
@@ -263,7 +241,7 @@ const PagePos = () => {
         hpPelanggan,
         diskonInvoice: hargaDiskon.toString(),
         pajak: hargaPajak.toString(),
-        biayaLainnya: biayaLain ?? "0",
+        biayaLainnya: biayaLain ?? '0',
         subTotal: subTotal.toString(),
         total: total.toString(),
         totalBayar: bayar,
@@ -273,32 +251,32 @@ const PagePos = () => {
     );
     if (post.status) {
       const postApi = await postApiBisnisOwner({
-        url: "decrease-stock",
+        url: 'decrease-stock',
         data: bodyToPost,
       });
 
       if (!postApi.status) {
-        ToastAlert({ icon: "error", title: postApi.message });
+        ToastAlert({ icon: 'error', title: postApi.message });
         return;
       }
 
-      ToastAlert({ icon: "success", title: post.message as string });
-      const modal: any = document?.getElementById("modal-pos");
+      ToastAlert({ icon: 'success', title: post.message as string });
+      const modal: any = document?.getElementById('modal-pos');
       modal.close();
       setPembelian([]);
       subTotalCalculate([]);
-      setBiayaLain("");
-      setEmail("");
-      setHpPelanggan("");
-      setNamaPelanggan("");
+      setBiayaLain('');
+      setEmail('');
+      setHpPelanggan('');
+      setNamaPelanggan('');
       const getDataAfterSubmit = await GetPosByGroupId(groupId);
       setResAfterSubmit(getDataAfterSubmit.data as any);
       setTimeout(() => {
-        const modal: any = document?.getElementById("modal-pos-print");
+        const modal: any = document?.getElementById('modal-pos-print');
         modal?.show();
       }, 2000);
     } else {
-      ToastAlert({ icon: "error", title: post.message as string });
+      ToastAlert({ icon: 'error', title: post.message as string });
     }
   };
 
@@ -309,22 +287,17 @@ const PagePos = () => {
   };
 
   const onChangePembayaran = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const numericValue = e.target.value.replace(/[^0-9]/g, "");
+    const numericValue = e.target.value.replace(/[^0-9]/g, '');
     setBayar(numericValue);
-    console.log("Bayar value:", numericValue);
+    console.log('Bayar value:', numericValue);
     setKembalian(Number(numericValue) - total);
   };
 
   return (
     <div className="flex gap-2 flex-col p-2">
-      <Link href={"/klinik"}>
+      <Link href={'/klinik'}>
         <button className="btn btn-sm btn-primary">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 16 16"
-            fill="currentColor"
-            className="size-4"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
             <path
               fillRule="evenodd"
               d="M12.5 9.75A2.75 2.75 0 0 0 9.75 7H4.56l2.22 2.22a.75.75 0 1 1-1.06 1.06l-3.5-3.5a.75.75 0 0 1 0-1.06l3.5-3.5a.75.75 0 0 1 1.06 1.06L4.56 5.5h5.19a4.25 4.25 0 0 1 0 8.5h-1a.75.75 0 0 1 0-1.5h1a2.75 2.75 0 0 0 2.75-2.75Z"
@@ -371,45 +344,36 @@ const PagePos = () => {
               </thead>
               <tbody>
                 {barang?.map((item) => {
-                  const existingItem = pembelian.find(
-                    (pembelianItem) =>
-                      pembelianItem.barang_id === item.barang_id
-                  );
-                  const isOutOfStock = existingItem
-                    ? existingItem.qty >= item.stok
-                    : false;
+                  const existingItem = pembelian.find((pembelianItem) => pembelianItem.barang_id === item.barang_id);
+                  const isOutOfStock = existingItem ? existingItem.qty >= item.stok : false;
 
                   return (
                     <tr key={item?.barang_id}>
                       <td>
                         <div className="flex items-center gap-3">
                           <div>
-                            <div className="font-bold">
-                              {item?.barang?.nama_barang || "Unknown Name"}
-                            </div>
-                            <div className="text-sm opacity-50">
-                              Stok: {item?.stok ?? "N/A"}
-                            </div>
+                            <div className="font-bold">{item?.barang?.nama_barang || 'Unknown Name'}</div>
+                            <div className="text-sm opacity-50">Stok: {item?.stok ?? 'N/A'}</div>
                           </div>
                         </div>
                       </td>
                       <td>
                         {item?.barang?.harga_jual
-                          ? new Intl.NumberFormat("id-ID", {
-                              style: "currency",
-                              currency: "IDR",
+                          ? new Intl.NumberFormat('id-ID', {
+                              style: 'currency',
+                              currency: 'IDR',
                             }).format(Number(item.barang.harga_jual))
-                          : "Unknown Price"}
+                          : 'Unknown Price'}
                       </td>
                       <td>
                         {item?.diskon
-                          ? item.diskon.type === "Percentage"
+                          ? item.diskon.type === 'Percentage'
                             ? `${item.diskon.percent_disc}%`
-                            : new Intl.NumberFormat("id-ID", {
-                                style: "currency",
-                                currency: "IDR",
+                            : new Intl.NumberFormat('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR',
                               }).format(Number(item.diskon.amount_disc))
-                          : "No Discount"}
+                          : 'No Discount'}
                       </td>
                       <th>
                         <button
@@ -478,16 +442,13 @@ const PagePos = () => {
                       </td>
                       <td>{item.qty}</td>
                       <td>
-                        {new Intl.NumberFormat("id-ID", {
-                          style: "currency",
-                          currency: "IDR",
+                        {new Intl.NumberFormat('id-ID', {
+                          style: 'currency',
+                          currency: 'IDR',
                         }).format(Number(item.totalHarga))}
                       </td>
                       <td>
-                        <button
-                          className="btn btn-circle btn-error"
-                          onClick={() => onDeletePembelian(item.barang_id)}
-                        >
+                        <button className="btn btn-circle btn-error" onClick={() => onDeletePembelian(item.barang_id)}>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 16 16"
@@ -535,29 +496,27 @@ const PagePos = () => {
                 <input
                   type="radio"
                   className="radio radio-primary"
-                  onChange={() => handleRadioChange("percent")}
+                  onChange={() => handleRadioChange('percent')}
                   name="diskon"
-                  value={"percent"}
+                  value={'percent'}
                 />
                 <p>Rp.</p>
                 <input
                   type="radio"
                   className="radio radio-primary"
-                  onChange={() => handleRadioChange("rp")}
+                  onChange={() => handleRadioChange('rp')}
                   name="diskon"
-                  value={"rp"}
+                  value={'rp'}
                 />
                 <input
                   ref={inputRef}
                   type="text"
                   value={
-                    jenisDiskon === "percent"
-                      ? diskon
-                      : formatRupiahEdit(diskon) // Menampilkan format rupiah saat tidak mengedit
+                    jenisDiskon === 'percent' ? diskon : formatRupiahEdit(diskon) // Menampilkan format rupiah saat tidak mengedit
                   }
                   onFocus={() => setIsEditing(true)}
                   onBlur={() => setIsEditing(false)}
-                  maxLength={jenisDiskon === "percent" ? 2 : undefined}
+                  maxLength={jenisDiskon === 'percent' ? 2 : undefined}
                   onChange={(e) => onChangeDiskon(e.target.value)}
                   className="input input-bordered w-full max-w-xs"
                 />
@@ -575,15 +534,11 @@ const PagePos = () => {
               </div>
 
               <div>
-                <button
-                  onClick={() => onBayar()}
-                  disabled={total === 0}
-                  className="btn btn-info btn-block"
-                >
-                  BAYAR{" "}
-                  {new Intl.NumberFormat("id-ID", {
-                    style: "currency",
-                    currency: "IDR",
+                <button onClick={() => onBayar()} disabled={total === 0} className="btn btn-info btn-block">
+                  BAYAR{' '}
+                  {new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
                   }).format(Number(total))}
                 </button>
               </div>
@@ -594,19 +549,12 @@ const PagePos = () => {
       <dialog id="modal-pos" className="modal">
         <div className="modal-box w-4/12 max-w-2xl">
           <form method="dialog">
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-              ✕
-            </button>
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
           </form>
           <form className="flex flex-col gap-2" onSubmit={onSubmitData}>
             <div className="flex items-center">
               <p className="w-1/3">Total</p>
-              <input
-                type="text"
-                readOnly
-                value={formatRupiah(total)}
-                className="input input-primary"
-              />
+              <input type="text" readOnly value={formatRupiah(total)} className="input input-primary" />
             </div>
             <div className="flex items-center">
               <p className="w-1/3">Bayar</p>
@@ -622,14 +570,9 @@ const PagePos = () => {
             </div>
             <div className="flex items-center">
               <p className="w-1/3">Kembali</p>
-              <input
-                type="text"
-                value={formatRupiah(kembalian)}
-                readOnly
-                className="input input-primary"
-              />
+              <input type="text" value={formatRupiah(kembalian)} readOnly className="input input-primary" />
             </div>
-            {data?.user.role !== "admin" && data?.user.role !== "tester" && (
+            {data?.user.role !== 'admin' && data?.user.role !== 'tester' && (
               <button className="btn btn-info">SUBMIT</button>
             )}
           </form>
