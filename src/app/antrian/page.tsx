@@ -1,11 +1,12 @@
-"use client";
-import React, { useState } from "react";
-import CardComponent from "../components/CardComponent";
-import Image from "next/image";
-import { useSession } from "next-auth/react";
-import { motion, AnimatePresence } from "framer-motion";
-import Swal from "sweetalert2";
-import ModalSearch from "./pageclient/ModalSearch";
+'use client';
+import React, { useState } from 'react';
+import CardComponent from '../components/CardComponent';
+import Image from 'next/image';
+import { useSession } from 'next-auth/react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Swal from 'sweetalert2';
+import ModalSearch from './pageclient/ModalSearch';
+import ModalPrintAdmisi from './pageclient/ModalAntrianAdmisi';
 
 const Antrian = () => {
   const { data: session } = useSession();
@@ -15,7 +16,7 @@ const Antrian = () => {
 
   const handleCardClick = (cardType: any) => {
     setSelectedCard(cardType);
-    if (cardType === "new-registration") {
+    if (cardType === 'new-registration') {
       handlePostTicket(session?.user.idFasyankes);
       setTicketVisible(true);
     }
@@ -26,17 +27,14 @@ const Antrian = () => {
       idFasyankes: idFasyankes,
     };
     try {
-      const postApi = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/antrian/store-admisi`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
-          },
-          body: JSON.stringify(bodyToPost),
-        }
-      );
+      const postApi = await fetch(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/antrian/store-admisi`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+        },
+        body: JSON.stringify(bodyToPost),
+      });
       if (!postApi.ok) {
         return;
       }
@@ -65,6 +63,11 @@ const Antrian = () => {
     modal.showModal();
   };
 
+  const showModalAntrianAdmisi = (idModal: string) => {
+    const modal: any = document.getElementById(idModal);
+    modal.showModal();
+  };
+
   const animation = {
     initial: { opacity: 0, scale: 0.9 },
     animate: { opacity: 1, scale: 1 },
@@ -77,12 +80,12 @@ const Antrian = () => {
     title,
     text,
   }: {
-    icon: "success" | "error" | "warning" | "info" | "question";
+    icon: 'success' | 'error' | 'warning' | 'info' | 'question';
     title: string;
     text: string;
   }) => {
     Swal.fire({
-      position: "center",
+      position: 'center',
       icon,
       title,
       text,
@@ -90,13 +93,14 @@ const Antrian = () => {
   };
 
   return (
-    <>
+    <> 
+    <ModalPrintAdmisi nomorAntrian={dataTicket} />
       <ModalSearch session={session} />
       <div
         className="h-screen flex flex-col gap-14 2xl:gap-28 justify-center items-center relative overflow-hidden"
         style={{
           backgroundImage: "url('/background-APM.png')",
-          backgroundSize: "cover",
+          backgroundSize: 'cover',
         }}
       >
         {selectedCard !== null && (
@@ -109,20 +113,13 @@ const Antrian = () => {
               exit={{ scale: 0.5, opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <Image
-                src="/back-icon.png"
-                alt="Back button"
-                width={50}
-                height={50}
-              />
+              <Image src="/back-icon.png" alt="Back button" width={50} height={50} />
             </motion.div>
           </div>
         )}
         <div className="flex text-center text-white">
           <div>
-            <h1 className="font-bold text-4xl">
-              {`Selamat Datang di Fasyankes ${session?.user.nameFasyankes}`}
-            </h1>
+            <h1 className="font-bold text-4xl">{`Selamat Datang di Fasyankes ${session?.user.nameFasyankes}`}</h1>
             <h3 className="font-bold text-3xl mt-3">Anjungan Pasien Mandiri</h3>
           </div>
         </div>
@@ -130,24 +127,20 @@ const Antrian = () => {
           <AnimatePresence mode="wait">
             {/* Use mode="wait" to handle overlapping animations */}
             {selectedCard === null && (
-              <motion.div
-                key="initial-cards"
-                {...animation}
-                className="flex gap-20"
-              >
+              <motion.div key="initial-cards" {...animation} className="flex gap-20">
                 <CardComponent
                   src="/new-patient.png"
                   title="Registrasi Pasien"
-                  onClick={() => handleCardClick("new-patient")}
+                  onClick={() => handleCardClick('new-patient')}
                 />
                 <CardComponent
                   src="/bpjs.png"
                   title="BPJS"
                   onClick={() =>
                     ToastAlert2({
-                      icon: "error",
-                      title: "BPJS",
-                      text: "Fitur Belum Tersedia",
+                      icon: 'error',
+                      title: 'BPJS',
+                      text: 'Fitur Belum Tersedia',
                     })
                   }
                 />
@@ -156,65 +149,54 @@ const Antrian = () => {
                   title="Asuransi"
                   onClick={() =>
                     ToastAlert2({
-                      icon: "error",
-                      title: "Asuransi",
-                      text: "Fitur Belum Tersedia",
+                      icon: 'error',
+                      title: 'Asuransi',
+                      text: 'Fitur Belum Tersedia',
                     })
                   }
                 />
               </motion.div>
             )}
-            {selectedCard === "new-patient" ||
-            selectedCard === "new-registration" ? (
-              <motion.div
-                key="new-patient"
-                {...animation}
-                className="flex gap-20"
-              >
+            {selectedCard === 'new-patient' || selectedCard === 'new-registration' ? (
+              <motion.div key="new-patient" {...animation} className="flex gap-20">
                 <CardComponent
                   src="/old-patient.png"
                   title="Pasien Terdaftar"
-                  onClick={() => showModal("search-patient")}
+                  onClick={() => showModal('search-patient')}
                 />
                 <CardComponent
                   src="/new-patient.png"
                   title="Daftar Baru"
-                  onClick={() => handleCardClick("new-registration")}
+                  onClick={() => handleCardClick('new-registration')}
                 />
               </motion.div>
             ) : null}
-            {selectedCard === "bpjs" && (
-              <motion.div key="bpjs" {...animation}></motion.div>
-            )}
-            {selectedCard === "asuransi" && (
-              <motion.div key="asuransi" {...animation}></motion.div>
-            )}
+            {selectedCard === 'bpjs' && <motion.div key="bpjs" {...animation}></motion.div>}
+            {selectedCard === 'asuransi' && <motion.div key="asuransi" {...animation}></motion.div>}
           </AnimatePresence>
         </div>
         <div className="flex text-center text-white">
           <div className="flex flex-col gap-3">
             <h1 className="text-lg">Didukung oleh</h1>
-            <Image
-              src="/idSmartCloud-logo.png"
-              alt="logo"
-              width={200}
-              height={200}
-            />
+            <Image src="/idSmartCloud-logo.png" alt="logo" width={200} height={200} />
           </div>
         </div>
         <AnimatePresence>
           {ticketVisible && (
             <motion.div
               key="ticket-component"
-              initial={{ y: "100%" }}
+              initial={{ y: '100%' }}
               animate={{ y: 0 }}
-              exit={{ y: "100%" }}
+              exit={{ y: '100%' }}
               transition={{ duration: 0.5, delay: 0.7 }}
               className="absolute bottom-0 w-full flex justify-center"
             >
               <TicketComponent
                 onBatalClick={handleBatalClick}
                 nomor={dataTicket}
+                onPrintTicket={() => {
+                  showModalAntrianAdmisi('modal-antrian-admisi');
+                }}
               />
             </motion.div>
           )}
@@ -225,9 +207,11 @@ const Antrian = () => {
 };
 
 const TicketComponent = ({
+  onPrintTicket,
   onBatalClick,
   nomor,
 }: {
+  onPrintTicket: () => void;
   onBatalClick: () => void;
   nomor: string;
 }) => {
@@ -240,11 +224,10 @@ const TicketComponent = ({
       </div>
       <div className="absolute top-96 flex flex-col gap-5">
         <span className="text-lg font-bold">Silahkan Menuju Administrasi</span>
-        <button className="btn btn-sm btn-primary">Print Tiket</button>
-        <button
-          className="btn btn-sm btn-error text-white"
-          onClick={onBatalClick}
-        >
+        <button className="btn btn-sm btn-primary" onClick={onPrintTicket}>
+          Print Tiket
+        </button>
+        <button className="btn btn-sm btn-error text-white" onClick={onBatalClick}>
           Tutup
         </button>
       </div>

@@ -1,9 +1,0 @@
-{
-  "/antrian/page": "app/antrian/page.js",
-  "/antrian/nomorantrian/page": "app/antrian/nomorantrian/page.js",
-  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/page": "app/page.js",
-  "/klinik/page": "app/klinik/page.js",
-  "/klinik/antrianadmisi/page": "app/klinik/antrianadmisi/page.js",
-  "/klinik/perawat/page": "app/klinik/perawat/page.js"
-}
