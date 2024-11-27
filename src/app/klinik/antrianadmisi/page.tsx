@@ -1,37 +1,52 @@
+"use client";
 import TableFilterComponent from "@/app/components/TableFilterComponent";
-import { getServerSession } from "next-auth";
-import { authOption } from "@/auth";
 import AlertHeaderComponent from "@/app/klinik/setting/paramedis/components/AlertHeaderComponent";
 import AntrianAdmisiColumn from "./AntrianAdmisiColumn";
+import { useEffect, useState } from "react";
+import io from "socket.io-client";
 
-const getData = async (idFasyankes: string) => {
-  try {
-    const getapi = await fetch(
-      `${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/pasien/listregistrasi/${idFasyankes}`,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
-        },
-      }
-    );
-    if (!getapi.ok) {
-      return [];
+const socket = io(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}`);
+
+const AntrianAdmisi = () => {
+  const [lastAntrian, setLastAntrian] = useState<any[]>([]);
+
+  useEffect(() => {
+    const today = new Date().toLocaleDateString();
+    const storedDate = localStorage.getItem("lastDate");
+    const storedAntrian = localStorage.getItem("lastAntrianAdmisi");
+
+    if (storedDate !== today) {
+      localStorage.setItem("lastDate", today);
+      localStorage.setItem("lastAntrianAdmisi", JSON.stringify([])); 
+      setLastAntrian([]); 
+    } else if (storedAntrian) {
+      setLastAntrian(JSON.parse(storedAntrian)); 
+    } else {
+      console.log("No data found in localStorage");
     }
-    return getapi.json();
-  } catch (error) {
-    console.log(error);
-    return [];
-  }
-};
 
-const AntrianAdmisi = async () => {
-  const session = await getServerSession(authOption);
-  const data = await getData(session?.user.idFasyankes);
+    socket.on("lastAntrianAdmisiUpdated", (data) => {
+      console.log("Socket data received:", data.antrian);
+      if (data && data.antrian) {
+        setLastAntrian(data.antrian);
+        localStorage.setItem("lastAntrianAdmisi", JSON.stringify(data.antrian));
+      } else {
+        console.error("Received invalid data:", data);
+      }
+    });
+
+    return () => {
+      socket.off("lastAntrianAdmisiUpdated");
+    };
+  }, []);
 
   return (
     <>
       <AlertHeaderComponent message="Antrian terdaftar hari ini" />
-      <TableFilterComponent rowsData={data} columnsData={AntrianAdmisiColumn} />
+      <TableFilterComponent
+        rowsData={lastAntrian}
+        columnsData={AntrianAdmisiColumn}
+      />
     </>
   );
 };

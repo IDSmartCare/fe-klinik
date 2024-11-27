@@ -1,29 +1,49 @@
 "use client";
+import { ToastAlert } from "@/app/helper/ToastAlert";
 import { createColumnHelper } from "@tanstack/table-core";
 import { format } from "date-fns";
+
+const handlePanggilAntrian = async (id: string) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/antrian/admisi/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch data from API");
+    }
+    ToastAlert({ icon: "success", title: "Berhasil memanggil antrian" });
+  } catch (error) {
+    console.error("Error calling API:", error);
+  }
+};
 
 const columHelper = createColumnHelper<any>();
 
 const AntrianAdmisiColumn = [
-  columHelper.accessor((row) => row.antrian?.nomor, {
+  columHelper.accessor((row) => row.nomor, {
     cell: (info) => info.getValue(),
     header: "Nomor Antrian Admisi",
   }),
-  columHelper.accessor((row) => row.episodePendaftaran.pasien?.noRm, {
-    cell: (info) => info.getValue(),
+  columHelper.accessor((row) => row.tanggal, {
+    cell: (info) => format(info.getValue(), "dd/MM/yyyy"),
     header: "Tanggal Registrasi",
   }),
-  columHelper.accessor((row) => row.episodePendaftaran.pasien?.namaPasien, {
-    cell: (info) => info.getValue(),
+  columHelper.accessor((row) => row.tanggal, {
+    cell: (info) => format(info.getValue(), "HH:mm"),
     header: "Jam Registrasi",
   }),
-
   columHelper.accessor((row) => row.id, {
     cell: (info) => (
       <div className="tooltip" data-tip="Panggil Antrian">
         <button
           className="btn btn-circle btn-outline btn-warning btn-xs"
-          // onClick={() => onDeleteData(info.getValue())}
+          onClick={() => handlePanggilAntrian(info.getValue().toString())}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

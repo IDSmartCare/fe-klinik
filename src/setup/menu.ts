@@ -9,7 +9,7 @@ export const listMenu = [
 
 
 `,
-    roles: ["admin", "tester", "kasir"],
+    roles: ["admin", "tester", "admisi"],
     submenu: [
       {
         id: 1,

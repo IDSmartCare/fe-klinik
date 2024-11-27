@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
   },
 });
 
+
 const ModalPrintBill = ({
   data,
 }: {
