@@ -2,6 +2,7 @@
 import { useSession } from "next-auth/react";
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
+import { getFormattedDate } from "@/app/helper/ConvertDate";
 
 interface CardAntrianProps {
   title: string;
@@ -25,10 +26,12 @@ const CardAntrian = (props: CardAntrianProps) => {
 
 const socket = io(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}`);
 
-const NomorAntrian = () => { 
+const NomorAntrian = () => {
   const { data: session } = useSession();
-  const [lastAntrian, setLastAntrian] = useState<string>("A-0000");
-  const [messageVoice, setMessageVoice] = useState<string>("");
+  const [lastAntrianAdmisi, setlastAntrianAdmisi] = useState<string>("A-0000");
+  const [lastAntrianPasien, setlastAntrianPasien] = useState<string>("P-0000");
+  const [messageVoiceAdmisi, setMessageVoiceAdmisi] = useState<string>("");
+  const [messageVoicePasien, setMessageVoicePasien] = useState<string>("");
   const [currentTime, setCurrentTime] = useState<string>("00:00:00");
 
   useEffect(() => {
@@ -48,39 +51,74 @@ const NomorAntrian = () => {
 
   useEffect(() => {
     const today = new Date().toLocaleDateString();
-
     const storedDate = localStorage.getItem("lastDate");
-    const storedAntrian = localStorage.getItem("lastAntrian");
+    const storedAntrian = localStorage.getItem("panggilAntrianAdmisi");
 
     if (storedDate !== today) {
       localStorage.setItem("lastDate", today); // Simpan tanggal hari ini
-      localStorage.setItem("lastAntrian", "A-0000"); // Reset antrian ke A-0000
-      setLastAntrian("A-0000"); // Setel state antrian ke A-0000
+      localStorage.setItem("panggilAntrianAdmisi", "A-0000"); // Reset antrian ke A-0000
+      setlastAntrianAdmisi("A-0000"); // Setel state antrian ke A-0000
     } else if (storedAntrian) {
-      setLastAntrian(storedAntrian); // Jika tanggal sama, gunakan nilai antrian yang ada
+      setlastAntrianAdmisi(storedAntrian); // Jika tanggal sama, gunakan nilai antrian yang ada
     }
 
     // Memperbarui data antrian setiap kali terjadi perubahan
-    socket.on("lastAntrianUpdated", (data) => {
-      setLastAntrian(data.antrian);
-      setMessageVoice(data.message);
-      localStorage.setItem("lastAntrian", data.antrian); // Simpan data antrian baru ke localStorage
+    socket.on("panggilAntrianAdmisi", (data) => {
+      setlastAntrianAdmisi(data.antrian);
+      setMessageVoiceAdmisi(data.message);
+      localStorage.setItem("panggilAntrianAdmisi", data.antrian); // Simpan data antrian baru ke localStorage
     });
 
     return () => {
-      socket.off("lastAntrianUpdated");
+      socket.off("panggilAntrianAdmisi");
     };
   }, []);
 
   useEffect(() => {
-    if (messageVoice) {
-      const audioPath = `/audio/admisi/${messageVoice}.mp3`;
+    const today = new Date().toLocaleDateString();
+    const storedDate = localStorage.getItem("lastDate");
+    const storedAntrian = localStorage.getItem("panggilAntrianPasien");
+
+    if (storedDate !== today) {
+      localStorage.setItem("lastDate", today); // Simpan tanggal hari ini
+      localStorage.setItem("panggilAntrianPasien", "A-0000"); // Reset antrian ke A-0000
+      setlastAntrianPasien("P-0000"); // Setel state antrian ke A-0000
+    } else if (storedAntrian) {
+      setlastAntrianPasien(storedAntrian); // Jika tanggal sama, gunakan nilai antrian yang ada
+    }
+
+    // Memperbarui data antrian setiap kali terjadi perubahan
+    socket.on("panggilAntrianPasien", (data) => {
+      console.log(data);
+      setlastAntrianPasien(data.antrian);
+      setMessageVoicePasien(data.message);
+      localStorage.setItem("panggilAntrianPasien", data.antrian); // Simpan data antrian baru ke localStorage
+    });
+
+    return () => {
+      socket.off("panggilAntrianAdmisi");
+    };
+  }, []);
+
+  useEffect(() => {
+    if (messageVoiceAdmisi) {
+      const audioPath = `/audio/admisi/${messageVoiceAdmisi}.mp3`;
       const audio = new Audio(audioPath);
       audio.play().catch((err) => {
         console.error("Error playing audio:", err);
       });
     }
-  }, [messageVoice]);
+  }, [messageVoiceAdmisi]);
+
+  useEffect(() => {
+    if (messageVoicePasien) {
+      const audioPath = `/audio/pasien/${messageVoicePasien}.mp3`;
+      const audio = new Audio(audioPath);
+      audio.play().catch((err) => {
+        console.error("Error playing audio:", err);
+      });
+    }
+  }, [messageVoicePasien]);
 
   return (
     <div
@@ -97,12 +135,21 @@ const NomorAntrian = () => {
       </div>
 
       <div className="flex gap-8">
-        <CardAntrian title="Pasien" nomor="P-0001" desc="Poli" />
-        <CardAntrian title="Admisi" nomor={lastAntrian} desc="Administrasi" />
+        <CardAntrian title="Pasien" nomor={lastAntrianPasien} desc="Poli" />
+        <CardAntrian
+          title="Admisi"
+          nomor={lastAntrianAdmisi}
+          desc="Administrasi"
+        />
       </div>
 
-      <div>
-        <span className="font-bold text-5xl text-white">{currentTime}</span>
+      <div className="flex flex-col text-center gap-2">
+        <span className="font-bold text-5xl text-white">
+          {getFormattedDate()}
+        </span>
+        <span className="font-bold text-4xl text-white opacity-80">
+          {currentTime}
+        </span>
       </div>
     </div>
   );

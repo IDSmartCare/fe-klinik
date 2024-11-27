@@ -1,11 +1,15 @@
 "use client";
-import { SubmitButtonServer } from "@/app/components/SubmitButtonServerComponent";
+import { ToastAlert2 } from "@/app/components/Toast2";
 import { Session } from "next-auth";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 const ModalSearch = ({ session }: { session: Session | null }) => {
+  const modal: any = document.getElementById("search-patient");
   const [activeOption, setActiveOption] = useState<string>("NoRM");
+  const [loading, setLoading] = useState(false);
+  const route = useRouter();
   const {
     register,
     handleSubmit,
@@ -19,7 +23,42 @@ const ModalSearch = ({ session }: { session: Session | null }) => {
   };
 
   const onSubmit: SubmitHandler<any> = async (data) => {
-    console.log(data);
+    const body = {
+      rm: data?.noRM,
+      nik: data?.nik,
+    };
+
+    try {
+      setLoading(true);
+      const postApi = await fetch(`/api/antrian/searchpasien`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      const result = await postApi.json();
+      if (!result.success) {
+        setLoading(false);
+        modal.close();
+        ToastAlert2({
+          icon: "error",
+          title: "Ooops",
+          text: "Pasien tidak ditemukan",
+        });
+        return;
+      }
+      route.push(`/antrian/detail/${result.data.id}`);
+    } catch (error: any) {
+      setLoading(false);
+      modal.close();
+      console.log(error);
+      ToastAlert2({
+        icon: "error",
+        title: "Ooops",
+        text: error.message,
+      });
+    }
   };
 
   return (
@@ -97,8 +136,13 @@ const ModalSearch = ({ session }: { session: Session | null }) => {
               </button>
             </form>
 
-            <button type="submit" className="btn btn-primary btn-md rounded-xl">
-              Submit
+            <button
+              type="submit"
+              className="btn btn-primary btn-md rounded-xl"
+              onClick={handleSubmit(onSubmit)}
+              disabled={loading} // Disable button saat loading
+            >
+              {!loading ? "Submit" : "Tunggu"}
             </button>
           </div>
         </div>

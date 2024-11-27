@@ -13,11 +13,11 @@ const AntrianAdmisi = () => {
   useEffect(() => {
     const today = new Date().toLocaleDateString();
     const storedDate = localStorage.getItem("lastDate");
-    const storedAntrian = localStorage.getItem("lastAntrianAdmisi");
+    const storedAntrian = localStorage.getItem("dataAntrianAdmisi");
 
     if (storedDate !== today) {
       localStorage.setItem("lastDate", today);
-      localStorage.setItem("lastAntrianAdmisi", JSON.stringify([])); 
+      localStorage.setItem("dataAntrianAdmisi", JSON.stringify([])); 
       setLastAntrian([]); 
     } else if (storedAntrian) {
       setLastAntrian(JSON.parse(storedAntrian)); 
@@ -25,18 +25,18 @@ const AntrianAdmisi = () => {
       console.log("No data found in localStorage");
     }
 
-    socket.on("lastAntrianAdmisiUpdated", (data) => {
+    socket.on("dataAntrianAdmisi", (data) => {
       console.log("Socket data received:", data.antrian);
       if (data && data.antrian) {
         setLastAntrian(data.antrian);
-        localStorage.setItem("lastAntrianAdmisi", JSON.stringify(data.antrian));
+        localStorage.setItem("dataAntrianAdmisi", JSON.stringify(data.antrian));
       } else {
         console.error("Received invalid data:", data);
       }
     });
 
     return () => {
-      socket.off("lastAntrianAdmisiUpdated");
+      socket.off("dataAntrianAdmisi");
     };
   }, []);
 

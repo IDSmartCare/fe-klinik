@@ -55,8 +55,6 @@ const FormRegistrasi = ({
         return;
       }
 
-      console.log("test", dataDokter);
-
       // Sesuaikan format data dokter
       const newArr = dataDokter.data?.flatMap((item: any) => {
         return item.jam_praktek.map((jam: any) => ({
