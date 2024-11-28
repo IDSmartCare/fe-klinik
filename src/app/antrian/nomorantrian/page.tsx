@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react";
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import { getFormattedDate } from "@/app/helper/ConvertDate";
+import { set } from "date-fns";
 
 interface CardAntrianProps {
   title: string;
@@ -32,6 +33,7 @@ const NomorAntrian = () => {
   const [lastAntrianPasien, setlastAntrianPasien] = useState<string>("P-0000");
   const [messageVoiceAdmisi, setMessageVoiceAdmisi] = useState<string>("");
   const [messageVoicePasien, setMessageVoicePasien] = useState<string>("");
+  const [poli, setPoli] = useState<string>("");
   const [currentTime, setCurrentTime] = useState<string>("00:00:00");
 
   useEffect(() => {
@@ -92,11 +94,12 @@ const NomorAntrian = () => {
       console.log(data);
       setlastAntrianPasien(data.antrian);
       setMessageVoicePasien(data.message);
+      setPoli(data.poli);
       localStorage.setItem("panggilAntrianPasien", data.antrian); // Simpan data antrian baru ke localStorage
     });
 
     return () => {
-      socket.off("panggilAntrianAdmisi");
+      socket.off("panggilAntrianPasien");
     };
   }, []);
 
@@ -107,6 +110,7 @@ const NomorAntrian = () => {
       audio.play().catch((err) => {
         console.error("Error playing audio:", err);
       });
+      setMessageVoiceAdmisi("");
     }
   }, [messageVoiceAdmisi]);
 
@@ -114,11 +118,42 @@ const NomorAntrian = () => {
     if (messageVoicePasien) {
       const audioPath = `/audio/pasien/${messageVoicePasien}.mp3`;
       const audio = new Audio(audioPath);
+
       audio.play().catch((err) => {
-        console.error("Error playing audio:", err);
+        // console.error("Error playing audio:", err);
       });
+
+      const poliAudioPath = `/audio/poli/${poli}.mp3`;
+      const fallbackAudioPath = "/audio/poli/poliyangterterapadakarcis.mp3";
+
+      // Fungsi untuk mengecek keberadaan file
+      const checkAudioExists = async (path: string): Promise<boolean> => {
+        try {
+          const response = await fetch(path, { method: "HEAD" }); // Menggunakan HEAD request untuk cek keberadaan file
+          return response.ok; // Jika status 200-299, berarti file ada
+        } catch (error) {
+          // console.error("Error checking audio file:", error);
+          return false;
+        }
+      };
+
+      // Mengecek apakah audio poli ada
+      checkAudioExists(poliAudioPath).then((exists) => {
+        const audioToPlay = new Audio(
+          exists ? poliAudioPath : fallbackAudioPath
+        );
+
+        setTimeout(() => {
+          audioToPlay.play().catch((err) => {
+            // console.error("Error playing poli audio:", err);
+          });
+        }, 2630);
+      });
+
+      setMessageVoicePasien("");
+      setPoli("");
     }
-  }, [messageVoicePasien]);
+  }, [messageVoicePasien, poli]);
 
   return (
     <div
