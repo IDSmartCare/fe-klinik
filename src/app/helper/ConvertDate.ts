@@ -23,3 +23,19 @@ export const getFormattedDate = () => {
 
   return `${dayName}, ${date} ${monthName} ${year}`;
 };
+
+export const getFormattedDateTime = () => {
+  const now = new Date();
+  const tanggal = now.toLocaleDateString("id-ID", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const seconds = String(now.getSeconds()).padStart(2, "0");
+  const jam = `${hours}:${minutes}:${seconds}`;
+
+  return { tanggal, jam };
+};

@@ -81,7 +81,6 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
       }
     }
 
-    // Panggil createUser untuk mendapatkan id_profile
     const post = await createUser(data, session?.user.idFasyankes);
     if (post.status) {
       const body = {
@@ -103,7 +102,7 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
         if (data.role.value === "dokter") {
           const body = {
             idFasyankes: session?.user.idFasyankes,
-            idProfile: post.data?.id, // Ambil id_profile dari hasil createUser
+            idProfile: post.data?.id,
             name: data.namaLengkap,
             str: data.str,
             sip: data.sip,
@@ -126,7 +125,9 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
 
         ToastAlert({ icon: "success", title: posttoApi.message as string });
         reset();
-        setTimeout(() => route.refresh(), 1000);
+        const modal: any = document?.getElementById("add-user");
+        modal.close();
+        route.refresh();
       } else {
         // Hapus user yang dibuat jika postApiBisnisOwner gagal
         await deleteUser(post.data?.id.toString() as string);

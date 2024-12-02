@@ -1,19 +1,32 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CardComponent from "../components/CardComponent";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
-import ModalSearch from "./pageclient/ModalSearch";
-import ModalPrintAdmisi from "./pageclient/ModalAntrianAdmisi";
 import { ToastAlert2 } from "../components/Toast2";
 import { TicketComponent } from "./pageclient/TicketComponent";
+import { getFormattedDate, getFormattedDateTime } from "../helper/ConvertDate";
+import { TimeAPM } from "../helper/TimeAPM";
+import dynamic from "next/dynamic";
 
-const Antrian = () => {
+const ModalSearch = dynamic(() => import("./pageclient/ModalSearch"), {
+  ssr: false,
+});
+
+const ModalPrintAdmisi = dynamic(
+  () => import("./pageclient/ModalAntrianAdmisi"),
+  { ssr: false }
+);
+
+const AntrianPage = () => {
   const { data: session } = useSession();
   const [selectedCard, setSelectedCard] = useState<any>(null);
   const [ticketVisible, setTicketVisible] = useState(false);
   const [dataTicket, setDataTicket] = useState<any>(null);
+  const [currentTime, setCurrentTime] = useState<string>(TimeAPM());
+  const [jam, setJam] = useState<string>("");
+  const [tanggal, setTanggal] = useState<string>("");
 
   const handleCardClick = (cardType: any) => {
     setSelectedCard(cardType);
@@ -22,6 +35,14 @@ const Antrian = () => {
       setTicketVisible(true);
     }
   };
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentTime(TimeAPM());
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   const handlePostTicket = async (idFasyankes: string) => {
     const bodyToPost = {
@@ -70,6 +91,8 @@ const Antrian = () => {
   const showModalAntrianAdmisi = (idModal: string) => {
     const modal: any = document.getElementById(idModal);
     modal.showModal();
+    setJam(getFormattedDateTime().jam);
+    setTanggal(getFormattedDateTime().tanggal);
   };
 
   const animation = {
@@ -81,10 +104,14 @@ const Antrian = () => {
 
   return (
     <>
-      <ModalPrintAdmisi nomorAntrian={dataTicket} />
+      <ModalPrintAdmisi
+        nomorAntrian={dataTicket}
+        tanggalDaftar={tanggal}
+        jamDaftar={jam}
+      />
       <ModalSearch session={session} />
       <div
-        className="h-screen flex flex-col gap-14 2xl:gap-28 justify-center items-center relative overflow-hidden"
+        className="h-screen flex flex-col gap-9 2xl:gap-24 justify-center items-center relative overflow-hidden"
         style={{
           backgroundImage: "url('/background-APM.png')",
           backgroundSize: "cover",
@@ -110,9 +137,17 @@ const Antrian = () => {
           </div>
         )}
         <div className="flex text-center text-white">
-          <div>
-            <h1 className="font-bold text-4xl">{`Selamat Datang di Fasyankes ${session?.user.nameFasyankes}`}</h1>
-            <h3 className="font-bold text-3xl mt-3">Anjungan Pasien Mandiri</h3>
+          <div className="flex flex-col">
+            <h1 className="font-bold text-5xl">{`Selamat Datang di Fasyankes ${session?.user.nameFasyankes}`}</h1>
+            <h3 className="font-bold text-4xl mt-3">Anjungan Pasien Mandiri</h3>
+            <div className="flex flex-col mt-10">
+              <span className="font-bold text-4xl text-white">
+                {getFormattedDate()}
+              </span>
+              <span className="font-bold text-3xl text-white opacity-80 mt-2">
+                {currentTime}
+              </span>
+            </div>
           </div>
         </div>
         <div className="flex gap-20">
@@ -204,6 +239,8 @@ const Antrian = () => {
               <TicketComponent
                 onBatalClick={handleBatalClick}
                 nomor={dataTicket}
+                title="Administrasi"
+                administrasi="Administrasi"
                 onPrintTicket={() => {
                   showModalAntrianAdmisi("modal-antrian-admisi");
                 }}
@@ -216,4 +253,4 @@ const Antrian = () => {
   );
 };
 
-export default Antrian;
+export default AntrianPage;

@@ -9,6 +9,12 @@ import { useRouter } from "next/navigation";
 import { typeFormRegis } from "@/app/klinik/pasien/interface/typeFormRegistrasi";
 import { TicketComponent } from "./TicketComponent";
 import { motion, AnimatePresence } from "framer-motion";
+import dynamic from "next/dynamic";
+import { getFormattedDateTime } from "@/app/helper/ConvertDate";
+
+const ModalPrintPasien = dynamic(() => import("./ModalAntrianPasien"), {
+  ssr: false,
+});
 const FormRegistrasiAPM = ({
   idpasien,
   session,
@@ -28,10 +34,12 @@ const FormRegistrasiAPM = ({
   } = useForm<any>();
 
   const uuid = useId();
-  const [asuransi, setAsuransi] = useState([]);
   const [dokter, setDokter] = useState<{ label: string; value: string }[]>([]);
   const route = useRouter();
   const hari = new Date().getDay();
+  const [jam, setJam] = useState<string>("");
+  const [tanggal, setTanggal] = useState<string>("");
+  const [poli, setPoli] = useState<string>("");
 
   useEffect(() => {
     const getDokter = async () => {
@@ -73,39 +81,6 @@ const FormRegistrasiAPM = ({
     getDokter();
   }, [session?.user.idFasyankes]);
 
-  useEffect(() => {
-    const getAsuransi = async () => {
-      const resDokter = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/masterasuransi/${session?.user.idFasyankes}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
-          },
-        }
-      );
-
-      if (!resDokter.ok) {
-        setAsuransi([]);
-        return;
-      }
-
-      const dataDokter = await resDokter.json();
-      if (!dataDokter.success || !dataDokter.data) {
-        setAsuransi([]);
-        return;
-      }
-
-      const formattedAsuransi = dataDokter.data.map((item: any) => ({
-        value: item.kodeAsuransi,
-        label: item.namaAsuransi,
-      }));
-
-      setAsuransi(formattedAsuransi);
-    };
-    getAsuransi();
-  }, [session?.user.idFasyankes]);
-
   const onSubmit: SubmitHandler<typeFormRegis> = async (data) => {
     const bodyPost = {
       pasienData: {
@@ -144,8 +119,10 @@ const FormRegistrasiAPM = ({
       }
 
       const data = await postApi.json();
-
       setDataTicket(data.nomorAntrian);
+      setTanggal(getFormattedDateTime().tanggal);
+      setJam(getFormattedDateTime().jam);
+      setPoli(data.registrasi.doctor.unit);
       ToastAlert({ icon: "success", title: "Berhasil!" });
       reset();
       setTicketVisible(true);
@@ -164,26 +141,39 @@ const FormRegistrasiAPM = ({
 
   return (
     <>
-      <AnimatePresence>
-        {ticketVisible && (
-          <motion.div
-            key="ticket-component"
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
-            transition={{ duration: 0.5, delay: 0.7 }}
-            className="absolute bottom-0 w-full flex justify-center z-[999]"
-          >
-            <TicketComponent
-              onBatalClick={handleBatalClick}
-              nomor={dataTicket}
-              onPrintTicket={() => {
-                // showModalAntrianAdmisi("modal-antrian-admisi");
-              }}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <ModalPrintPasien
+        nomorAntrian={dataTicket}
+        tanggalDaftar={tanggal}
+        jamDaftar={jam}
+        poli={poli}
+      />
+      <div className="overflow-hidden">
+        <AnimatePresence>
+          {ticketVisible && (
+            <motion.div
+              key="ticket-component"
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ duration: 0.5, delay: 0.7 }}
+              className="absolute bottom-0 w-full flex justify-center z-[999]"
+            >
+              <TicketComponent
+                onBatalClick={handleBatalClick}
+                nomor={dataTicket}
+                poli={poli}
+                title="Pasien"
+                onPrintTicket={() => {
+                  const modal: any = document?.getElementById(
+                    "modal-antrian-pasien"
+                  );
+                  modal?.showModal();
+                }}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="form-control w-full">
           <div className="label">

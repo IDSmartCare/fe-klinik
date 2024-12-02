@@ -11,6 +11,7 @@ import AsyncSelect from "react-select/async";
 import { getApiBisnisOwner } from "@/app/lib/apiBisnisOwner";
 import { DiagnosaInterface, ObatInterface } from "../interface/typeFormResep";
 import { useRouter } from "next/navigation";
+import ModalAddSubjective from "./ModalAddSubjective";
 
 const FormAddCppt = ({
   idregis,
@@ -193,273 +194,212 @@ const FormAddCppt = ({
     }
   };
 
+  const showModal = (id: string) => {
+    const modal: any = document?.getElementById(id);
+    modal.showModal();
+  };
+
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex items-center flex-col gap-2"
-    >
-      <div className="join gap-2">
-        <div className="form-control relative">
-          <div className="label">
-            <span className="label-text">Subjective</span>
-          </div>
-          <textarea
-            rows={5}
-            {...register("subjective", { required: "* Tidak boleh kosong" })}
-            className="textarea textarea-primary"
-          ></textarea>
-          {errors.subjective && (
-            <label className="label">
-              <span className="label-text-alt text-error">
-                {errors.subjective.message}
-              </span>
-            </label>
-          )}
-          {session?.user.role === "dokter" && (
-            <button
-              type="button"
-              className=" btn absolute bottom-2 right-2 btn-primary text-white rounded-full btn-sm"
-            >
-              +
-            </button>
-          )}
-        </div>
-        <div className="form-control relative">
-          <div className="label">
-            <span className="label-text">Objective</span>
-          </div>
-          <textarea
-            rows={5}
-            {...register("objective", { required: "* Tidak boleh kosong" })}
-            className="textarea textarea-primary"
-          ></textarea>
-          {errors.objective && (
-            <label className="label">
-              <span className="label-text-alt text-error">
-                {errors.objective.message}
-              </span>
-            </label>
-          )}
-          {session?.user.role === "dokter" && (
-            <button
-              type="button"
-              className=" btn absolute bottom-2 right-2 btn-primary text-white rounded-full btn-sm"
-            >
-              +
-            </button>
-          )}
-        </div>
-        <div className="form-control relative">
-          <div className="label">
-            <span className="label-text">Assesment</span>
-          </div>
-          <textarea
-            rows={5}
-            {...register("assesment", { required: "* Tidak boleh kosong" })}
-            className="textarea textarea-primary"
-          ></textarea>
-          {errors.assesment && (
-            <label className="label">
-              <span className="label-text-alt text-error">
-                {errors.assesment.message}
-              </span>
-            </label>
-          )}
-          {session?.user.role === "dokter" && (
-            <button
-              type="button"
-              className=" btn absolute bottom-2 right-2 btn-primary text-white rounded-full btn-sm"
-            >
-              +
-            </button>
-          )}
-        </div>
-        <div className="form-control relative">
-          <div className="label">
-            <span className="label-text">Plan</span>
-          </div>
-          <textarea
-            rows={5}
-            {...register("plan", { required: "* Tidak boleh kosong" })}
-            className="textarea textarea-primary"
-          ></textarea>
-          {errors.plan && (
-            <label className="label">
-              <span className="label-text-alt text-error">
-                {errors.plan.message}
-              </span>
-            </label>
-          )}
-          {session?.user.role === "dokter" && (
-            <button
-              type="button"
-              className=" btn absolute bottom-2 right-2 btn-primary text-white rounded-full btn-sm"
-            >
-              +
-            </button>
-          )}
-        </div>
-        <div className="form-control">
-          <div className="label">
-            <span className="label-text">Instruksi</span>
-          </div>
-          <textarea
-            rows={5}
-            {...register("instruksi", { required: "* Tidak boleh kosong" })}
-            className="textarea textarea-primary"
-          ></textarea>
-          {errors.instruksi && (
-            <label className="label">
-              <span className="label-text-alt text-error">
-                {errors.instruksi.message}
-              </span>
-            </label>
-          )}
-        </div>
-      </div>
-      {session?.user.role === "dokter" && (
-        <div className="flex flex-col w-full items-center gap-2 p-3">
-          <div className="form-control w-full px-6 mb-6">
+    <>
+      <ModalAddSubjective session={session} />
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex items-center flex-col gap-2"
+      >
+        <div className="join gap-[90px]">
+          <div className="form-control">
             <div className="label">
-              <span className="label-text">Kode Diagnosa</span>
+              <span className="label-text">Subjective</span>
             </div>
-            <AsyncSelect
-              className="select-info w-full"
-              isClearable
-              name="icdx"
-              loadOptions={optionCariDiagnosa}
-              defaultOptions
-              onChange={(e) => onChangeDiagnosa(e)}
-              placeholder="Cari Diagnosa"
-              instanceId={uuid}
-            />
+            <button
+              type="button"
+              className="btn btn-md btn-primary"
+              onClick={() => showModal("add-subjective")}
+            >
+              Submit Subjective
+            </button>
           </div>
-          <div className="flex w-full p-3 gap-2">
-            <div className="form-control w-1/2 border-2 p-2">
-              <div className="label">
-                <span className="label-text text-lg font-bold ">Resep</span>
-              </div>
-              <div className="flex flex-col gap-2">
-                <AsyncSelect
-                  className="select-info w-full"
-                  isClearable
-                  name="obat"
-                  loadOptions={optionCariObat}
-                  defaultOptions
-                  onChange={(e) => onChangeObat(e)}
-                  placeholder="Cari obat"
-                  instanceId={uuid}
-                  value={selectedObat}
-                />
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="number"
-                    onChange={(e) => setJumlah(e.target.value)}
-                    value={jumlah}
-                    placeholder="Jumlah"
-                    className="input input-sm input-primary w-1/3"
-                  />
-                  <input
-                    type="text"
-                    onChange={(e) => setSigna1(e.target.value)}
-                    value={signa1}
-                    placeholder="Signa 1"
-                    className="input input-sm input-primary w-1/3"
-                  />
-                  {"X"}
-                  <input
-                    type="text"
-                    onChange={(e) => setSigna2(e.target.value)}
-                    value={signa2}
-                    placeholder="Signa 2"
-                    className="input input-sm input-primary w-1/3"
-                  />
-                </div>
-                <select
-                  className="select select-primary w-full select-sm"
-                  onChange={(e) => setAturanPakai(e.target.value)}
-                  value={aturanPakai}
-                >
-                  <option value="">Silahkan Pilih</option>
-                  <option value={"Sebelum Makan"}>Sebelum Makan</option>
-                  <option value={"Sesudah Makan"}>Sesudah Makan</option>
-                </select>
-                <select
-                  className="select select-primary w-full select-sm"
-                  onChange={(e) => setWaktu(e.target.value)}
-                  value={waktu}
-                >
-                  <option value="">Silahkan Pilih</option>
-                  <option value={"Pagi"}>Pagi</option>
-                  <option value={"Siang"}>Siang</option>
-                  <option value={"Malam"}>Malam</option>
-                </select>
-                <textarea
-                  onChange={(e) => setCatatan(e.target.value)}
-                  placeholder="Catatan"
-                  className="textarea textarea-primary"
-                  value={catatan}
-                ></textarea>
-                <button
-                  onClick={() => onClickResep()}
-                  className="btn btn-sm btn-warning"
-                  type="button"
-                  disabled={aturanPakai === "" || waktu === "" || isEmpty(obat)}
-                >
-                  Tambah
-                </button>
-              </div>
+          <div className="form-control">
+            <div className="label">
+              <span className="label-text">Objective</span>
             </div>
-            <div className="w-1/2 flex flex-col gap-2 border-2 p-2">
-              <div className="label">
-                <span className="label-text font-bold text-lg">List Resep</span>
-              </div>
-              {listObat.map((item, index) => {
-                return (
-                  <div
-                    className="bg-base-300 p-2 rounded flex justify-between items-center"
-                    key={item.obatId}
-                  >
-                    <div className="italic flex flex-col">
-                      <p className="font-medium">R/</p>
-                      <p className="font-medium">
-                        {item.namaObat} ({item.signa1}X{item.signa2})
-                      </p>
-                      <p>{item.aturanPakai}</p>
-                      <p>{item.waktu}</p>
-                      <p>{item.catatan}</p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => removeResep(index)}
-                      className="btn btn-error btn-circle btn-sm"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 16 16"
-                        fill="currentColor"
-                        className="size-4"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                );
-              })}
+            <button type="button" className="btn btn-md btn-primary">
+              Submit Objective
+            </button>
+          </div>
+          <div className="form-control">
+            <div className="label">
+              <span className="label-text">Assessment</span>
             </div>
+            <button type="button" className="btn btn-md btn-primary">
+              Submit Assessment
+            </button>
+          </div>
+          <div className="form-control">
+            <div className="label">
+              <span className="label-text">Plan</span>
+            </div>
+            <button type="button" className="btn btn-md btn-primary">
+              Submit Plan
+            </button>
+          </div>
+          <div className="form-control">
+            <div className="label">
+              <span className="label-text">Instruksi</span>
+            </div>
+            <button type="button" className="btn btn-md btn-primary">
+              Submit Instruksi
+            </button>
           </div>
         </div>
-      )}
-      {session?.user.role === "dokter" || session?.user.role === "perawat" ? (
-        <SubmitButtonServer />
-      ) : (
-        <ErrorHeaderComponent message="Anda bukan perawat / dokter!" />
-      )}
-    </form>
+        {session?.user.role === "dokter" && (
+          <div className="flex flex-col w-full items-center gap-2 p-3">
+            <div className="form-control w-full px-6 mb-6">
+              <div className="label">
+                <span className="label-text">Kode Diagnosa</span>
+              </div>
+              <AsyncSelect
+                className="select-info w-full"
+                isClearable
+                name="icdx"
+                loadOptions={optionCariDiagnosa}
+                defaultOptions
+                onChange={(e) => onChangeDiagnosa(e)}
+                placeholder="Cari Diagnosa"
+                instanceId={uuid}
+              />
+            </div>
+            <div className="flex w-full p-3 gap-2">
+              <div className="form-control w-1/2 border-2 p-2">
+                <div className="label">
+                  <span className="label-text text-lg font-bold ">Resep</span>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <AsyncSelect
+                    className="select-info w-full"
+                    isClearable
+                    name="obat"
+                    loadOptions={optionCariObat}
+                    defaultOptions
+                    onChange={(e) => onChangeObat(e)}
+                    placeholder="Cari obat"
+                    instanceId={uuid}
+                    value={selectedObat}
+                  />
+                  <div className="flex gap-2 items-center">
+                    <input
+                      type="number"
+                      onChange={(e) => setJumlah(e.target.value)}
+                      value={jumlah}
+                      placeholder="Jumlah"
+                      className="input input-sm input-primary w-1/3"
+                    />
+                    <input
+                      type="text"
+                      onChange={(e) => setSigna1(e.target.value)}
+                      value={signa1}
+                      placeholder="Signa 1"
+                      className="input input-sm input-primary w-1/3"
+                    />
+                    {"X"}
+                    <input
+                      type="text"
+                      onChange={(e) => setSigna2(e.target.value)}
+                      value={signa2}
+                      placeholder="Signa 2"
+                      className="input input-sm input-primary w-1/3"
+                    />
+                  </div>
+                  <select
+                    className="select select-primary w-full select-sm"
+                    onChange={(e) => setAturanPakai(e.target.value)}
+                    value={aturanPakai}
+                  >
+                    <option value="">Silahkan Pilih</option>
+                    <option value={"Sebelum Makan"}>Sebelum Makan</option>
+                    <option value={"Sesudah Makan"}>Sesudah Makan</option>
+                  </select>
+                  <select
+                    className="select select-primary w-full select-sm"
+                    onChange={(e) => setWaktu(e.target.value)}
+                    value={waktu}
+                  >
+                    <option value="">Silahkan Pilih</option>
+                    <option value={"Pagi"}>Pagi</option>
+                    <option value={"Siang"}>Siang</option>
+                    <option value={"Malam"}>Malam</option>
+                  </select>
+                  <textarea
+                    onChange={(e) => setCatatan(e.target.value)}
+                    placeholder="Catatan"
+                    className="textarea textarea-primary"
+                    value={catatan}
+                  ></textarea>
+                  <button
+                    onClick={() => onClickResep()}
+                    className="btn btn-sm btn-warning"
+                    type="button"
+                    disabled={
+                      aturanPakai === "" || waktu === "" || isEmpty(obat)
+                    }
+                  >
+                    Tambah
+                  </button>
+                </div>
+              </div>
+              <div className="w-1/2 flex flex-col gap-2 border-2 p-2">
+                <div className="label">
+                  <span className="label-text font-bold text-lg">
+                    List Resep
+                  </span>
+                </div>
+                {listObat.map((item, index) => {
+                  return (
+                    <div
+                      className="bg-base-300 p-2 rounded flex justify-between items-center"
+                      key={item.obatId}
+                    >
+                      <div className="italic flex flex-col">
+                        <p className="font-medium">R/</p>
+                        <p className="font-medium">
+                          {item.namaObat} ({item.signa1}X{item.signa2})
+                        </p>
+                        <p>{item.aturanPakai}</p>
+                        <p>{item.waktu}</p>
+                        <p>{item.catatan}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeResep(index)}
+                        className="btn btn-error btn-circle btn-sm"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 16 16"
+                          fill="currentColor"
+                          className="size-4"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+        {session?.user.role === "dokter" || session?.user.role === "perawat" ? (
+          <SubmitButtonServer />
+        ) : (
+          <ErrorHeaderComponent message="Anda bukan perawat / dokter!" />
+        )}
+      </form>
+    </>
   );
 };
 

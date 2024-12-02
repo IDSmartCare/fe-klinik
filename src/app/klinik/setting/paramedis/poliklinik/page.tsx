@@ -32,7 +32,7 @@ const PagePoli = async () => {
 
   return (
     <>
-      <AlertHeaderComponent message="List poliklinik" />
+      <AlertHeaderComponent message="List Poliklinik" />
       <ModalAddPoli session={session} />
       {session?.user.role === "tester" ? (
         <TableFilterComponent

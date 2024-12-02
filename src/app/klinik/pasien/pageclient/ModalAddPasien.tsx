@@ -22,6 +22,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
     reset,
     control,
   } = useForm<typeFormPasienBaru>();
+  const route = useRouter();
   const [domisili, setDomisili] = useState(true);
   const [agamaLainnya, setAgamaLainnya] = useState(false);
   const [textAgamaLain, setTextAgamaLain] = useState("");
@@ -155,9 +156,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
 
       ToastAlert({ icon: "success", title: "Successfully added patient!" });
       reset();
-      setTimeout(() => {
-        document.location.reload();
-      }, 2000);
+      route.refresh();
     } catch (error: any) {
       console.log(error);
       ToastAlert({ icon: "error", title: error.message });

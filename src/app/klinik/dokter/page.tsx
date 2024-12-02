@@ -55,7 +55,6 @@ const PageDokter = async () => {
     session?.user.idProfile,
     session?.user.role
   );
-  console.log(data);
   return (
     <>
       <FilterPasienComponent />

@@ -47,16 +47,11 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
 
         if (posttoApi.ok) {
           ToastAlert({ icon: "success", title: "Berhasil Menambahkan Tarif" });
-
+          reset();
+          route.refresh();
           if (modalRef.current) {
             modalRef.current.close();
           }
-
-          reset();
-          setTimeout(() => {
-            route.refresh();
-            document.location.reload();
-          }, 2000);
         } else {
           const errorResponse = await posttoApi.json();
           // Handle errors from API response

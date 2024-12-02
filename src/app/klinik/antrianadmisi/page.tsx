@@ -4,32 +4,52 @@ import AlertHeaderComponent from "@/app/klinik/setting/paramedis/components/Aler
 import AntrianAdmisiColumn from "./AntrianAdmisiColumn";
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
+import { useSession } from "next-auth/react";
+import { ToastAlert } from "@/app/helper/ToastAlert";
+import { get } from "http";
 
 const socket = io(`${process.env.NEXT_PUBLIC_URL_BE_KLINIK}`);
 
 const AntrianAdmisi = () => {
   const [lastAntrian, setLastAntrian] = useState<any[]>([]);
+  const { data: session } = useSession();
 
   useEffect(() => {
-    const today = new Date().toLocaleDateString();
-    const storedDate = localStorage.getItem("lastDate");
-    const storedAntrian = localStorage.getItem("dataAntrianAdmisi");
+    const getData = async () => {
+      try {
+        const getapi = await fetch(
+          `${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/antrian/all/admisi/${session?.user.idFasyankes}`,
+          {
+            headers: {
+              Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+            },
+          }
+        );
 
-    if (storedDate !== today) {
-      localStorage.setItem("lastDate", today);
-      localStorage.setItem("dataAntrianAdmisi", JSON.stringify([])); 
-      setLastAntrian([]); 
-    } else if (storedAntrian) {
-      setLastAntrian(JSON.parse(storedAntrian)); 
-    } else {
-      console.log("No data found in localStorage");
+        if (!getapi.ok) {
+          ToastAlert({ icon: "error", title: "Gagal Mendapatkan Data" });
+          return [];
+        }
+
+        const data = await getapi.json();
+        setLastAntrian(data.antrianToday);
+      } catch (error) {
+        console.log(error);
+        ToastAlert({ icon: "error", title: "Tidak ada antrian Pasien" });
+        setLastAntrian([]);
+      }
+    };
+
+    if (session?.user.idFasyankes) {
+      getData();
     }
+  }, [session?.user.idFasyankes]);
 
+  useEffect(() => {
     socket.on("dataAntrianAdmisi", (data) => {
-      console.log("Socket data received:", data.antrian);
+      // console.log("Socket data received:", data.antrian);
       if (data && data.antrian) {
         setLastAntrian(data.antrian);
-        localStorage.setItem("dataAntrianAdmisi", JSON.stringify(data.antrian));
       } else {
         console.error("Received invalid data:", data);
       }

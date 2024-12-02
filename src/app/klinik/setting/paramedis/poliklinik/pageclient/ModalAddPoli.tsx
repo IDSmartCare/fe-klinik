@@ -1,14 +1,15 @@
 "use client";
-
 import ButtonModalComponent, {
   icon,
 } from "../../../../../components/ButtonModalComponent";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { typeFormPoliklinik } from "../interface/typeFormPoliklinik";
 import { ToastAlert } from "@/app/helper/ToastAlert";
 import { SubmitButtonServer } from "@/app/components/SubmitButtonServerComponent";
 import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
+import { useEffect, useId, useState } from "react";
+import Select from "react-select";
 
 const ModalAddPoli = ({ session }: { session: Session | null }) => {
   const {
@@ -16,15 +17,51 @@ const ModalAddPoli = ({ session }: { session: Session | null }) => {
     handleSubmit,
     formState: { errors },
     reset,
+    control,
   } = useForm<typeFormPoliklinik>();
   const route = useRouter();
+  const uuid = useId();
+  const [poli, setPoli] = useState<any[]>([]);
+
+  useEffect(() => {
+    const getPoli = async () => {
+      const dataPoli = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/setting/voicepoli/${session?.user.idFasyankes}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+          },
+        }
+      );
+
+      if (!dataPoli.ok) {
+        setPoli([]);
+        return;
+      }
+
+      const dataAllPoli = await dataPoli.json();
+      const newArr = dataAllPoli.map((item: typeFormPoliklinik) => {
+        return {
+          label: item.namaPoli,
+          value: item.id,
+        };
+      });
+      setPoli(newArr);
+    };
+    getPoli();
+  }, [session?.user.idFasyankes]);
 
   const onSubmit: SubmitHandler<typeFormPoliklinik> = async (data) => {
     const bodyToPost = {
       namaPoli: data.namaPoli,
       kodePoli: data.kodePoli,
+      voiceId: data.voiceId.value,
       idFasyankes: session?.user.idFasyankes,
     };
+
+    console.log(bodyToPost);
+
     try {
       const postApi = await fetch(`/api/poli/add`, {
         method: "POST",
@@ -38,6 +75,8 @@ const ModalAddPoli = ({ session }: { session: Session | null }) => {
         return;
       }
       ToastAlert({ icon: "success", title: "Berhasil!" });
+      const modal: any = document?.getElementById("add-poli");
+      modal.close();
       reset();
       route.refresh();
     } catch (error: any) {
@@ -53,7 +92,7 @@ const ModalAddPoli = ({ session }: { session: Session | null }) => {
         title="Poli Baru"
       />
       <dialog id="add-poli" className="modal">
-        <div className="modal-box w-8/12 md:w-3/12 max-w-md">
+        <div className="modal-box w-8/12 md:w-8/12 h-4/6 p-5">
           <form method="dialog">
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
               ✕
@@ -68,23 +107,49 @@ const ModalAddPoli = ({ session }: { session: Session | null }) => {
               type="text"
               placeholder="Nama Poliklinik"
               {...register("namaPoli", { required: "Tidak boleh kosong!" })}
-              className="input input-sm nput-bordered input-primary w-full max-w-xs"
+              className="input input-sm input-bordered input-primary w-full"
             />
             <span className="label-text-alt text-error">
-              {" "}
               {errors.namaPoli && <span>{errors.namaPoli.message}</span>}
             </span>
             <input
               type="text"
               placeholder="Kode Poliklinik"
               {...register("kodePoli", { required: "Tidak boleh kosong!" })}
-              className="input input-sm input-bordered input-primary w-full max-w-xs"
+              className="input input-sm input-bordered input-primary w-full"
             />
             <span className="label-text-alt text-error">
-              {" "}
               {errors.kodePoli && <span>{errors.kodePoli.message}</span>}
             </span>
-            {session?.user.role !== "tester" && <SubmitButtonServer />}
+
+            <Controller
+              name="voiceId"
+              control={control}
+              rules={{
+                required: "*Tidak boleh kosong",
+                // onChange: (e) => onChangeRole(e),
+              }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  placeholder="Pilih Voice"
+                  instanceId={uuid}
+                  className="w-full"
+                  isClearable
+                  options={poli}
+                />
+              )}
+            />
+            {errors.voiceId && (
+              <label className="label">
+                <span className="label-text-alt text-error">
+                  {errors.voiceId.message?.toString()}
+                </span>
+              </label>
+            )}
+            <div className="place-items-end">
+              {session?.user.role !== "tester" && <SubmitButtonServer />}
+            </div>
           </form>
         </div>
       </dialog>

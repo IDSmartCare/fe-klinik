@@ -38,12 +38,35 @@ const AntrianAdmisiColumn = [
     cell: (info) => format(info.getValue(), "HH:mm"),
     header: "Jam Registrasi",
   }),
+  columHelper.accessor((row) => row.updatedAt, {
+    cell: (info) => {
+      const updatedAt = info.getValue();
+      const createdAt = info.row.original.createdAt;
+
+      return updatedAt === createdAt
+        ? "-"
+        : format(new Date(updatedAt), "HH:mm");
+    },
+    header: "Terakhir Dipanggil",
+  }),
+  columHelper.accessor((row) => row.jumlahPanggil, {
+    cell: (info) => info.getValue(),
+    header: "Jumlah Panggil",
+  }),
   columHelper.accessor((row) => row.id, {
     cell: (info) => (
-      <div className="tooltip" data-tip="Panggil Antrian">
+      <div
+        className="tooltip"
+        data-tip={
+          info.row.original.jumlahPanggil >= 3
+            ? "Mencapai Batas"
+            : "Panggil Antrian"
+        }
+      >
         <button
           className="btn btn-circle btn-outline btn-warning btn-xs"
           onClick={() => handlePanggilAntrian(info.getValue().toString())}
+          disabled={info.row.original.jumlahPanggil >= 3}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
