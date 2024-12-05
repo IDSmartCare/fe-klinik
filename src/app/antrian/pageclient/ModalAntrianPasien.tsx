@@ -2,6 +2,7 @@
 import { Document, Page, StyleSheet, Text } from "@react-pdf/renderer";
 import dynamic from "next/dynamic";
 import React from "react";
+import { useSession } from "next-auth/react";
 
 interface ModalPrintPasienProps {
   nomorAntrian: string;
@@ -30,7 +31,9 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 10,
-    marginBottom: 5,
+    textAlign: "center",
+  },
+  nameFasyankes: {
     textAlign: "center",
   },
   separator: {
@@ -49,7 +52,7 @@ const styles = StyleSheet.create({
     fontSize: 9,
     marginRight: 27,
     marginLeft: 27,
-    marginBottom: 10,
+    marginBottom: 5,
   },
   footer: {
     fontSize: 8,
@@ -67,6 +70,7 @@ const ModalPrintPasien: React.FC<ModalPrintPasienProps> = ({
   tanggalDaftar,
   jamDaftar,
 }) => {
+  const { data: session } = useSession();
   return (
     <div>
       <dialog id="modal-antrian-pasien" className="modal">
@@ -81,7 +85,10 @@ const ModalPrintPasien: React.FC<ModalPrintPasienProps> = ({
             <PDFViewer style={{ width: "100%", height: "400px" }}>
               <Document>
                 <Page size={[226.77, 170.08]} style={styles.page}>
-                  <Text style={styles.header}>Nomor Antrian Pasien</Text>
+                  <Text style={styles.header}>Nomor Antrian Pasien </Text>
+                  <Text style={styles.nameFasyankes}>
+                    {session?.user.nameFasyankes}
+                  </Text>
                   <Text style={styles.separator}>
                     ====================================
                   </Text>
