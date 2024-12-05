@@ -6,8 +6,8 @@ export default async function Home() {
 
   return (
     <p>
-      {session?.user.package} {session?.user.type} {session?.user.role}{" "}
-      {session?.user.idFasyankes}
+      {session?.user.package} {session?.user.type} {session?.user.role}
+      {session?.user.idFasyankes} {session?.user.idProfile}
     </p>
   );
 }

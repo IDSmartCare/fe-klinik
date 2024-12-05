@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { getServerSession } from "next-auth";
 import { authOption } from "@/auth";
 import QRCode from "react-qr-code";
+import Link from "next/link";
 
 const getData = async (id: string) => {
   try {
@@ -33,6 +34,7 @@ const getCppt = async (id: string, idFasyankes: string) => {
         headers: {
           Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
         },
+        cache: "no-cache",
       }
     );
     if (!getapi.ok) {
@@ -51,6 +53,7 @@ const PageCPPT = async ({ params }: { params: { id: any } }) => {
 
   const resApi = await getData(idPasien);
   const getcppt = await getCppt(idPasien, session?.user.idFasyankes);
+  console.log(getcppt);
 
   return (
     <div className="flex flex-col gap-2">
@@ -64,8 +67,10 @@ const PageCPPT = async ({ params }: { params: { id: any } }) => {
                 <th>No</th>
                 <th>Tanggal / Jam</th>
                 <th>Profesi</th>
-                <th>Catatan Pasien Saat Ini</th>
-                <th>Instruksi</th>
+                <th>SOAP</th>
+                <th>Diagnosa</th>
+                <th>Resep</th>
+                <th>Diisi oleh</th>
                 <th className="text-center">Verifikasi DPJP</th>
               </tr>
             </thead>
@@ -81,21 +86,19 @@ const PageCPPT = async ({ params }: { params: { id: any } }) => {
                     </td>
                     <td>{item.profesi.toUpperCase()}</td>
                     <td>
-                      <p>Subjective : {item.subjective}</p>
-                      <p>Objective : {item.objective}</p>
-                      <p>Assesment : {item.assesment}</p>
-                      <p>Plan : {item.plan}</p>
+                      <Link
+                        className="btn btn-md btn-primary"
+                        href={`/klinik/cppt/detail/${idPasien}/${item.detailSOAP.id}`}
+                      >
+                        Detail SOAP
+                      </Link>
+                    </td>
+                    <td>
                       <p>
-                        Diagnosa : {item.kodeDiagnosa}-{item.namaDiagnosa}
+                        {item.kodeDiagnosa}-{item.namaDiagnosa}
                       </p>
-                      {item.profesi !== "Dokter" && (
-                        <p className="mt-5 font-bold">
-                          Input by : {item.inputBy?.namaLengkap}
-                        </p>
-                      )}
-                      {item.resep.length > 0 && (
-                        <p className="font-bold mt-5">RESEP DOKTER</p>
-                      )}
+                    </td>
+                    <td>
                       {item.resep.map((i: any) => {
                         return (
                           <div key={i.id} className="italic mt-2">
@@ -109,11 +112,22 @@ const PageCPPT = async ({ params }: { params: { id: any } }) => {
                         );
                       })}
                     </td>
-                    <td>{item.instruksi}</td>
+                    <td>
+                      {item.profesi !== "Dokter" && (
+                        <p className="mt-5 font-bold">
+                          {item.inputBy?.namaLengkap}
+                        </p>
+                      )}
+                    </td>
                     <td>
                       {item.isVerifDokter && (
                         <div className="flex flex-col items-center">
-                          <QRCode size={60} value={`${item.inputBy?.id}`} />
+                          <QRCode
+                            size={60}
+                            value={`${item.inputBy?.namaLengkap}
+          ${item.inputBy?.doctors?.[0]?.unit} 
+          ${item.inputBy?.kodeDokter}`}
+                          />
                           <p>{item.inputBy?.namaLengkap}</p>
                           <p>
                             {item.jamVerifDokter &&

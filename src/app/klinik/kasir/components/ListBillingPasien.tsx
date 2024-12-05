@@ -23,6 +23,7 @@ const ListBillingPasien = ({
     const modal: any = document?.getElementById("modal-print-bill-kasir");
     modal.showModal();
   };
+
   return (
     <div className="flex flex-col gap-2">
       <AlertHeaderComponent message="List Tagihan Yang Ada!" />
@@ -36,8 +37,8 @@ const ListBillingPasien = ({
               <p>ID : {item.billPasien[0].id}</p>
               <p>PendaftaranID : {item?.id}</p>
               <p>Penjamin : {item?.penjamin}</p>
-              <p>Poli : {item.doctor?.poliKlinik.namaPoli}</p>
-              <p>Dokter : {item.doctor?.name}</p>
+              <p>Poli : {item.riwayat?.doctor?.unit}</p>
+              <p>Dokter : {item.riwayat?.doctor?.name}</p>
               <div className="card-actions justify-end">
                 <button
                   className="btn btn-sm btn-info"

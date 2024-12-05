@@ -39,8 +39,6 @@ const FormEditAsuransi = ({
       to: formData.to,
     };
 
-    console.log(bodyToPost);
-
     try {
       const response = await fetch(`/api/masterasuransi/edit`, {
         method: "PATCH",
@@ -92,9 +90,7 @@ const FormEditAsuransi = ({
           </div>
           <input
             type="text"
-            {...register("namaAsuransi", {
-              required: "*Tidak boleh kosong",
-            })}
+            {...register("namaAsuransi")}
             disabled
             defaultValue={data?.namaAsuransi}
             className="input input-sm input-primary w-full "

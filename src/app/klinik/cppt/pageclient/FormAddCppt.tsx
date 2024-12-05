@@ -12,6 +12,10 @@ import { getApiBisnisOwner } from "@/app/lib/apiBisnisOwner";
 import { DiagnosaInterface, ObatInterface } from "../interface/typeFormResep";
 import { useRouter } from "next/navigation";
 import ModalAddSubjective from "./ModalAddSubjective";
+import ModalAddObjective from "./ModalAddObjective";
+import ModalAddAssessment from "./ModalAddAssessment";
+import ModalAddPlan from "./ModalAddPlan";
+import ModalAddInstruction from "./ModalAddInstruction";
 
 const FormAddCppt = ({
   idregis,
@@ -39,9 +43,37 @@ const FormAddCppt = ({
   const [selectedObat, setSelectedObat] = useState(null);
   const route = useRouter();
 
+  const [subjectiveData, setSubjectiveData] = useState<any[]>([]);
+  const [objectiveData, setObjectiveData] = useState<any[]>([]);
+  const [assessmentData, setAssessmentData] = useState<any[]>([]);
+  const [planData, setPlanData] = useState<any[]>([]);
+  const [instructionData, setInstructionData] = useState<any[]>([]);
+
+  const [errorsSOAP, setErrorsSOAP] = useState({
+    subjective: false,
+    objective: false,
+    assessment: false,
+    plan: false,
+    instruction: false,
+  });
+
   const isEmpty = (obj: ObatInterface) => Object.keys(obj).length === 0;
 
   const onSubmit: SubmitHandler<typeFormCppt> = async (form) => {
+    const validationErrors = {
+      subjective: subjectiveData.length === 0,
+      objective: objectiveData.length === 0,
+      assessment: assessmentData.length === 0,
+      plan: planData.length === 0,
+      instruction: instructionData.length === 0,
+    };
+
+    setErrorsSOAP(validationErrors);
+
+    // Cek apakah ada error
+    if (Object.values(validationErrors).some((error) => error)) {
+      return; // Hentikan submit jika ada data kosong
+    }
     const namaDiagnosa = diagnosa.namaDiagnosa?.split("-");
 
     const body = {
@@ -56,6 +88,11 @@ const FormAddCppt = ({
       kodeDiagnosa: diagnosa.kodeDiagnosa,
       namaDiagnosa: namaDiagnosa?.[1],
       idFasyankes: session?.user.idFasyankes,
+      subjective: subjectiveData,
+      objective: objectiveData,
+      assessment: assessmentData,
+      plan: planData,
+      instruction: instructionData,
     };
 
     try {
@@ -201,57 +238,119 @@ const FormAddCppt = ({
 
   return (
     <>
-      <ModalAddSubjective session={session} />
+      <ModalAddSubjective
+        session={session}
+        onSave={(data) => setSubjectiveData(data)}
+      />
+      <ModalAddObjective
+        session={session}
+        onSave={(data) => setObjectiveData(data)}
+      />
+      <ModalAddAssessment
+        session={session}
+        onSave={(data) => setAssessmentData(data)}
+      />
+      <ModalAddPlan session={session} onSave={(data) => setPlanData(data)} />
+      <ModalAddInstruction
+        session={session}
+        onSave={(data) => setInstructionData(data)}
+      />
+
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex items-center flex-col gap-2"
       >
-        <div className="join gap-[90px]">
-          <div className="form-control">
-            <div className="label">
-              <span className="label-text">Subjective</span>
+        {(session?.user.role === "dokter" ||
+          session?.user.role === "perawat") && (
+          <div className="join gap-[90px]">
+            <div className="form-control">
+              <div className="label">
+                <span className="label-text">Subjective</span>
+              </div>
+              <button
+                type="button"
+                className="btn btn-md btn-primary"
+                onClick={() => {
+                  showModal("add-subjective");
+                }}
+              >
+                Submit Subjective
+              </button>
+              {errorsSOAP.subjective && (
+                <p className="text-red-500 text-sm mt-2">*Wajib diisi</p>
+              )}
             </div>
-            <button
-              type="button"
-              className="btn btn-md btn-primary"
-              onClick={() => showModal("add-subjective")}
-            >
-              Submit Subjective
-            </button>
-          </div>
-          <div className="form-control">
-            <div className="label">
-              <span className="label-text">Objective</span>
+            <div className="form-control">
+              <div className="label">
+                <span className="label-text">Objective</span>
+              </div>
+              <button
+                type="button"
+                className="btn btn-md btn-primary"
+                onClick={() => {
+                  showModal("add-objective");
+                }}
+              >
+                Submit Objective
+              </button>
+              {errorsSOAP.objective && (
+                <p className="text-red-500 text-sm mt-2">*Wajib diisi</p>
+              )}
             </div>
-            <button type="button" className="btn btn-md btn-primary">
-              Submit Objective
-            </button>
-          </div>
-          <div className="form-control">
-            <div className="label">
-              <span className="label-text">Assessment</span>
+            <div className="form-control">
+              <div className="label">
+                <span className="label-text">Assessment</span>
+              </div>
+              <button
+                type="button"
+                className="btn btn-md btn-primary"
+                onClick={() => {
+                  showModal("add-assessment");
+                }}
+              >
+                Submit Assessment
+              </button>
+              {errorsSOAP.assessment && (
+                <p className="text-red-500 text-sm mt-2">*Wajib diisi</p>
+              )}
             </div>
-            <button type="button" className="btn btn-md btn-primary">
-              Submit Assessment
-            </button>
-          </div>
-          <div className="form-control">
-            <div className="label">
-              <span className="label-text">Plan</span>
+            <div className="form-control">
+              <div className="label">
+                <span className="label-text">Plan</span>
+              </div>
+              <button
+                type="button"
+                className="btn btn-md btn-primary"
+                onClick={() => {
+                  showModal("add-plan");
+                }}
+              >
+                Submit Plan
+              </button>
+              {errorsSOAP.plan && (
+                <p className="text-red-500 text-sm mt-2">*Wajib diisi</p>
+              )}
             </div>
-            <button type="button" className="btn btn-md btn-primary">
-              Submit Plan
-            </button>
-          </div>
-          <div className="form-control">
-            <div className="label">
-              <span className="label-text">Instruksi</span>
+            <div className="form-control">
+              <div className="label">
+                <span className="label-text">Instruction</span>
+              </div>
+              <button
+                type="button"
+                className="btn btn-md btn-primary"
+                onClick={() => {
+                  showModal("add-instruction");
+                }}
+              >
+                Submit Instruction
+              </button>
+              {errorsSOAP.instruction && (
+                <p className="text-red-500 text-sm mt-2">*Wajib diisi</p>
+              )}
             </div>
-            <button type="button" className="btn btn-md btn-primary">
-              Submit Instruksi
-            </button>
           </div>
-        </div>
+        )}
+
         {session?.user.role === "dokter" && (
           <div className="flex flex-col w-full items-center gap-2 p-3">
             <div className="form-control w-full px-6 mb-6">
@@ -394,7 +493,13 @@ const FormAddCppt = ({
           </div>
         )}
         {session?.user.role === "dokter" || session?.user.role === "perawat" ? (
-          <SubmitButtonServer />
+          <button
+            type="submit"
+            className="btn btn-sm btn-primary btn-block mt-5
+            "
+          >
+            Submit
+          </button>
         ) : (
           <ErrorHeaderComponent message="Anda bukan perawat / dokter!" />
         )}

@@ -121,7 +121,9 @@ const ModalAddJadwal = ({ session }: { session: Session | null }) => {
 
       ToastAlert({ icon: "success", title: "Berhasil!" });
       reset();
-      setTimeList([{ id: 1, jamDari: "", jamSampai: "" }]); // Reset time list to default
+      const modal: any = document?.getElementById("add-jadwal");
+      modal.close(); 
+      setTimeList([{ id: 1, jamDari: "", jamSampai: "" }]);
       setNextId(2);
       route.refresh();
     } catch (error: any) {

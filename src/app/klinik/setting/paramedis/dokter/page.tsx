@@ -7,17 +7,12 @@ import { authOption } from "@/auth";
 
 const getDataDokter = async (idFasyankes: string) => {
   try {
-    const getData = await prisma.profile.findMany({
+    const getData = await prisma.doctors.findMany({
       where: {
         idFasyankes,
-        profesi: "DOKTER",
       },
       include: {
-        poliklinik: {
-          select: {
-            namaPoli: true,
-          },
-        },
+        profile: true,
       },
     });
     return getData;

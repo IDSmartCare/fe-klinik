@@ -8,31 +8,31 @@ const columHelper = createColumnHelper<any>();
 
 const FarmasiTableColumn = [
   columHelper.accessor(
-    (row) => row.pendaftaran.episodePendaftaran.pasien.noRm,
+    (row) => row.pendaftaran?.episodePendaftaran?.pasien?.noRm,
     {
       cell: (info) => info.getValue(),
       header: "No. Rekam Medis",
     }
   ),
   columHelper.accessor(
-    (row) => row.pendaftaran.episodePendaftaran.pasien.namaPasien,
+    (row) => row.pendaftaran?.episodePendaftaran?.pasien?.namaPasien,
     {
       cell: (info) => info.getValue(),
       header: "Nama",
     }
   ),
   columHelper.accessor(
-    (row) => row.pendaftaran.episodePendaftaran.pasien.jenisKelamin,
+    (row) => row.pendaftaran?.episodePendaftaran?.pasien?.jenisKelamin,
     {
       cell: (info) => info.getValue(),
       header: "Jenis Kelamin",
     }
   ),
-  columHelper.accessor((row) => row.pendaftaran.penjamin, {
+  columHelper.accessor((row) => row.pendaftaran?.penjamin, {
     cell: (info) => info.getValue(),
     header: "Penjamin",
   }),
-  columHelper.accessor((row) => row.pendaftaran.doctor.name, {
+  columHelper.accessor((row) => row.pendaftaran?.riwayat?.doctor?.name, {
     cell: (info) => info.getValue(),
     header: "Dokter",
   }),
@@ -64,7 +64,7 @@ const FarmasiTableColumn = [
   columHelper.accessor(
     (row) => [
       row.id,
-      row.pendaftaran.episodePendaftaran.pasien.id,
+      row.pendaftaran?.episodePendaftaran?.pasien.id,
       row.pendaftaranId,
     ],
     {

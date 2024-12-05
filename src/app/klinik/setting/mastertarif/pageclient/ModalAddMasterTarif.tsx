@@ -3,7 +3,7 @@
 import ButtonModalComponent, {
   icon,
 } from "@/app/components/ButtonModalComponent";
-import { useId, useState, useRef } from "react";
+import { useId, useState, useRef, useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import Select from "react-select";
 import { Session } from "next-auth";
@@ -26,18 +26,50 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
   const [rawHargaTarif, setRawHargaTarif] = useState("");
   const modalRef = useRef<HTMLDialogElement>(null);
 
+  const [selectedKategori, setSelectedKategori] = useState<string | null>(null);
+  const [listDokter, setListDokter] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function getDokter() {
+      const getApi = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/dokter/listdokter/${session?.user.idFasyankes}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+          },
+        }
+      );
+      if (!getApi.ok) {
+        setListDokter([]);
+        return;
+      }
+      const data = await getApi.json();
+      const newData = data.data?.map((item: any) => {
+        return {
+          label: item.name,
+          value: item.id,
+        };
+      });
+      setListDokter(newData);
+    }
+    getDokter();
+  }, [session?.user.idFasyankes]);
+
   const onSubmit: SubmitHandler<AddMasterTarif> = async (data) => {
     if (data) {
       const body = {
-        namaTarif: data.namaTarif,
+        namaTarif: data.dokter?.label ?? data.namaTarif,
         kategoriTarif: data.kategoriTarif.value,
+        doctorId: data.dokter?.value,
         hargaTarif: rawHargaTarif,
-        penjamin: data.penjamin.value,
+        penjamin: data.penjamin?.value,
         idFasyankes: session?.user.idFasyankes,
       };
 
       try {
-        const posttoApi = await fetch("/api/mastertarif", {
+        const posttoApi = await fetch("/api/mastertarif/add", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -110,25 +142,6 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
           >
             <div className="form-control w-full">
               <div className="label">
-                <span className="label-text">Nama Tarif</span>
-              </div>
-              <input
-                type="text"
-                {...register("namaTarif", {
-                  required: "*Tidak boleh kosong",
-                })}
-                className="input input-primary w-full input-sm"
-              />
-              {errors.namaTarif && (
-                <label className="label">
-                  <span className="label-text-alt text-error">
-                    {errors.namaTarif.message}
-                  </span>
-                </label>
-              )}
-            </div>
-            <div className="form-control w-full">
-              <div className="label">
                 <span className="label-text">Kategori Tarif</span>
               </div>
               <Controller
@@ -148,6 +161,10 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
                         { value: "Admin", label: "Admin" },
                         { value: "Dokter", label: "Dokter" },
                       ]}
+                      onChange={(selectedOption) => {
+                        field.onChange(selectedOption);
+                        setSelectedKategori(selectedOption?.value || null);
+                      }}
                     />
                     {errors.kategoriTarif && (
                       <label className="label">
@@ -160,6 +177,63 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
                 )}
               />
             </div>
+            {selectedKategori === "Admin" && (
+              <div className="form-control w-full">
+                <div className="label">
+                  <span className="label-text">Nama Tarif</span>
+                </div>
+                <input
+                  type="text"
+                  {...register("namaTarif", {
+                    required: "*Tidak boleh kosong",
+                  })}
+                  className="input input-primary w-full input-sm"
+                />
+                {errors.namaTarif && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">
+                      {errors.namaTarif.message}
+                    </span>
+                  </label>
+                )}
+              </div>
+            )}
+
+            {selectedKategori === "Dokter" && (
+              <>
+                <div className="form-control w-full">
+                  <div className="label">
+                    <span className="label-text">Dokter</span>
+                  </div>
+                  <Controller
+                    name="dokter"
+                    control={control}
+                    rules={{
+                      required: "*Tidak boleh kosong",
+                    }}
+                    render={({ field }) => (
+                      <div className="form-control w-full">
+                        <Select
+                          {...field}
+                          isClearable
+                          placeholder="Pilih Dokter"
+                          instanceId={uuid}
+                          options={listDokter}
+                        />
+                        {errors.dokter && (
+                          <label className="label">
+                            <span className="label-text-alt text-error">
+                              {errors.dokter.message?.toString()}
+                            </span>
+                          </label>
+                        )}
+                      </div>
+                    )}
+                  />
+                </div>
+              </>
+            )}
+
             <div className="form-control w-full">
               <div className="label">
                 <span className="label-text">Nominal</span>
@@ -171,7 +245,7 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
                 })}
                 onChange={handleHargaTarifChange}
                 className="input input-sm input-primary w-full"
-                value={rawHargaTarif ? formatRupiahEdit(rawHargaTarif) : ""} // Display formatted value
+                value={rawHargaTarif ? formatRupiahEdit(rawHargaTarif) : ""}
               />
 
               {errors.hargaTarif && (
@@ -182,40 +256,42 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
                 </label>
               )}
             </div>
-            <div className="form-control w-full">
-              <div className="label">
-                <span className="label-text">Penjamin</span>
+            {selectedKategori === "Admin" && (
+              <div className="form-control w-full">
+                <div className="label">
+                  <span className="label-text">Penjamin</span>
+                </div>
+                <Controller
+                  name="penjamin"
+                  control={control}
+                  rules={{
+                    required: "*Tidak boleh kosong",
+                  }}
+                  render={({ field }) => (
+                    <div className="form-control w-full">
+                      <Select
+                        {...field}
+                        isClearable
+                        placeholder="Pilih Penjamin"
+                        instanceId={uuid}
+                        options={[
+                          { value: "BPJS", label: "BPJS" },
+                          { value: "PRIBADI", label: "PRIBADI" },
+                          { value: "ASURANSI", label: "ASURANSI" },
+                        ]}
+                      />
+                      {errors.penjamin && (
+                        <label className="label">
+                          <span className="label-text-alt text-error">
+                            {errors.penjamin.message}
+                          </span>
+                        </label>
+                      )}
+                    </div>
+                  )}
+                />
               </div>
-              <Controller
-                name="penjamin"
-                control={control}
-                rules={{
-                  required: "*Tidak boleh kosong",
-                }}
-                render={({ field }) => (
-                  <div className="form-control w-full">
-                    <Select
-                      {...field}
-                      isClearable
-                      placeholder="Pilih Penjamin"
-                      instanceId={uuid}
-                      options={[
-                        { value: "BPJS", label: "BPJS" },
-                        { value: "PRIBADI", label: "PRIBADI" },
-                        { value: "ASURANSI", label: "ASURANSI" },
-                      ]}
-                    />
-                    {errors.penjamin && (
-                      <label className="label">
-                        <span className="label-text-alt text-error">
-                          {errors.penjamin.message}
-                        </span>
-                      </label>
-                    )}
-                  </div>
-                )}
-              />
-            </div>
+            )}
 
             {session?.user.role !== "tester" && (
               <button className="btn btn-primary btn-block btn-sm mt-3">

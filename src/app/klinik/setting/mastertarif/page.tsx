@@ -21,7 +21,6 @@ const getTarif = async (idFasyankes: string) => {
 const MasterTarif = async () => {
   const session = await getServerSession(authOption);
   const tarif = await getTarif(session?.user.idFasyankes);
-
   return (
     <>
       <AlertHeaderComponent message="List Tarif" />

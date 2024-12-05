@@ -130,11 +130,13 @@ const ModalSearch = ({ session }: { session: Session | null }) => {
             )}
           </form>
           <div className="self-end flex gap-3 mt-3">
-            <form method="dialog">
-              <button className="btn btn-error btn-md rounded-xl text-white">
-                Keluar
-              </button>
-            </form>
+            {!loading && (
+              <form method="dialog">
+                <button className="btn btn-error btn-md rounded-xl text-white">
+                  Keluar
+                </button>
+              </form>
+            )}
 
             <button
               type="submit"

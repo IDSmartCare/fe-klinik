@@ -29,22 +29,6 @@ const ModalAddAsuransi = ({ session }: { session: Session | null }) => {
       isAktif: true,
     };
 
-    const bodyToMasterTarifAdmin = {
-      namaTarif: data.namaAsuransi.toUpperCase(),
-      kategoriTarif: "Admin",
-      hargaTarif: "0",
-      penjamin: "ASURANSI " + data.namaAsuransi,
-      idFasyankes: session?.user.idFasyankes,
-    };
-
-    const bodyToMasterTarifDokter = {
-      namaTarif: data.namaAsuransi.toUpperCase(),
-      kategoriTarif: "Dokter",
-      hargaTarif: "0",
-      penjamin: "ASURANSI " + data.namaAsuransi,
-      idFasyankes: session?.user.idFasyankes,
-    };
-
     try {
       const postApi = await fetch(`/api/masterasuransi/add`, {
         method: "POST",
@@ -55,46 +39,15 @@ const ModalAddAsuransi = ({ session }: { session: Session | null }) => {
       });
 
       if (!postApi.ok) {
-        ToastAlert({ icon: "error", title: "Gagal simpan data!" });
+        ToastAlert({ icon: "error", title: "Gagal menambahkan asuransi" });
         return;
-      } else {
-        const postApiMasterTarifAdmin = await fetch("/api/mastertarif", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(bodyToMasterTarifAdmin),
-        });
-
-        if (!postApiMasterTarifAdmin.ok) {
-          ToastAlert({
-            icon: "error",
-            title: "Gagal simpan data tarif Admin!",
-          });
-          return;
-        }
-
-        const postApiMasterTarifDokter = await fetch("/api/mastertarif", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(bodyToMasterTarifDokter),
-        });
-
-        if (!postApiMasterTarifDokter.ok) {
-          ToastAlert({
-            icon: "error",
-            title: "Gagal simpan data tarif Dokter!",
-          });
-          return;
-        }
-
-        // Jika kedua pembuatan tarif berhasil
-        ToastAlert({ icon: "success", title: "Berhasil!" });
-        reset();
-        route.refresh();
       }
+
+      ToastAlert({ icon: "success", title: "Berhasil Menambahkan Asuransi" });
+      reset();
+      const modal: any = document?.getElementById("add-asuransi");
+      modal.close();
+      route.refresh();
     } catch (error: any) {
       console.log(error);
       ToastAlert({ icon: "error", title: error.message });

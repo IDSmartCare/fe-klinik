@@ -3,13 +3,75 @@ import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import AlertHeaderComponent from "../../setting/paramedis/components/AlertHeaderComponent";
 import { Session } from "next-auth";
+import { ToastAlert } from "@/app/helper/ToastAlert";
+import { ToastAlert2 } from "@/app/components/Toast2";
 
-const ModalAddSubjective = ({ session }: { session: Session | null }) => {
+const ModalAddSubjective = ({
+  session,
+  onSave,
+}: {
+  session: Session | null;
+  onSave: (data: any[]) => void;
+}) => {
   const [activeOption, setActiveOption] = useState<string>("shortcut");
   const [listSubjective, setListSubjective] = useState<any>([]);
   const [tableData, setTableData] = useState<any[]>([]);
   const [allAnswers, setAllAnswers] = useState<any[]>([]);
   const [freeText, setFreeText] = useState<string>("");
+
+  const [submittedFreeText, setSubmittedFreeText] = useState<string | null>(
+    null
+  );
+  const [submittedTableData, setSubmittedTableData] = useState<any[]>([]);
+
+  const handleSave = () => {
+    const modal: any = document.getElementById("add-subjective");
+    if (activeOption === "text") {
+      if (!freeText.trim()) {
+        modal.close();
+        ToastAlert2({ icon: "error", title: "Ooops", text: "Wajib diisi" });
+        setSubmittedTableData([]);
+        return;
+      }
+      setSubmittedFreeText(freeText);
+      setSubmittedTableData([]);
+      onSave([
+        {
+          question: null,
+          answer: freeText,
+        },
+      ]);
+      ToastAlert({
+        icon: "success",
+        title: "Berhasil menambahkan Subjective",
+      });
+      modal.close();
+    } else if (activeOption === "shortcut") {
+      const hasEmptyAnswer = tableData.some((item) => !item.answer);
+      if (hasEmptyAnswer || tableData.length === 0) {
+        modal.close();
+        ToastAlert2({
+          icon: "error",
+          title: "Ooops",
+          text: "Semua pertanyaan harus diisi",
+        });
+        setSubmittedFreeText(null);
+        return;
+      }
+      const formattedData = tableData.map((item) => ({
+        question: item.question.label,
+        answer: item.answer,
+      }));
+      setSubmittedFreeText(null);
+      setSubmittedTableData(tableData);
+      onSave(formattedData);
+      ToastAlert({
+        icon: "success",
+        title: "Berhasil menambahkan Subjective",
+      });
+      modal.close();
+    }
+  };
 
   useEffect(() => {
     async function getListSubjective() {
@@ -33,7 +95,6 @@ const ModalAddSubjective = ({ session }: { session: Session | null }) => {
         questionType: item.questionType,
       }));
       setListSubjective(newArr);
-      console.log(newArr);
     }
     getListSubjective();
   }, [session?.user.idFasyankes]);
@@ -61,6 +122,12 @@ const ModalAddSubjective = ({ session }: { session: Session | null }) => {
 
   const handleToggle = (option: string) => {
     setActiveOption(option);
+    // Restore values when toggling
+    if (option === "text") {
+      setFreeText(submittedFreeText || "");
+    } else if (option === "shortcut") {
+      setTableData(submittedTableData);
+    }
   };
 
   const handleAddToTable = (selectedQuestion: any) => {
@@ -135,7 +202,7 @@ const ModalAddSubjective = ({ session }: { session: Session | null }) => {
                 />
               </div>
 
-              <div className="overflow-x-auto mt-3 z-[999px] h-80">
+              <div className="overflow-x-auto mt-3 h-72">
                 <table className="table table-zebra">
                   <thead>
                     <tr>
@@ -162,7 +229,7 @@ const ModalAddSubjective = ({ session }: { session: Session | null }) => {
                               onChange={(option) =>
                                 handleInputChange(
                                   item.id,
-                                  option ? option.value : null
+                                  option ? option.label : null
                                 )
                               }
                             />
@@ -238,6 +305,15 @@ const ModalAddSubjective = ({ session }: { session: Session | null }) => {
               </div>
             </>
           )}
+        </div>
+
+        <div className="absolute bottom-16 w-10/12 md:w-11/12">
+          <button
+            className="btn btn-sm btn-primary w-full text-white"
+            onClick={handleSave}
+          >
+            Submit
+          </button>
         </div>
         <form method="dialog" className="absolute bottom-5 w-10/12 md:w-11/12">
           <button className="btn btn-sm btn-error w-full text-white">

@@ -8,16 +8,19 @@ import Link from "next/link";
 const columHelper = createColumnHelper<typeFormPoliklinik>();
 const onChange = async (e: any, id: any) => {
   try {
-    const fetchBody = await fetch("/api/paramedis/updatepoli", {
-      method: "POST",
-      body: JSON.stringify({ status: e.target.checked, id }),
+    const fetchBody = await fetch("/api/poli/edit", {
+      method: "PATCH",
+      body: JSON.stringify({ isAktif: e.target.checked, id }),
       headers: {
-        "content-type": "application/json",
+        "Content-type": "application/json",
       },
     });
     const res = await fetchBody.json();
     if (res.id) {
-      ToastAlert({ icon: "success", title: "Ok, silahkan di refresh!" });
+      ToastAlert({ icon: "success", title: "Berhasil, silahkan refresh!" });
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } else {
       ToastAlert({ icon: "error", title: "Error" });
     }
@@ -39,7 +42,7 @@ const onDeleteData = async (id: any) => {
   }).then(async (result: any) => {
     if (result.isConfirmed) {
       try {
-        const fetchBody = await fetch("/api/paramedis/hapuspoli", {
+        const fetchBody = await fetch("/api/poli/delete", {
           method: "DELETE",
           body: JSON.stringify({ id }),
           headers: {
@@ -82,29 +85,10 @@ const PoliTableColumn = [
   columHelper.accessor((row) => row.id, {
     cell: (info) => (
       <div className="flex gap-2 justify-center">
-        <div data-tip="Hapus Poli" className="tooltip">
-          <button
-            className="btn btn-circle btn-error btn-xs"
-            onClick={() => onDeleteData(info.getValue())}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 16 16"
-              fill="currentColor"
-              className="size-4"
-            >
-              <path
-                fillRule="evenodd"
-                d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </button>
-        </div>
         <div data-tip="Edit Poli" className="tooltip">
           <Link
             href={`/klinik/setting/paramedis/poliklinik/edit/${info.getValue()}`}
-            className="btn btn-circle btn-info btn-xs"
+            className="btn btn-outline btn-success btn-circle btn-xs"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -113,10 +97,31 @@ const PoliTableColumn = [
               className="size-4"
             >
               <path d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z" />
-              <path d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
+              <path d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
             </svg>
           </Link>
         </div>
+        {/* <div data-tip="Hapus Poli" className="tooltip">
+          <button
+            className="btn btn-outline btn-circle btn-error btn-xs"
+            onClick={() => onDeleteData(info.getValue())}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="size-4"
+            >
+              <path
+                d="M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6"
+                stroke="#e82121"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></path>
+            </svg>
+          </button>
+        </div> */}
       </div>
     ),
     header: "Aksi",

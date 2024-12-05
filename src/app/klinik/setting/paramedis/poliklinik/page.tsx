@@ -14,6 +14,7 @@ const getDataPoli = async (idFasyankes: string) => {
         headers: {
           Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
         },
+        cache: "no-cache",
       }
     );
     if (!getapi.ok) {

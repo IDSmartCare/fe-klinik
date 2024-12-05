@@ -1,5 +1,7 @@
 type formEditTarif = {
-    namaTarif: string
-    hargaTarif: string
-    id: number
-}
+  id: number;
+  namaTarif?: string;
+  kategoriTarif?: string;
+  hargaTarif?: string;
+  doctorId?: number;
+};

@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import { getFormattedDate } from "@/app/helper/ConvertDate";
 import { TimeAPM } from "@/app/helper/TimeAPM";
@@ -88,7 +88,7 @@ const NomorAntrianPage = () => {
 
     if (storedDate !== today) {
       localStorage.setItem("lastDate", today);
-      localStorage.setItem("panggilAntrianPasien", "A-0000");
+      localStorage.setItem("panggilAntrianPasien", "P-0000");
       setlastAntrianPasien("P-0000");
     } else if (storedAntrian) {
       setlastAntrianPasien(storedAntrian);
@@ -120,7 +120,7 @@ const NomorAntrianPage = () => {
 
   useEffect(() => {
     if (messageVoicePasien) {
-      const audioPath = `/audio/pasien/${messageVoicePasien}.mp3`;
+      const audioPath = `/audio/pasien/${messageVoicePasien}.MP3`;
       const audio = new Audio(audioPath);
       const poliAudio = poli ? new Audio(poli) : null;
       if (poliAudio) {
@@ -128,7 +128,7 @@ const NomorAntrianPage = () => {
       }
 
       audio.play().catch((err) => {
-        // console.error("Error playing audio:", err);
+        console.error("Error playing audio:", err);
       });
 
       audio.onended = () => {

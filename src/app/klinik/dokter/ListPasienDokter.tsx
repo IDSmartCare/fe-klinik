@@ -7,15 +7,15 @@ import { typeListTerdaftar } from "../perawat/interface/typeListTerdaftar";
 const columHelper = createColumnHelper<any>();
 
 const ListPasienDokter = [
-  columHelper.accessor((row) => row.episodePendaftaran.pasien.noRm, {
+  columHelper.accessor((row) => row.episodePendaftaran?.pasien?.noRm, {
     cell: (info) => info.getValue(),
     header: "No. Rekam Medis",
   }),
-  columHelper.accessor((row) => row.episodePendaftaran.pasien.namaPasien, {
+  columHelper.accessor((row) => row.episodePendaftaran?.pasien?.namaPasien, {
     cell: (info) => info.getValue(),
     header: "Nama",
   }),
-  columHelper.accessor((row) => row.episodePendaftaran.pasien.jenisKelamin, {
+  columHelper.accessor((row) => row.episodePendaftaran?.pasien?.jenisKelamin, {
     cell: (info) => info.getValue(),
     header: "Jenis Kelamin",
   }),
@@ -23,7 +23,7 @@ const ListPasienDokter = [
     cell: (info) => info.getValue(),
     header: "Penjamin",
   }),
-  columHelper.accessor((row) => row.doctor.name, {
+  columHelper.accessor((row) => row.riwayat?.doctor?.name, {
     cell: (info) => info.getValue(),
     header: "Dokter",
   }),

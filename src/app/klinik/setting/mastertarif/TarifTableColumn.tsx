@@ -24,7 +24,7 @@ const TarifTableColumn = [
     header: "Nominal",
   }),
   columHelper.accessor((row) => row.penjamin, {
-    cell: (info) => info.getValue().toUpperCase(),
+    cell: (info) => info.getValue()?.toUpperCase(),
     header: "Penjamin",
   }),
 
