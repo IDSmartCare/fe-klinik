@@ -20,14 +20,29 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
     reset,
     control,
     setError,
+    setValue,
+    watch,
   } = useForm<AddMasterTarif>();
   const uuid = useId();
   const route = useRouter();
   const [rawHargaTarif, setRawHargaTarif] = useState("");
   const modalRef = useRef<HTMLDialogElement>(null);
+  // const [selectedKategori, setSelectedKategori] = useState<string | null>(null);
+  const [selectedAsuransi, setSelectedAsuransi] = useState<string | null>(null);
+  const [showAsuransi, setShowAsuransi] = useState<string | null>(null);
 
-  const [selectedKategori, setSelectedKategori] = useState<string | null>(null);
   const [listDokter, setListDokter] = useState<any[]>([]);
+  const [listAsuransi, setListAsuransi] = useState<any[]>([]);
+
+  const selectedKategori = watch("kategoriTarif")?.value;
+
+  useEffect(() => {
+    if (selectedKategori !== "Dokter") {
+      setValue("dokter", null);
+    } else {
+      setValue("namaTarif", null);
+    }
+  }, [selectedKategori, setValue]);
 
   useEffect(() => {
     async function getDokter() {
@@ -48,13 +63,41 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
       const data = await getApi.json();
       const newData = data.data?.map((item: any) => {
         return {
-          label: item.name,
+          label: `${item.name} - ${item.unit}`,
           value: item.id,
         };
       });
       setListDokter(newData);
     }
     getDokter();
+  }, [session?.user.idFasyankes]);
+
+  useEffect(() => {
+    async function getAsuransi() {
+      const getApi = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/masterasuransi/${session?.user.idFasyankes}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+          },
+        }
+      );
+      if (!getApi.ok) {
+        setListAsuransi([]);
+        return;
+      }
+      const data = await getApi.json();
+      const newData = data.data?.map((item: any) => {
+        return {
+          label: item.namaAsuransi,
+          value: item.id,
+        };
+      });
+      setListAsuransi(newData);
+    }
+    getAsuransi();
   }, [session?.user.idFasyankes]);
 
   const onSubmit: SubmitHandler<AddMasterTarif> = async (data) => {
@@ -64,7 +107,9 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
         kategoriTarif: data.kategoriTarif.value,
         doctorId: data.dokter?.value,
         hargaTarif: rawHargaTarif,
-        penjamin: data.penjamin?.value,
+        penjamin: selectedAsuransi
+          ? `ASURANSI ${selectedAsuransi}`
+          : data.penjamin?.value || null,
         idFasyankes: session?.user.idFasyankes,
       };
 
@@ -86,13 +131,11 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
           }
         } else {
           const errorResponse = await posttoApi.json();
-          // Handle errors from API response
           ToastAlert({
             icon: "error",
             title: errorResponse.message || "Gagal Menambahkan Tarif",
           });
 
-          // Set API errors on specific fields
           if (errorResponse.errors) {
             Object.keys(errorResponse.errors).forEach((field) => {
               setError(field as keyof AddMasterTarif, {
@@ -116,9 +159,9 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
   };
 
   const handleHargaTarifChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const numericValue = e.target.value.replace(/[^0-9]/g, ""); // Get raw numeric value
-    setRawHargaTarif(numericValue); // Update state with the raw value
-    e.target.value = formatRupiahEdit(numericValue); // Display formatted value
+    const numericValue = e.target.value.replace(/[^0-9]/g, "");
+    setRawHargaTarif(numericValue);
+    e.target.value = formatRupiahEdit(numericValue);
   };
 
   return (
@@ -160,10 +203,42 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
                       options={[
                         { value: "Admin", label: "Admin" },
                         { value: "Dokter", label: "Dokter" },
+                        { value: "Layanan Injeksi", label: "Layanan Injeksi" },
+                        {
+                          value: "Layanan Perawatan Luka",
+                          label: "Layanan Perawatan Luka",
+                        },
+                        {
+                          value: "Layanan Terapi Infus",
+                          label: "Layanan Terapi Infus",
+                        },
+                        {
+                          value: "Layanan Pemeriksaan dan Diagnostik Cepat",
+                          label: "Layanan Pemeriksaan dan Diagnostik Cepat",
+                        },
+                        {
+                          value: "Layanan Tindakan Minor",
+                          label: "Layanan Tindakan Minor",
+                        },
+                        {
+                          value: "Layanan Ortopedi dan Fisioterapi",
+                          label: "Layanan Ortopedi dan Fisioterapi",
+                        },
+                        {
+                          value: "Layanan Dermatologi Ringan",
+                          label: "Layanan Dermatologi Ringan",
+                        },
+                        {
+                          value: "Layanan Kebersihan Medis",
+                          label: "Layanan Kebersihan Medis",
+                        },
+                        {
+                          value: "Layanan Penanganan Nyeri",
+                          label: "Layanan Penanganan Nyeri",
+                        },
                       ]}
                       onChange={(selectedOption) => {
                         field.onChange(selectedOption);
-                        setSelectedKategori(selectedOption?.value || null);
                       }}
                     />
                     {errors.kategoriTarif && (
@@ -177,7 +252,7 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
                 )}
               />
             </div>
-            {selectedKategori === "Admin" && (
+            {selectedKategori != "Dokter" && (
               <div className="form-control w-full">
                 <div className="label">
                   <span className="label-text">Nama Tarif</span>
@@ -192,7 +267,7 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
                 {errors.namaTarif && (
                   <label className="label">
                     <span className="label-text-alt text-error">
-                      {errors.namaTarif.message}
+                      {errors.namaTarif.message?.toString()}
                     </span>
                   </label>
                 )}
@@ -256,41 +331,81 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
                 </label>
               )}
             </div>
-            {selectedKategori === "Admin" && (
-              <div className="form-control w-full">
-                <div className="label">
-                  <span className="label-text">Penjamin</span>
-                </div>
-                <Controller
-                  name="penjamin"
-                  control={control}
-                  rules={{
-                    required: "*Tidak boleh kosong",
-                  }}
-                  render={({ field }) => (
-                    <div className="form-control w-full">
-                      <Select
-                        {...field}
-                        isClearable
-                        placeholder="Pilih Penjamin"
-                        instanceId={uuid}
-                        options={[
-                          { value: "BPJS", label: "BPJS" },
-                          { value: "PRIBADI", label: "PRIBADI" },
-                          { value: "ASURANSI", label: "ASURANSI" },
-                        ]}
-                      />
-                      {errors.penjamin && (
-                        <label className="label">
-                          <span className="label-text-alt text-error">
-                            {errors.penjamin.message}
-                          </span>
-                        </label>
-                      )}
-                    </div>
-                  )}
-                />
+            <div className="form-control w-full">
+              <div className="label">
+                <span className="label-text">Penjamin</span>
               </div>
+              <Controller
+                name="penjamin"
+                control={control}
+                rules={{
+                  required: "*Tidak boleh kosong",
+                }}
+                render={({ field }) => (
+                  <div className="form-control w-full">
+                    <Select
+                      {...field}
+                      isClearable
+                      placeholder="Pilih Penjamin"
+                      instanceId={uuid}
+                      options={[
+                        { value: "BPJS", label: "BPJS" },
+                        { value: "PRIBADI", label: "PRIBADI" },
+                        { value: "ASURANSI", label: "ASURANSI" },
+                      ]}
+                      onChange={(selectedOption) => {
+                        field.onChange(selectedOption);
+                        setShowAsuransi(selectedOption?.value ?? null);
+                      }}
+                    />
+                    {errors.penjamin && (
+                      <label className="label">
+                        <span className="label-text-alt text-error">
+                          {errors.penjamin.message}
+                        </span>
+                      </label>
+                    )}
+                  </div>
+                )}
+              />
+            </div>
+            {showAsuransi === "ASURANSI" && (
+              <>
+                <div className="form-control w-full">
+                  <div className="label">
+                    <span className="label-text">Pilih Asuransi</span>
+                  </div>
+                  <Controller
+                    name="asuransi"
+                    control={control}
+                    rules={{
+                      required: "*Tidak boleh kosong",
+                    }}
+                    render={({ field }) => (
+                      <div className="form-control w-full">
+                        <Select
+                          {...field}
+                          isClearable
+                          placeholder="Pilih Asuransi"
+                          instanceId={uuid}
+                          options={listAsuransi}
+                          onChange={(selectedOption) => {
+                            field.onChange(selectedOption);
+                            setSelectedAsuransi(selectedOption?.label || null);
+                          }}
+                        />
+                        {errors.dokter && (
+                          <label className="label">
+                            <span className="label-text-alt text-error">
+                              {errors.dokter.message?.toString()}
+                            </span>
+                          </label>
+                        )}
+                      </div>
+                    )}
+                  />
+                </div>
+              </>
             )}
 
             {session?.user.role !== "tester" && (

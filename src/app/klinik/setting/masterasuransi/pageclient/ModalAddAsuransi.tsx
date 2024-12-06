@@ -38,8 +38,10 @@ const ModalAddAsuransi = ({ session }: { session: Session | null }) => {
         body: JSON.stringify(bodyToPost),
       });
 
+      const data = await postApi.json();
+
       if (!postApi.ok) {
-        ToastAlert({ icon: "error", title: "Gagal menambahkan asuransi" });
+        ToastAlert({ icon: "error", title: data.message });
         return;
       }
 

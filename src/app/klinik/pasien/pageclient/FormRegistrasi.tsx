@@ -115,7 +115,10 @@ const FormRegistrasi = ({
       pasienData: {
         pasienId: Number(idpasien),
         doctorId: Number(data.dokterId.value),
-        penjamin: data.penjamin.value,
+        penjamin:
+          data.penjamin?.value === "ASURANSI"
+            ? `ASURANSI ${data.namaAsuransi?.label}`
+            : data.penjamin?.value,
         namaAsuransi: data.namaAsuransi?.label,
         nomorAsuransi: data.nomorAsuransi,
         idFasyankes: session?.user.idFasyankes,

@@ -20,7 +20,7 @@ const ListPasienDokter = [
     header: "Jenis Kelamin",
   }),
   columHelper.accessor((row) => row.penjamin, {
-    cell: (info) => info.getValue(),
+    cell: (info) => info.getValue().toUpperCase(),
     header: "Penjamin",
   }),
   columHelper.accessor((row) => row.riwayat?.doctor?.name, {

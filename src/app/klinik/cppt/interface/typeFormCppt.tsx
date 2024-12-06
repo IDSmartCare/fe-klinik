@@ -9,6 +9,7 @@ export type typeFormCppt = {
   profileId: number;
   idFasyankes?: string;
   resep: any[];
+  layanan: any;
   pendaftaranId?: number;
   isVerifDokter: boolean | null;
   isDokter: boolean | null;

@@ -235,7 +235,7 @@ const ModalAddSubjective = ({
                             />
                           ) : item.question.questionType === "number" ? (
                             <input
-                              type="number"
+                              type="text"
                               className="input input-bordered w-full"
                               placeholder="Jawaban"
                               value={item.answer || ""}

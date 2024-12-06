@@ -28,7 +28,7 @@ const FormEditTarif = ({ dataForm }: { dataForm: any }) => {
   const onSubmit: SubmitHandler<formEditTarif> = async (form) => {
     const body = {
       id: dataForm.id,
-      namaTarif: dataForm.namaTarif ?? form?.namaTarif,
+      namaTarif: form?.namaTarif,
       doctorId: dataForm.doctorId,
       hargaTarif: rawHargaTarif,
     };

@@ -5,9 +5,10 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { typeFormCppt } from "../interface/typeFormCppt";
 import { ToastAlert } from "@/app/helper/ToastAlert";
 import { Session } from "next-auth";
-import { useId, useState } from "react";
+import { use, useEffect, useId, useState } from "react";
 import ErrorHeaderComponent from "@/app/components/ErrorHeaderComponent";
 import AsyncSelect from "react-select/async";
+import Select from "react-select";
 import { getApiBisnisOwner } from "@/app/lib/apiBisnisOwner";
 import { DiagnosaInterface, ObatInterface } from "../interface/typeFormResep";
 import { useRouter } from "next/navigation";
@@ -48,6 +49,8 @@ const FormAddCppt = ({
   const [assessmentData, setAssessmentData] = useState<any[]>([]);
   const [planData, setPlanData] = useState<any[]>([]);
   const [instructionData, setInstructionData] = useState<any[]>([]);
+  const [layanan, setLayanan] = useState<any[]>([]);
+  const [selectedLayanan, setSelectedLayanan] = useState<string[]>([]);
 
   const [errorsSOAP, setErrorsSOAP] = useState({
     subjective: false,
@@ -57,7 +60,44 @@ const FormAddCppt = ({
     instruction: false,
   });
 
+  const handleLayananChange = (selectedOptions: any) => {
+    const selectedLabelsAsObjects =
+      selectedOptions?.map((option: { label: string }) => ({
+        label: option.label,
+      })) || [];
+    setSelectedLayanan(selectedLabelsAsObjects);
+  };
+
   const isEmpty = (obj: ObatInterface) => Object.keys(obj).length === 0;
+
+  useEffect(() => {
+    async function getLayanan() {
+      const getApi = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/master-tarif/layanan/${session?.user.idFasyankes}/${idregis}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+          },
+        }
+      );
+      if (!getApi.ok) {
+        setLayanan([]);
+        return;
+      }
+      const data = await getApi.json();
+      console.log("layanan", data);
+      const newData = data?.map((item: any) => {
+        return {
+          label: item.namaTarif,
+          value: item.id,
+        };
+      });
+      setLayanan(newData);
+    }
+    getLayanan();
+  }, [session?.user.idFasyankes, idregis]);
 
   const onSubmit: SubmitHandler<typeFormCppt> = async (form) => {
     const validationErrors = {
@@ -93,15 +133,19 @@ const FormAddCppt = ({
       assessment: assessmentData,
       plan: planData,
       instruction: instructionData,
+      layanan: selectedLayanan,
     };
+
+    console.log(body);
 
     try {
       const postApi = await fetch(`/api/cppt/add`, {
         method: "POST",
         body: JSON.stringify(body),
       });
+      const data = await postApi.json();
       if (!postApi.ok) {
-        ToastAlert({ icon: "error", title: "Gagal simpan data!" });
+        ToastAlert({ icon: "error", title: data.message });
         return;
       }
       ToastAlert({ icon: "success", title: "Berhasil!" });
@@ -368,6 +412,22 @@ const FormAddCppt = ({
                 instanceId={uuid}
               />
             </div>
+            <div className="form-control w-full px-6 mb-6">
+              <div className="label">
+                <span className="label-text">Layanan (Opsional)</span>
+              </div>
+              <Select
+                className="select-info w-full"
+                isClearable
+                name="layanan"
+                isMulti
+                options={layanan}
+                placeholder="Cari Layanan"
+                instanceId={uuid}
+                onChange={handleLayananChange}
+              />
+            </div>
+
             <div className="flex w-full p-3 gap-2">
               <div className="form-control w-1/2 border-2 p-2">
                 <div className="label">

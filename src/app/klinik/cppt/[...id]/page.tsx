@@ -53,7 +53,6 @@ const PageCPPT = async ({ params }: { params: { id: any } }) => {
 
   const resApi = await getData(idPasien);
   const getcppt = await getCppt(idPasien, session?.user.idFasyankes);
-  console.log(getcppt);
 
   return (
     <div className="flex flex-col gap-2">
