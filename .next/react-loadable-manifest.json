@@ -1,0 +1,54 @@
+{
+  "app\\antrian\\page.tsx -> ./pageclient/ModalAntrianAdmisi": {
+    "id": 40521,
+    "files": [
+      "static/chunks/b2d98e07-7c864ae459b98fa7.js",
+      "static/chunks/ff804112-2aaf191424fdefbb.js",
+      "static/chunks/7064611b-7c666a9d1291f7a4.js",
+      "static/chunks/5457-a8b12e546d4a2dd9.js",
+      "static/chunks/4258.1e2a13276770dbfc.js"
+    ]
+  },
+  "app\\antrian\\page.tsx -> ./pageclient/ModalSearch": {
+    "id": 2148,
+    "files": [
+      "static/chunks/9343-edf6eaaf5c66221b.js",
+      "static/chunks/2148.9ae8bf6cefd5f9e3.js"
+    ]
+  },
+  "app\\antrian\\pageclient\\FormatRegistrasiAPM.tsx -> ./ModalAntrianPasien": {
+    "id": 27295,
+    "files": [
+      "static/chunks/b2d98e07-7c864ae459b98fa7.js",
+      "static/chunks/ff804112-2aaf191424fdefbb.js",
+      "static/chunks/7064611b-7c666a9d1291f7a4.js",
+      "static/chunks/998-217f1293c46aa9d0.js",
+      "static/chunks/5457-a8b12e546d4a2dd9.js",
+      "static/chunks/4937.0952948a3ce1a800.js"
+    ]
+  },
+  "app\\antrian\\pageclient\\ModalAntrianAdmisi.tsx -> @react-pdf/renderer": {
+    "id": 5100,
+    "files": []
+  },
+  "app\\antrian\\pageclient\\ModalAntrianPasien.tsx -> @react-pdf/renderer": {
+    "id": 5100,
+    "files": []
+  },
+  "app\\klinik\\farmasi\\pageclient\\ModalPrintBillFarmasi.tsx -> @react-pdf/renderer": {
+    "id": 5100,
+    "files": []
+  },
+  "app\\klinik\\kasir\\pageclient\\ModalPrintKwitansi.tsx -> @react-pdf/renderer": {
+    "id": 5100,
+    "files": []
+  },
+  "app\\klinik\\kasir\\pageclient\\ModalPrintTagihan.tsx -> @react-pdf/renderer": {
+    "id": 5100,
+    "files": []
+  },
+  "app\\pos\\pageclient\\ModalPrintBill.tsx -> @react-pdf/renderer": {
+    "id": 5100,
+    "files": []
+  }
+}
