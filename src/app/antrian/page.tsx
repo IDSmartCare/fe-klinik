@@ -22,9 +22,10 @@ const ModalPrintAdmisi = dynamic(
 const AntrianPage = () => {
   const { data: session } = useSession();
   const [selectedCard, setSelectedCard] = useState<any>(null);
-  const [ticketVisible, setTicketVisible] = useState(false);
+  const [ticketVisible, setTicketVisible] = useState<boolean>(false);
   const [dataTicket, setDataTicket] = useState<any>(null);
   const [currentTime, setCurrentTime] = useState<string>(TimeAPM());
+  const [asuransiPage, setAsuransiPage] = useState<string>("");
   const [jam, setJam] = useState<string>("");
   const [tanggal, setTanggal] = useState<string>("");
 
@@ -33,6 +34,10 @@ const AntrianPage = () => {
     if (cardType === "new-registration") {
       handlePostTicket(session?.user.idFasyankes);
       setTicketVisible(true);
+    } else if (cardType === "insurance") {
+      setSelectedCard(null);
+      setAsuransiPage("insurance");
+      showModal("search-patient");
     }
   };
 
@@ -109,7 +114,7 @@ const AntrianPage = () => {
         tanggalDaftar={tanggal}
         jamDaftar={jam}
       />
-      <ModalSearch session={session} />
+      <ModalSearch asuransi={asuransiPage} />
       <div
         className="h-screen flex flex-col gap-9 2xl:gap-24 justify-center items-center relative overflow-hidden"
         style={{
@@ -178,13 +183,7 @@ const AntrianPage = () => {
                 <CardComponent
                   src="/asuransi.png"
                   title="Asuransi"
-                  onClick={() =>
-                    ToastAlert2({
-                      icon: "error",
-                      title: "Asuransi",
-                      text: "Fitur Belum Tersedia",
-                    })
-                  }
+                  onClick={() => handleCardClick("insurance")}
                 />
               </motion.div>
             )}

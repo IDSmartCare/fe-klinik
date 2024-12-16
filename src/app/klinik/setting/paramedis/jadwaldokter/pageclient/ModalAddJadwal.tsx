@@ -25,14 +25,11 @@ const ModalAddJadwal = ({ session }: { session: Session | null }) => {
   const [timeList, setTimeList] = useState<
     { id: number; jamDari: string; jamSampai: string }[]
   >([
-    // Default initial time entry
     { id: 1, jamDari: "", jamSampai: "" },
   ]);
 
-  // Counter for generating unique IDs
   const [nextId, setNextId] = useState(2);
 
-  // Handle adding a new time entry to the list
   const handleAddTime = () => {
     setTimeList((prev) => [
       ...prev,
@@ -41,15 +38,12 @@ const ModalAddJadwal = ({ session }: { session: Session | null }) => {
     setNextId((prev) => prev + 1);
   };
 
-  // Handle deleting a specific time entry
   const handleDeleteTime = (idToDelete: number) => {
     if (timeList.length > 1) {
-      // Prevent deleting if only one time entry remains
       setTimeList((prev) => prev.filter((item) => item.id !== idToDelete));
     }
   };
 
-  // Handle time change
   const handleTimeChange = (
     id: number,
     field: "jamDari" | "jamSampai",
@@ -63,7 +57,7 @@ const ModalAddJadwal = ({ session }: { session: Session | null }) => {
   useEffect(() => {
     async function getDokter() {
       const getApi = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/dokter/listdokter/${session?.user.idFasyankes}`,
+        `${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/dokter/listdokter/withoutavailability/${session?.user.idFasyankes}`,
         {
           method: "GET",
           headers: {
@@ -87,11 +81,6 @@ const ModalAddJadwal = ({ session }: { session: Session | null }) => {
     }
     getDokter();
   }, [session?.user.idFasyankes]);
-
-  // const pilihSesi = Array.from({ length: 12 }, (_, i) => {
-  //   const value = (i + 1) * 5;
-  //   return { value, label: `${value} Menit` };
-  // });
 
   const onSubmit: SubmitHandler<typeFormJadwal> = async (data) => {
     const bodyToPos = {

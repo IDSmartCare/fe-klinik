@@ -123,7 +123,8 @@ const ModalAddUser = ({ session }: { session: Session | null }) => {
           }
         }
 
-        ToastAlert({ icon: "success", title: posttoApi.message as string });
+        // ToastAlert({ icon: "success", title: posttoApi.message as string });
+        ToastAlert({ icon: "success", title: "Berhasil Menambahkan User" });
         reset();
         const modal: any = document?.getElementById("add-user");
         modal.close();

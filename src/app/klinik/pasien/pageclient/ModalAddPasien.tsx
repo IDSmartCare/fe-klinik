@@ -121,15 +121,15 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
         pendidikan: data.pendidikan.value,
         pekerjaan: textPekerjaanLain || data.pekerjaan.value,
         statusMenikah: data.statusMenikah.value,
+        email: data.email,
         ...alamat,
         ...(domisili && domisiliBody),
         ...(!domisili && convertObtDomisili),
         idFasyankes: session?.user.idFasyankes,
       },
-      userRole: session?.user.role, // Kirim role
-      userPackage: session?.user.package, // Kirim package
+      userRole: session?.user.role,
+      userPackage: session?.user.package,
     };
-    console.log(bodyToPost);
 
     try {
       const postApi = await fetch(`/api/pasien/add`, {
@@ -137,12 +137,11 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
         body: JSON.stringify(bodyToPost),
       });
 
-      // Check if the response is not OK
       if (!postApi.ok) {
         if (dialogRef.current) {
           dialogRef.current.close();
         }
-        const errorData = await postApi.json(); // Get error message from the response
+        const errorData = await postApi.json();
         ToastAlert({
           icon: "error",
           title: errorData.message || "Gagal simpan data!",
@@ -154,7 +153,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
         dialogRef.current.close();
       }
 
-      ToastAlert({ icon: "success", title: "Successfully added patient!" });
+      ToastAlert({ icon: "success", title: "Berhasil Menambahkan Pasien" });
       reset();
       route.refresh();
     } catch (error: any) {
@@ -414,6 +413,27 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                     <label className="label">
                       <span className="label-text-alt text-error">
                         {errors.noHp.message}
+                      </span>
+                    </label>
+                  )}
+                </div>
+                <div className="flex flex-col">
+                  <div className="flex">
+                    <div className="label w-1/3">
+                      <span className="label-text">Email *</span>
+                    </div>
+                    <input
+                      type="email"
+                      {...register("email", {
+                        required: "*Tidak boleh kosong",
+                      })}
+                      className="input input-primary w-full input-sm"
+                    />
+                  </div>
+                  {errors.email && (
+                    <label className="label">
+                      <span className="label-text-alt text-error">
+                        {errors.email.message}
                       </span>
                     </label>
                   )}

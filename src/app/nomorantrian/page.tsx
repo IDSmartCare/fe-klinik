@@ -37,7 +37,9 @@ const NomorAntrianPage = () => {
   const [messageVoicePasien, setMessageVoicePasien] = useState<string>("");
   const [poli, setPoli] = useState<string>("");
   const [currentTime, setCurrentTime] = useState<string>(TimeAPM());
-  const [modalShow, setModalShow] = useState(true); // Start with modal visible
+  const [modalShow, setModalShow] = useState(true);
+  const todayForAdmisi = new Date().toLocaleDateString();
+  const todayForPasien = new Date().toLocaleDateString();
 
   useEffect(() => {
     const modal: any = document.getElementById("modal-onboarding");
@@ -58,12 +60,11 @@ const NomorAntrianPage = () => {
   }, []);
 
   useEffect(() => {
-    const today = new Date().toLocaleDateString();
-    const storedDate = localStorage.getItem("lastDate");
     const storedAntrian = localStorage.getItem("panggilAntrianAdmisi");
+    const storedDate = localStorage.getItem("lastDateAdmisi");
 
-    if (storedDate !== today) {
-      localStorage.setItem("lastDate", today);
+    if (storedDate !== todayForAdmisi) {
+      localStorage.setItem("lastDateAdmisi", todayForAdmisi);
       localStorage.setItem("panggilAntrianAdmisi", "A-0000");
       setlastAntrianAdmisi("A-0000");
     } else if (storedAntrian) {
@@ -79,15 +80,14 @@ const NomorAntrianPage = () => {
     return () => {
       socket.off("panggilAntrianAdmisi");
     };
-  }, []);
+  }, [todayForAdmisi]);
 
   useEffect(() => {
-    const today = new Date().toLocaleDateString();
-    const storedDate = localStorage.getItem("lastDate");
+    const storedDate = localStorage.getItem("lastDatePasien");
     const storedAntrian = localStorage.getItem("panggilAntrianPasien");
 
-    if (storedDate !== today) {
-      localStorage.setItem("lastDate", today);
+    if (storedDate !== todayForPasien) {
+      localStorage.setItem("lastDatePasien", todayForPasien);
       localStorage.setItem("panggilAntrianPasien", "P-0000");
       setlastAntrianPasien("P-0000");
     } else if (storedAntrian) {
@@ -104,7 +104,7 @@ const NomorAntrianPage = () => {
     return () => {
       socket.off("panggilAntrianPasien");
     };
-  }, []);
+  }, [todayForPasien]);
 
   useEffect(() => {
     if (messageVoiceAdmisi) {

@@ -33,6 +33,17 @@ const FormEditJadwal = ({
 
   // Counter for generating unique IDs
   const [nextId, setNextId] = useState(2);
+  const [selectedDays, setSelectedDays] = useState([]);
+
+  useEffect(() => {
+    // Initialize state for days and slots from API response
+    setSelectedDays(
+      data.availableDays.map((day: { day: string }) => ({
+        label: day.day,
+        value: day.day.toLowerCase(),
+      }))
+    );
+  }, [data]);
 
   // Handle adding a new time entry to the list
   const handleAddTime = () => {
@@ -60,20 +71,6 @@ const FormEditJadwal = ({
       prev.map((time) => (time.id === id ? { ...time, [field]: value } : time))
     );
   };
-
-  useEffect(() => {
-    if (data) {
-      const [jamDari, jamSampai] = data.jamPraktek.split("-");
-      reset({
-        hari: {
-          label: data.hari,
-          value: data.kodeHari,
-        },
-        jamDari: jamDari,
-        jamSampai: jamSampai,
-      });
-    }
-  }, [data, reset]);
 
   const onSubmit: SubmitHandler<typeFormJadwal> = async (data) => {
     const bodyToPos = {
@@ -109,7 +106,7 @@ const FormEditJadwal = ({
         icon: "success",
         title: resData.message,
       });
-      route.push("/klinik/setting/paramedis/jadwaldokter");
+      route.back();
       route.refresh();
     } catch (error) {
       console.log(error);

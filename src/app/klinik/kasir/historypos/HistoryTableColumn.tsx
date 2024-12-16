@@ -33,6 +33,10 @@ const HistoryPostColumn = [
     cell: (info) => formatRupiah(info.getValue()),
     header: "Diskon",
   }),
+  columHelper.accessor((row) => row.kategoriBayar, {
+    cell: (info) => info.getValue(),
+    header: "Pembayaran",
+  }),
   columHelper.accessor((row) => row.total, {
     cell: (info) => formatRupiah(info.getValue()),
     header: "Total",

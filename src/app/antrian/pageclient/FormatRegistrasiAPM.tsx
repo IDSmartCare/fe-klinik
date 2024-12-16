@@ -18,9 +18,11 @@ const ModalPrintPasien = dynamic(() => import("./ModalAntrianPasien"), {
 const FormRegistrasiAPM = ({
   idpasien,
   session,
+  asuransi,
 }: {
   idpasien: string;
   session: Session | null;
+  asuransi?: string;
 }) => {
   const [ticketVisible, setTicketVisible] = useState(false);
   const [dataTicket, setDataTicket] = useState<any>(null);
@@ -35,11 +37,46 @@ const FormRegistrasiAPM = ({
 
   const uuid = useId();
   const [dokter, setDokter] = useState<{ label: string; value: string }[]>([]);
+  const [listAsuransi, setListAsuransi] = useState([]);
   const route = useRouter();
   const hari = new Date().getDay();
   const [jam, setJam] = useState<string>("");
   const [tanggal, setTanggal] = useState<string>("");
   const [poli, setPoli] = useState<string>("");
+  const [nomorAsuransi, setNomorAsuransi] = useState("");
+
+  useEffect(() => {
+    const getAsuransi = async () => {
+      const resAsuransi = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/masterasuransi/${session?.user.idFasyankes}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+          },
+        }
+      );
+
+      if (!resAsuransi.ok) {
+        setListAsuransi([]);
+        return;
+      }
+
+      const dataAsuransi = await resAsuransi.json();
+      if (!dataAsuransi.success || !dataAsuransi.data) {
+        setListAsuransi([]);
+        return;
+      }
+
+      const formattedAsuransi = dataAsuransi.data.map((item: any) => ({
+        value: item.kodeAsuransi,
+        label: item.namaAsuransi,
+      }));
+
+      setListAsuransi(formattedAsuransi);
+    };
+    getAsuransi();
+  }, [session?.user.idFasyankes]);
 
   useEffect(() => {
     const getDokter = async () => {
@@ -86,7 +123,7 @@ const FormRegistrasiAPM = ({
       pasienData: {
         pasienId: Number(idpasien),
         doctorId: Number(data.dokterId.value),
-        penjamin: "PRIBADI",
+        penjamin: asuransi ? "ASURANSI" : "PRIBADI",
         namaAsuransi: data.namaAsuransi?.label,
         nomorAsuransi: data.nomorAsuransi,
         idFasyankes: session?.user.idFasyankes,
@@ -205,15 +242,56 @@ const FormRegistrasiAPM = ({
             </label>
           )}
         </div>
-        <div className="form-control w-full">
-          {errors.penjamin && (
-            <label className="label">
-              <span className="label-text-alt text-error">
-                {errors.penjamin.message?.toString()}
-              </span>
-            </label>
-          )}
-        </div>
+        {asuransi && (
+          <div className="mt-1">
+            <div className="label">
+              <span className="label-text">Asuransi</span>
+            </div>
+            <Controller
+              name="namaAsuransi"
+              control={control}
+              rules={{
+                required: "*Silahkan pilih",
+              }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  isClearable
+                  instanceId={uuid}
+                  options={listAsuransi}
+                />
+              )}
+            />
+            {errors.namaAsuransi && (
+              <label className="label">
+                <span className="label-text-alt text-error">
+                  {errors.namaAsuransi.message?.toString()}
+                </span>
+              </label>
+            )}
+            <div className="form-control w-full">
+              <div className="label">
+                <span className="label-text">Nomor Asuransi</span>
+              </div>
+              <input
+                {...register("nomorAsuransi", {
+                  required: "*Tidak boleh kosong",
+                })}
+                type="number"
+                value={nomorAsuransi}
+                onChange={(e) => setNomorAsuransi(e.target.value)}
+                className="input input-primary w-full input-sm"
+              />
+            </div>
+            {errors.nomorAsuransi && (
+              <label className="label">
+                <span className="label-text-alt text-error">
+                  {errors.nomorAsuransi.message?.toString()}
+                </span>
+              </label>
+            )}
+          </div>
+        )}
 
         {session?.user.role !== "tester" && (
           <div className="mt-3">

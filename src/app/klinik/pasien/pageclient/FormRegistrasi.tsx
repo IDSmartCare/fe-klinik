@@ -79,7 +79,7 @@ const FormRegistrasi = ({
 
   useEffect(() => {
     const getAsuransi = async () => {
-      const resDokter = await fetch(
+      const resAsuransi = await fetch(
         `${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/masterasuransi/${session?.user.idFasyankes}`,
         {
           method: "GET",
@@ -89,18 +89,18 @@ const FormRegistrasi = ({
         }
       );
 
-      if (!resDokter.ok) {
+      if (!resAsuransi.ok) {
         setAsuransi([]);
         return;
       }
 
-      const dataDokter = await resDokter.json();
-      if (!dataDokter.success || !dataDokter.data) {
+      const dataAsuransi = await resAsuransi.json();
+      if (!dataAsuransi.success || !dataAsuransi.data) {
         setAsuransi([]);
         return;
       }
 
-      const formattedAsuransi = dataDokter.data.map((item: any) => ({
+      const formattedAsuransi = dataAsuransi.data.map((item: any) => ({
         value: item.kodeAsuransi,
         label: item.namaAsuransi,
       }));

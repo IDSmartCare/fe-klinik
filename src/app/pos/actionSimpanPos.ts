@@ -33,6 +33,7 @@ export default async function simpanPOS(
           emailPelanggan: dataInvoice?.emailPelanggan,
           hpPelanggan: dataInvoice?.hpPelanggan,
           namaPelanggan: dataInvoice?.namaPelanggan,
+          kategoriBayar: dataInvoice?.kategoriBayar,
           pajak: dataInvoice?.pajak,
           subTotal: dataInvoice?.subTotal,
           total: dataInvoice?.total,

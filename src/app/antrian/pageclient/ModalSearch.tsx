@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
-const ModalSearch = ({ session }: { session: Session | null }) => {
+const ModalSearch = ({ asuransi }: { asuransi?: string }) => {
   const modal: any = document.getElementById("search-patient");
   const [activeOption, setActiveOption] = useState<string>("NoRM");
   const [loading, setLoading] = useState(false);
@@ -48,7 +48,11 @@ const ModalSearch = ({ session }: { session: Session | null }) => {
         });
         return;
       }
-      route.push(`/antrian/detail/${result.data.id}`);
+      if (asuransi === "insurance") {
+        route.push(`/antrian/detail/${result.data.id}/${asuransi}`);
+      } else {
+        route.push(`/antrian/detail/${result.data.id}`);
+      }
     } catch (error: any) {
       setLoading(false);
       modal.close();

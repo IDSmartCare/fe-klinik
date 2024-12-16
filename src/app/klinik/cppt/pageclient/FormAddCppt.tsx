@@ -136,7 +136,6 @@ const FormAddCppt = ({
       layanan: selectedLayanan,
     };
 
-    console.log(body);
 
     try {
       const postApi = await fetch(`/api/cppt/add`, {

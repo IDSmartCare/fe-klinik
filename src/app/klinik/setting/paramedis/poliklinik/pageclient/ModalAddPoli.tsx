@@ -60,8 +60,6 @@ const ModalAddPoli = ({ session }: { session: Session | null }) => {
       idFasyankes: session?.user.idFasyankes,
     };
 
-    console.log(bodyToPost);
-
     try {
       const postApi = await fetch(`/api/poli/add`, {
         method: "POST",

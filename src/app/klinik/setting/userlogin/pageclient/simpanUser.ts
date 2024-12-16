@@ -64,6 +64,5 @@ export async function checkUserExistsByRole(role: string, idFasyankes: string) {
       idFasyankes,
     },
   });
-  console.log("Existing User:", existingUser); // Debug log
   return existingUser;
 }

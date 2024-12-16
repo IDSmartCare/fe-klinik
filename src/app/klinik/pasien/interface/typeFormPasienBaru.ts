@@ -9,6 +9,7 @@ export type typeFormPasienBaru = {
   paspor?: string;
   bahasa?: string;
   noHp: string;
+  email: string;
   tempatLahir: string;
   tanggalLahir: string;
   jenisKelamin: string;

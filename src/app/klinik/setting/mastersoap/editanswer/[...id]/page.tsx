@@ -39,7 +39,6 @@ const EditJawaban = async ({
   const session = await getServerSession(authOption);
   const data = await getData(params.id, newEndpoint);
 
-  console.log(newEndpoint);
 
   return (
     <FormEditAnswer

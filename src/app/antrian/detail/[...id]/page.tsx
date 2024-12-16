@@ -46,20 +46,28 @@ const getRegistrasi = async (id: string) => {
   }
 };
 
-const DetailPasienAPMPage = async ({ params }: { params: { id: string } }) => {
+const DetailPasienAPMPage = async ({
+  params,
+}: {
+  params: { id: string[] };
+}) => {
   const session = await getServerSession(authOption);
-  const resApi = await getData(params.id);
-  const regisTrasi = await getRegistrasi(params.id);
+  const resApi = await getData(params.id[0]);
+  const asuransi = params.id[1];
+  const regisTrasi = await getRegistrasi(params.id[0]);
   return (
     <>
-      
       <div className="flex flex-col gap-2 p-8">
         <BackButton />
         <PasienIdentitasComponent pasien={resApi} />
         <div className="flex gap-2">
           <div className="w-1/2">
             <AlertHeaderComponent message="Registrasi Baru" />
-            <FormRegistrasiAPM idpasien={params.id} session={session} />
+            <FormRegistrasiAPM
+              idpasien={params.id[0]}
+              session={session}
+              asuransi={asuransi}
+            />
           </div>
           <div className="w-1/2 space-y-2">
             <AlertHeaderComponent message="Riwayat registrasi pasien" />
