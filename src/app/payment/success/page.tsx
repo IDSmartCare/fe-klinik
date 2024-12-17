@@ -5,7 +5,6 @@ import React from "react";
 function SuccessPage() {
   const handleClick = () => {
     window.parent.postMessage({ success: true }, "*");
-    console.log("success pay");
   };
 
   return (
