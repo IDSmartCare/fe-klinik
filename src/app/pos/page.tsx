@@ -141,6 +141,7 @@ const PagePos = () => {
           setNamaPelanggan("");
           setGroupIdBayar("");
           setSelectedPayment(null);
+          setSuccess(false);
           router.refresh();
 
           const getDataAfterSubmit = (await GetPosByGroupId(
@@ -152,7 +153,6 @@ const PagePos = () => {
             const modalPrint: any = document?.getElementById("modal-pos-print");
             modalPrint?.show();
           }, 2000);
-          window.removeEventListener("message", handleMessage);
         }
       } catch (error) {
         console.error(error);
