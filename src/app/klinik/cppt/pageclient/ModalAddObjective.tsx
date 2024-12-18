@@ -242,7 +242,7 @@ const ModalAddObjective = ({
                               onChange={(e) =>
                                 handleInputChange(
                                   item.id,
-                                  Number(e.target.value) || null
+                                  e.target.value || null
                                 )
                               }
                             />

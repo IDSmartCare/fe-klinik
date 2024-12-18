@@ -436,9 +436,9 @@ const FormTransaksiResep = ({
       )}
       {soap.isBillingFarmasi ? (
         <div className="flex flex-col gap-3 mt-5">
-          <button className="btn btn-error btn-sm">SUDAH TRANSAKSI</button>
+          {/* <button className="btn btn-error btn-sm">SUDAH TRANSAKSI</button> */}
           <button className="btn btn-info btn-sm" onClick={() => cetakBill()}>
-            CETAK BILL
+            CETAK RESEP
           </button>
         </div>
       ) : (

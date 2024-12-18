@@ -47,6 +47,7 @@ const BillingPasien = async ({ params }: { params: { id: any } }) => {
   const session = await getServerSession(authOption);
   const resApi = await getData(idPasien);
   const getRegisData = await getRegis(idEpisode, session?.user.idFasyankes);
+  console.log(JSON.stringify(getRegisData, null, 2));
 
   return (
     <div className="flex flex-col gap-2">

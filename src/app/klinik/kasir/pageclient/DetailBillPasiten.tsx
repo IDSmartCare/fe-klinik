@@ -10,6 +10,7 @@ import Image from "next/image";
 import Select from "react-select";
 import ModalPayment from "@/app/pos/pageclient/ModalPayment";
 import { splitName } from "@/app/helper/SplitName";
+import Swal from "sweetalert2";
 
 const DetailBillPasien = ({ detailBill }: { detailBill: any }) => {
   const [discount, setDiscount] = useState("");
@@ -201,18 +202,36 @@ const DetailBillPasien = ({ detailBill }: { detailBill: any }) => {
         ToastAlert({ icon: "error", title: "An error occurred" });
       }
     } else if (selectedPayment == 2 || selectedPayment == 3) {
-      if (bayar === 0) {
+      if (selectedPayment === 3 && bayar === 0) {
         ToastAlert({ icon: "error", title: "Pembayaran harus diisi!" });
-      } else if (bayar < total) {
+      } else if (selectedPayment === 3 && bayar <= total) {
         ToastAlert({
           icon: "error",
           title: "Pembayaran harus lebih besar/sama dengan total tagihan!",
         });
       } else {
+        if (selectedPayment === 2) {
+          const isConfirmed = await Swal.fire({
+            title: "Konfirmasi Pembayaran",
+            text: "Apakah Anda yakin ingin melanjutkan pembayaran?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Ya, lanjutkan",
+            cancelButtonText: "Batal",
+          });
+
+          if (!isConfirmed.isConfirmed) {
+            return;
+          }
+        }
+
+        const payloadForBayar = selectedPayment === 2 ? total : bayar;
         const bodyToPost = {
           id: detailBill.id,
           pendaftaranId: detailBill.pendaftaranId,
-          bayar,
+          bayar: payloadForBayar,
           total,
           totalDiskon,
           totalPajak,
@@ -220,6 +239,7 @@ const DetailBillPasien = ({ detailBill }: { detailBill: any }) => {
           tglBayar: new Date(),
           kategoriBayar: paymentTypes[selectedPayment ?? 3],
         };
+
         try {
           const postApi = await fetch(`/api/kasir/bayar`, {
             method: "POST",
@@ -240,6 +260,7 @@ const DetailBillPasien = ({ detailBill }: { detailBill: any }) => {
   };
   const cetakKwitansi = async (billId: number) => {
     const get = await getBillingDetail(billId);
+    // console.log(JSON.stringify(get, null, 2));
     if (get.status) {
       setBillData(get.data);
       await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -357,7 +378,7 @@ const DetailBillPasien = ({ detailBill }: { detailBill: any }) => {
                 </div>
               </td>
             </tr>
-            {(selectedPayment == 2 || selectedPayment == 3) && (
+            {selectedPayment == 3 && (
               <>
                 <tr className="font-semibold">
                   <td colSpan={4} className="text-right">

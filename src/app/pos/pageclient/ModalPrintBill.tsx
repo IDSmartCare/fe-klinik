@@ -92,14 +92,14 @@ const ModalPrintBill = ({
                                 </View>
                                 */}
                   <View style={styles.companyInfo}>
-                    <Text>Billing No: {data?.groupTransaksiId}</Text>
+                    <Text>Billing No : {data?.groupTransaksiId}</Text>
                     <Text>
-                      Date:{" "}
+                      Tanggal :{" "}
                       {data?.groupTransaksiId &&
                         format(new Date(data?.createdAt), "dd/MM/yyyy")}
                     </Text>
-                    <Text>{data?.namaPelanggan}</Text>
-                    <Text>{data?.hpPelanggan}</Text>
+                    <Text>Nama : {data?.namaPelanggan}</Text>
+                    <Text>No HP : {data?.hpPelanggan}</Text>
                   </View>
                 </View>
                 <Text style={styles.title}>Billing Obat</Text>

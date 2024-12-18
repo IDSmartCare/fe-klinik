@@ -20,9 +20,17 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
+    setValue,
     control,
-  } = useForm<typeFormPasienBaru>();
+  } = useForm<typeFormPasienBaru>({
+    defaultValues: {
+      noHp: "+62",
+    },
+  });
   const route = useRouter();
+  const noHpValue = watch("noHp");
+  const [isStartedTyping, setIsStartedTyping] = useState(false);
   const [domisili, setDomisili] = useState(true);
   const [agamaLainnya, setAgamaLainnya] = useState(false);
   const [textAgamaLain, setTextAgamaLain] = useState("");
@@ -121,7 +129,7 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
         pendidikan: data.pendidikan.value,
         pekerjaan: textPekerjaanLain || data.pekerjaan.value,
         statusMenikah: data.statusMenikah.value,
-        email: data.email,
+        email: data.email ?? "noemail@gmail.com",
         ...alamat,
         ...(domisili && domisiliBody),
         ...(!domisili && convertObtDomisili),
@@ -136,6 +144,8 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
         method: "POST",
         body: JSON.stringify(bodyToPost),
       });
+
+      console.log(bodyToPost);
 
       if (!postApi.ok) {
         if (dialogRef.current) {
@@ -404,9 +414,44 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                       <span className="label-text">Nomor HP *</span>
                     </div>
                     <input
-                      type="number"
-                      {...register("noHp", { required: "*Tidak boleh kosong" })}
+                      type="text"
+                      placeholder="+628xxxxxxxx"
+                      {...register("noHp", {
+                        required: "*Tidak boleh kosong",
+                        validate: {
+                          isNumeric: (value) =>
+                            /^[+62]\d*$/.test(value) ||
+                            "*Nomor HP hanya boleh berisi angka",
+                          startsWithPrefix: (value) =>
+                            value.startsWith("+62") ||
+                            "*Nomor HP harus diawali dengan +62",
+                          noZeroAfterPrefix: (value) =>
+                            !/^\+620/.test(value) ||
+                            "*Nomor HP tidak boleh mengandung angka 0 setelah +62",
+                          minLength: (value) =>
+                            value.length >= 11 ||
+                            "*Nomor HP harus minimal 11 karakter",
+                          maxLength: (value) =>
+                            value.length <= 13 ||
+                            "*Nomor HP tidak boleh lebih dari 13 karakter",
+                        },
+                      })}
                       className="input input-primary w-full input-sm"
+                      value={isStartedTyping ? noHpValue : ""}
+                      onChange={(e) => {
+                        let inputValue = e.target.value;
+                        if (!isStartedTyping) {
+                          // Tambahkan +62 saat pertama kali mengetik
+                          setIsStartedTyping(true);
+                          inputValue = "+62" + inputValue;
+                        }
+                        // Bersihkan karakter non-angka (kecuali +)
+                        if (!inputValue.startsWith("+62")) {
+                          setValue("noHp", "+62");
+                        } else {
+                          setValue("noHp", inputValue.replace(/[^+\d]/g, ""));
+                        }
+                      }}
                     />
                   </div>
                   {errors.noHp && (
@@ -420,13 +465,11 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                 <div className="flex flex-col">
                   <div className="flex">
                     <div className="label w-1/3">
-                      <span className="label-text">Email *</span>
+                      <span className="label-text">Email</span>
                     </div>
                     <input
                       type="email"
-                      {...register("email", {
-                        required: "*Tidak boleh kosong",
-                      })}
+                      {...register("email")}
                       className="input input-primary w-full input-sm"
                     />
                   </div>

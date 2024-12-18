@@ -95,7 +95,7 @@ const PagePos = () => {
           pembelian,
           {
             namaPelanggan,
-            emailPelanggan: email,
+            emailPelanggan: email.trim() === "" ? "noemail@gmail.com" : email,
             groupTransaksiId: groupIdBayar,
             hpPelanggan,
             diskonInvoice: hargaDiskon.toString(),
@@ -335,7 +335,6 @@ const PagePos = () => {
     const requiredFields = [
       { value: namaPelanggan, message: "Silahkan isi nama pelanggan!" },
       { value: hpPelanggan, message: "Silahkan isi no hp pelanggan!" },
-      { value: email, message: "Silahkan isi email!" },
     ];
 
     for (const field of requiredFields) {
@@ -345,19 +344,21 @@ const PagePos = () => {
       }
     }
 
-    const phoneNumberPattern = /^0\d{10,16}$/;
-    if (!phoneNumberPattern.test(hpPelanggan)) {
-      ToastAlert({ icon: "error", title: "Nomor HP tidak valid!" });
-      return;
-    }
-
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(email)) {
+    if (email.trim() !== "" && !emailPattern.test(email)) {
       ToastAlert({
         icon: "error",
         title: "Email tidak valid!",
       });
       return;
+    }
+
+    if (hpPelanggan.length < 13 || hpPelanggan.length > 15) {
+      ToastAlert({
+        icon: "error",
+        title: "Nomor HP tidak valid!",
+      });
+      return false;
     }
 
     if (selectedPayment === 2 || selectedPayment === 3) {
@@ -372,7 +373,7 @@ const PagePos = () => {
 
         const bodyToPost = {
           orderId: groupId,
-          email: email,
+          email: email.trim() === "" ? "noemail@gmail.com" : email,
           firstName,
           lastName,
           mobilePhone: hpPelanggan.replace(/^0/, "+62"),
@@ -491,6 +492,28 @@ const PagePos = () => {
     setKembalian(Number(numericValue) - total);
   };
 
+  const handleHpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value;
+
+    if (value === "") {
+      setHpPelanggan(value);
+      return;
+    }
+
+    if (value.startsWith("0")) {
+      value = "+62" + value.slice(1);
+    } else if (!value.startsWith("+62") && value.length > 0) {
+      value = "+62";
+    }
+
+    if (value.length > 14) return;
+
+    if (value.startsWith("+620")) {
+      value = value.slice(0, 3); // Potong string jika ada angka 0 setelah +62
+    }
+
+    setHpPelanggan(value);
+  };
   return (
     <div className="flex gap-2 flex-col p-2">
       <Link href={"/klinik"}>
@@ -607,7 +630,9 @@ const PagePos = () => {
           <div className="flex flex-col bg-base-200 min-h-screen p-2 gap-2">
             <p className="text-xl font-medium">Biodata Pasien</p>
             <div className="flex items-center justify-between">
-              <p className="font-medium label-text">Nama</p>
+              <p className="font-medium label-text">
+                Nama <span className="text-red-500">*</span>
+              </p>
               <input
                 type="text"
                 value={namaPelanggan}
@@ -616,16 +641,21 @@ const PagePos = () => {
               />
             </div>
             <div className="flex items-center justify-between">
-              <p className="font-medium label-text">No HP</p>
+              <p className="font-medium label-text">
+                No HP <span className="text-red-500">*</span>
+              </p>
               <input
-                type="number"
+                type="text"
                 value={hpPelanggan}
-                onChange={(e) => setHpPelanggan(e.target.value)}
+                onChange={handleHpChange}
+                placeholder="+628xxxxxxxxx"
                 className="input input-bordered w-full max-w-xs"
               />
             </div>
             <div className="flex items-center justify-between">
-              <p className="font-medium label-text">Email</p>
+              <p className="font-medium label-text">
+                Email <span className="text-primary">(Opsional)</span>
+              </p>
               <input
                 type="email"
                 value={email}

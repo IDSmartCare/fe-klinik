@@ -58,7 +58,7 @@ const FarmasiTableColumn = [
           </svg>
         </div>
       ),
-    header: "Billing",
+    header: "Resep",
   }),
 
   columHelper.accessor(

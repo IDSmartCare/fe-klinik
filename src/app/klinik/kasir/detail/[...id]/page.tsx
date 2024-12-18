@@ -23,7 +23,7 @@ const getData = async (pendaftaranId: string) => {
 const DetailBilling = async ({ params }: { params: { id: any } }) => {
   const idRegis = params.id[0];
   const data = await getData(idRegis);
-  console.log("Detail bill", JSON.stringify(data, null, 2));
+  // console.log("Detail bill", JSON.stringify(data, null, 2));
 
   return <DetailBillPasien detailBill={data} />;
 };

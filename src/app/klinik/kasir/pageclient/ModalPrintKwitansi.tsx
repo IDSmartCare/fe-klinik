@@ -1,5 +1,6 @@
 "use client";
 import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
+import { format } from "date-fns";
 import dynamic from "next/dynamic";
 
 const PDFViewer = dynamic(
@@ -36,6 +37,7 @@ const ModalPrintKwintansi = ({ tagihan }: { tagihan: any }) => {
       height: 100,
     },
     title: {
+      marginTop: 20,
       fontSize: 24,
       marginBottom: 10,
       textAlign: "center",
@@ -74,19 +76,31 @@ const ModalPrintKwintansi = ({ tagihan }: { tagihan: any }) => {
         <PDFViewer className="w-full h-80">
           <Document>
             <Page style={styles.page}>
-              <View style={styles.header}>
-                {/* <View style={styles.companyInfo}>
-                                    {company.logo && <Image style={styles.logo} src={company.logo} />}
-            <Text>{company.address}</Text>
-            <Text>{company.phone}</Text>
-                                </View>
-                                <View style={styles.customerInfo}>
-                                    <Text>Invoice No: {billFarmasi?.data.id}</Text>
-                                    <Text>Date: {billFarmasi?.data.id && format(new Date(billFarmasi?.data.createdAt), 'dd/MM/yyyy')}</Text>
-                                    <Text>{pasien.namaPasien}</Text>
-                                    <Text>{pasien.kelurahanDomisili}</Text>
-                                </View> */}
-              </View>
+              <Text>
+                No Rekam Medis :{" "}
+                {tagihan?.Pendaftaran?.episodePendaftaran?.pasien?.noRm}
+              </Text>
+              <Text>
+                Nama :{" "}
+                {tagihan?.Pendaftaran?.episodePendaftaran?.pasien?.namaPasien
+                  .toLowerCase()
+                  .split(" ")
+                  .map(
+                    (word: string) =>
+                      word.charAt(0).toUpperCase() + word.slice(1)
+                  )
+                  .join(" ")}
+              </Text>
+              <Text>
+                Registrasi :{" "}
+                {tagihan?.Pendaftaran?.episodePendaftaran?.createdAt &&
+                  format(
+                    new Date(
+                      tagihan?.Pendaftaran?.episodePendaftaran?.createdAt
+                    ),
+                    "dd/MM/yyyy - HH:mm"
+                  )}
+              </Text>
               <Text style={styles.title}>Invoice Pasien</Text>
               <View style={styles.item}>
                 <Text style={styles.itemName}>Item</Text>

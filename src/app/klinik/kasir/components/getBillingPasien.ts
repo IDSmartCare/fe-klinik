@@ -9,8 +9,20 @@ export async function getBillingPasien(pendaftaranId: number) {
         pendaftaranId: Number(pendaftaranId),
       },
       include: {
-        billPasienDetail: true,
-        Pendaftaran: true,
+        billPasienDetail: {
+          include: {
+            billPasien: true,
+          },
+        },
+        Pendaftaran: {
+          include: {
+            episodePendaftaran: {
+              include: {
+                pasien: true,
+              },
+            },
+          },
+        },
       },
     });
     return {

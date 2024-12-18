@@ -18,6 +18,7 @@ const ListBillingPasien = ({
   const [tagihan, setTagihan] = useState<any>();
   const onClickPrint = async (id: string) => {
     const getData: any = await getBillingPasien(Number(id));
+    console.log(JSON.stringify(getData, null, 2));
     setTagihan(getData.data);
     await new Promise((resolve) => setTimeout(resolve, 2000));
     const modal: any = document?.getElementById("modal-print-bill-kasir");
@@ -39,20 +40,31 @@ const ListBillingPasien = ({
               <p>Penjamin : {item?.penjamin}</p>
               <p>Poli : {item.riwayat?.doctor?.unit}</p>
               <p>Dokter : {item.riwayat?.doctor?.name}</p>
-              <div className="card-actions justify-end">
-                <button
-                  className="btn btn-sm btn-info"
-                  onClick={() => onClickPrint(item?.id)}
-                >
-                  CETAK TAGIHAN
-                </button>
+              <div className="card-actions justify-end items-center">
+                {item?.billPasien[0]?.status === "LUNAS" && (
+                  <p className="font-bold text-success">SUDAH BAYAR</p>
+                )}
+                {item?.billPasien[0]?.status !== "LUNAS" && (
+                  <button
+                    className="btn btn-sm btn-info text-white"
+                    onClick={() => onClickPrint(item?.id)}
+                  >
+                    CETAK TAGIHAN
+                  </button>
+                )}
                 {item?.penjamin === "PRIBADI" &&
                   session?.user.role !== "admin" && (
                     <Link
                       href={`/klinik/kasir/detail/${item.id}`}
-                      className="btn btn-sm btn-primary"
+                      className={`btn btn-sm text-white ${
+                        item?.billPasien[0]?.status === "LUNAS"
+                          ? "btn-success"
+                          : "btn-primary"
+                      }`}
                     >
-                      BAYAR
+                      {item?.billPasien[0]?.status === "LUNAS"
+                        ? "RIWAYAT TAGIHAN"
+                        : "BAYAR"}
                     </Link>
                   )}
               </div>
