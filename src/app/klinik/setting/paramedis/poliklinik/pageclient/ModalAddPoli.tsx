@@ -125,7 +125,6 @@ const ModalAddPoli = ({ session }: { session: Session | null }) => {
               control={control}
               rules={{
                 required: "*Tidak boleh kosong",
-                // onChange: (e) => onChangeRole(e),
               }}
               render={({ field }) => (
                 <Select

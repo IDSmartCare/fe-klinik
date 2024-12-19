@@ -87,7 +87,6 @@ const FormAddCppt = ({
         return;
       }
       const data = await getApi.json();
-      console.log("layanan", data);
       const newData = data?.map((item: any) => {
         return {
           label: item.namaTarif,

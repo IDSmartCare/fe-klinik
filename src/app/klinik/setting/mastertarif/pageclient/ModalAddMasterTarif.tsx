@@ -356,12 +356,20 @@ const ModalAddMasterTarif = ({ session }: { session: Session | null }) => {
                       onChange={(selectedOption) => {
                         field.onChange(selectedOption);
                         setShowAsuransi(selectedOption?.value ?? null);
+                        if (
+                          ["BPJS", "PRIBADI", "ASURANSI"].includes(
+                            selectedOption?.value
+                          )
+                        ) {
+                          setValue("asuransi", null);
+                          setSelectedAsuransi(null);
+                        }
                       }}
                     />
                     {errors.penjamin && (
                       <label className="label">
                         <span className="label-text-alt text-error">
-                          {errors.penjamin.message}
+                          {errors.penjamin.message?.toString()}
                         </span>
                       </label>
                     )}

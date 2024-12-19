@@ -24,9 +24,7 @@ const ModalAddJadwal = ({ session }: { session: Session | null }) => {
   const route = useRouter();
   const [timeList, setTimeList] = useState<
     { id: number; jamDari: string; jamSampai: string }[]
-  >([
-    { id: 1, jamDari: "", jamSampai: "" },
-  ]);
+  >([{ id: 1, jamDari: "", jamSampai: "" }]);
 
   const [nextId, setNextId] = useState(2);
 
@@ -170,13 +168,13 @@ const ModalAddJadwal = ({ session }: { session: Session | null }) => {
                   isClearable
                   placeholder="Pilih Hari"
                   options={[
-                    { label: "Senin", value: "mon" },
-                    { label: "Selasa", value: "tue" },
-                    { label: "Rabu", value: "wed" },
-                    { label: "Kamis", value: "thu" },
-                    { label: "Jumat", value: "fri" },
-                    { label: "Sabtu", value: "sat" },
-                    { label: "Minggu", value: "sun" },
+                    { label: "Senin", value: "Senin" },
+                    { label: "Selasa", value: "Selasa" },
+                    { label: "Rabu", value: "Rabu" },
+                    { label: "Kamis", value: "Kamis" },
+                    { label: "Jumat", value: "Jumat" },
+                    { label: "Sabtu", value: "Sabtu" },
+                    { label: "Minggu", value: "Minggu" },
                   ]}
                 />
               )}

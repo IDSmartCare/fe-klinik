@@ -145,7 +145,6 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
         body: JSON.stringify(bodyToPost),
       });
 
-      console.log(bodyToPost);
 
       if (!postApi.ok) {
         if (dialogRef.current) {
@@ -429,10 +428,10 @@ const ModalAddPasien = ({ session }: { session: Session | null }) => {
                             !/^\+620/.test(value) ||
                             "*Nomor HP tidak boleh mengandung angka 0 setelah +62",
                           minLength: (value) =>
-                            value.length >= 11 ||
+                            value.length >= 12 ||
                             "*Nomor HP harus minimal 11 karakter",
                           maxLength: (value) =>
-                            value.length <= 13 ||
+                            value.length <= 15 ||
                             "*Nomor HP tidak boleh lebih dari 13 karakter",
                         },
                       })}

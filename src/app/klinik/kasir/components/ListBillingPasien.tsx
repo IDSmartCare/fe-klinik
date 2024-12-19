@@ -18,7 +18,7 @@ const ListBillingPasien = ({
   const [tagihan, setTagihan] = useState<any>();
   const onClickPrint = async (id: string) => {
     const getData: any = await getBillingPasien(Number(id));
-    console.log(JSON.stringify(getData, null, 2));
+    // console.log(JSON.stringify(getData, null, 2));
     setTagihan(getData.data);
     await new Promise((resolve) => setTimeout(resolve, 2000));
     const modal: any = document?.getElementById("modal-print-bill-kasir");

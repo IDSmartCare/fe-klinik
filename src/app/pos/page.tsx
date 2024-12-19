@@ -368,6 +368,7 @@ const PagePos = () => {
       modal?.showModal();
     } else if (selectedPayment === 0 || selectedPayment === 1) {
       const { firstName, lastName } = splitName(namaPelanggan);
+      const type = selectedPayment === 0 ? "qris" : null;
       try {
         let groupId = new Date().valueOf().toString();
 
@@ -376,10 +377,14 @@ const PagePos = () => {
           email: email.trim() === "" ? "noemail@gmail.com" : email,
           firstName,
           lastName,
-          mobilePhone: hpPelanggan.replace(/^0/, "+62"),
+          mobilePhone: hpPelanggan,
           amount: total,
           description: "Bayar Obat",
+          type: type,
+          successUrl: `${process.env.NEXT_PUBLIC_URL_FE_FINNET}/payment/success`,
+          // successUrl: `http://192.168.1.17:5000/payment/success`,
         };
+
 
         const apiPayment = await fetch("/api/payment", {
           method: "POST",
@@ -393,7 +398,11 @@ const PagePos = () => {
         }
 
         const dataAPI = await apiPayment.json();
-        setSrcPayment(dataAPI.response.redirecturl);
+        if (selectedPayment === 0) {
+          setSrcPayment(dataAPI.response.imageurl);
+        } else {
+          setSrcPayment(dataAPI.response.redirecturl);
+        }
 
         const modal: any = document?.getElementById("modal-payment");
         modal?.showModal();
@@ -494,6 +503,8 @@ const PagePos = () => {
 
   const handleHpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
+
+    value = value.replace(/[^0-9+]/g, "");
 
     if (value === "") {
       setHpPelanggan(value);

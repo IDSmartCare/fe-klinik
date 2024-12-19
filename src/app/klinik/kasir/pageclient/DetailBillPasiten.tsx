@@ -165,19 +165,19 @@ const DetailBillPasien = ({ detailBill }: { detailBill: any }) => {
       const { firstName, lastName } = splitName(
         detailBill.Pendaftaran?.episodePendaftaran?.pasien?.namaPasien
       );
+      const type = selectedPayment === 0 ? "qris" : null;
       try {
         const bodyToPost = {
-          orderId: detailBill.id,
+          orderId: new Date().valueOf().toString(),
           email: detailBill.Pendaftaran?.episodePendaftaran?.pasien?.email,
           firstName: firstName,
           lastName: lastName,
-          mobilePhone:
-            detailBill.Pendaftaran?.episodePendaftaran?.pasien?.noHp.replace(
-              /^0/,
-              "+62"
-            ),
+          mobilePhone: detailBill.Pendaftaran?.episodePendaftaran?.pasien?.noHp,
           amount: total,
           description: "Bayar Tagihan Pasien",
+          type: type,
+          successUrl: `${process.env.NEXT_PUBLIC_URL_FE_FINNET}/payment/success`,  //FOR PRODUCTION
+          // successUrl: `http://192.168.1.17:5000/payment/success`, //FOR DEVELOPMENT
         };
 
         const apiPayment = await fetch("/api/payment", {
@@ -192,8 +192,11 @@ const DetailBillPasien = ({ detailBill }: { detailBill: any }) => {
         }
 
         const dataAPI = await apiPayment.json();
-        console.log(dataAPI);
-        setSrcPayment(dataAPI.response.redirecturl);
+        if (selectedPayment === 0) {
+          setSrcPayment(dataAPI.response.imageurl);
+        } else {
+          setSrcPayment(dataAPI.response.redirecturl);
+        }
 
         const modal: any = document?.getElementById("modal-payment");
         modal?.showModal();
@@ -204,7 +207,7 @@ const DetailBillPasien = ({ detailBill }: { detailBill: any }) => {
     } else if (selectedPayment == 2 || selectedPayment == 3) {
       if (selectedPayment === 3 && bayar === 0) {
         ToastAlert({ icon: "error", title: "Pembayaran harus diisi!" });
-      } else if (selectedPayment === 3 && bayar <= total) {
+      } else if (selectedPayment === 3 && bayar < total) {
         ToastAlert({
           icon: "error",
           title: "Pembayaran harus lebih besar/sama dengan total tagihan!",
@@ -300,109 +303,115 @@ const DetailBillPasien = ({ detailBill }: { detailBill: any }) => {
               </td>
               <td>{formatRupiah(subTotal)}</td>
             </tr>
-
-            <tr className="font-semibold">
-              <td colSpan={4} className="text-right">
-                Diskon %
-              </td>
-              <td>
-                <input
-                  type="text"
-                  value={discount}
-                  maxLength={2}
-                  onChange={(e) => onChangeDiskon(e.target.value)}
-                  className="input input-sm input-primary"
-                />
-              </td>
-            </tr>
-            <tr className="font-semibold">
-              <td colSpan={4} className="text-right">
-                Pajak %
-              </td>
-              <td>
-                <input
-                  type="text"
-                  maxLength={2}
-                  onChange={(e) => onChangePajak(e.target.value)}
-                  value={taxRate}
-                  className="input input-sm input-primary"
-                />
-              </td>
-            </tr>
-            <tr className="font-semibold">
-              <td colSpan={4} className="text-right">
-                Total
-              </td>
-              <td>{formatRupiah(total)}</td>
-            </tr>
-
-            <tr className="font-semibold">
-              <td colSpan={4} className="text-right">
-                Metode Pembayaran
-              </td>
-              <td>
-                <div className="flex gap-2">
-                  {payment.map((pm, index) => {
-                    const isSelectedPayment = selectedPayment === index;
-
-                    return (
-                      <div
-                        key={index}
-                        onClick={() => setSelectedPayment(index)}
-                        className={`flex flex-col items-center justify-center w-24 h-24
-                                     } border-2 rounded-lg transition-all duration-300 px-2 ${
-                                       isSelectedPayment
-                                         ? "bg-primary border-primary text-white"
-                                         : "bg-gray-100 border-primary text-black"
-                                     } hover:shadow-lg hover:scale-105 cursor-pointer`}
-                      >
-                        <Image
-                          src={pm.icon}
-                          alt={pm.name}
-                          width={100}
-                          height={80}
-                          className={`${
-                            pm.name === "QRIS" ? "w-12 h-6" : "w-[30px] h-8"
-                          } mb-3 ${isSelectedPayment ? "filter invert" : ""}`}
-                        />
-                        <span
-                          className={`text-[10px] text-center ${
-                            isSelectedPayment ? "text-white" : "text-black"
-                          }`}
-                        >
-                          {pm.name}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </td>
-            </tr>
-            {selectedPayment == 3 && (
+            {detailBill?.status !== "LUNAS" && (
               <>
                 <tr className="font-semibold">
                   <td colSpan={4} className="text-right">
-                    Jumlah Pembayaran
+                    Diskon %
                   </td>
                   <td>
                     <input
                       type="text"
-                      value={formatRupiah(bayar)}
-                      onFocus={() => setIsEditing(true)}
-                      onBlur={() => setIsEditing(false)}
-                      onChange={(e) => onChangeBayar(e.target.value)}
+                      value={discount}
+                      maxLength={2}
+                      onChange={(e) => onChangeDiskon(e.target.value)}
                       className="input input-sm input-primary"
                     />
                   </td>
                 </tr>
                 <tr className="font-semibold">
                   <td colSpan={4} className="text-right">
-                    Kembali
+                    Pajak %
                   </td>
-                  <td>{formatRupiah(kembali)}</td>
+                  <td>
+                    <input
+                      type="text"
+                      maxLength={2}
+                      onChange={(e) => onChangePajak(e.target.value)}
+                      value={taxRate}
+                      className="input input-sm input-primary"
+                    />
+                  </td>
                 </tr>
+                <tr className="font-semibold">
+                  <td colSpan={4} className="text-right">
+                    Total
+                  </td>
+                  <td>{formatRupiah(total)}</td>
+                </tr>
+
+                <tr className="font-semibold">
+                  <td colSpan={4} className="text-right">
+                    Metode Pembayaran
+                  </td>
+                  <td>
+                    <div className="flex gap-2">
+                      {payment.map((pm, index) => {
+                        const isSelectedPayment = selectedPayment === index;
+
+                        return (
+                          <div
+                            key={index}
+                            onClick={() => setSelectedPayment(index)}
+                            className={`flex flex-col items-center justify-center w-24 h-24
+                                     } border-2 rounded-lg transition-all duration-300 px-2 ${
+                                       isSelectedPayment
+                                         ? "bg-primary border-primary text-white"
+                                         : "bg-gray-100 border-primary text-black"
+                                     } hover:shadow-lg hover:scale-105 cursor-pointer`}
+                          >
+                            <Image
+                              src={pm.icon}
+                              alt={pm.name}
+                              width={100}
+                              height={80}
+                              className={`${
+                                pm.name === "QRIS" ? "w-12 h-6" : "w-[30px] h-8"
+                              } mb-3 ${
+                                isSelectedPayment ? "filter invert" : ""
+                              }`}
+                            />
+                            <span
+                              className={`text-[10px] text-center ${
+                                isSelectedPayment ? "text-white" : "text-black"
+                              }`}
+                            >
+                              {pm.name}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </td>
+                </tr>
+                {selectedPayment == 3 && (
+                  <>
+                    <tr className="font-semibold">
+                      <td colSpan={4} className="text-right">
+                        Jumlah Pembayaran
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          value={formatRupiah(bayar)}
+                          onFocus={() => setIsEditing(true)}
+                          onBlur={() => setIsEditing(false)}
+                          onChange={(e) => onChangeBayar(e.target.value)}
+                          className="input input-sm input-primary"
+                        />
+                      </td>
+                    </tr>
+                    <tr className="font-semibold">
+                      <td colSpan={4} className="text-right">
+                        Kembali
+                      </td>
+                      <td>{formatRupiah(kembali)}</td>
+                    </tr>
+                  </>
+                )}
               </>
             )}
+
             <tr>
               <td colSpan={5}>
                 {detailBill.status === "LUNAS" ? (

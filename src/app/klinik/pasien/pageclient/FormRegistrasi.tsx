@@ -9,6 +9,7 @@ import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
 import ModalPrintPasien from "@/app/antrian/pageclient/ModalAntrianPasien";
 import { getFormattedDateTime } from "@/app/helper/ConvertDate";
+import { set } from "date-fns";
 const FormRegistrasi = ({
   idpasien,
   session,
@@ -60,18 +61,18 @@ const FormRegistrasi = ({
         setDokter([]);
         return;
       }
-
-      // Sesuaikan format data dokter
-      const newArr = dataDokter.data?.flatMap((item: any) => {
-        return item.jam_praktek.map((jam: any) => ({
-          value: item.id,
-          label: `${item.name} -  ${item.unit} (${jam.from} - ${jam.to})`,
-          idHari: item.hari.id,
-          idJamPraktek: jam.id,
-        }));
+      const newArr = dataDokter.data?.flatMap((dokter: any) => {
+        return dokter.days.flatMap((day: any) => {
+          return day.times.map((jam: any) => ({
+            value: dokter.id,
+            label: `${dokter.name} - ${dokter.unit} (${jam.from} - ${jam.to})`,
+            idHari: day.id,
+            idJamPraktek: jam.id,
+          }));
+        });
       });
 
-      setDokter([...newArr]);
+      setDokter(newArr);
     };
 
     getDokter();
@@ -150,7 +151,6 @@ const FormRegistrasi = ({
         return;
       }
       const data = await postApi.json();
-      console.log(data);
       setNomorAntrian(data.nomorAntrian);
       setTanggal(getFormattedDateTime().tanggal);
       setJam(getFormattedDateTime().jam);

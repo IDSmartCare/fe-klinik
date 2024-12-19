@@ -26,7 +26,6 @@ const getData = async (idFasyankes: string) => {
 const PageFarmasi = async () => {
   const session = await getServerSession(authOption);
   const data = await getData(session?.user.idFasyankes);
-  console.log(JSON.stringify(data, null, 2));
   return (
     <>
       <AlertHeaderComponent message="Pasien terdaftar hari ini" />

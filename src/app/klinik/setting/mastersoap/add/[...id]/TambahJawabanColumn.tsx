@@ -10,9 +10,8 @@ const columnHelper = createColumnHelper<any>();
 
 const onDeleteData = async (id: any, category: string) => {
   const endpoint = `${category}-answer`.toLowerCase();
-  console.log("endpoint", endpoint);
   Swal.fire({
-    title: "Are you sure?",
+    title: "Apakah anda yakin?",
     text: "Data yang terhapus tidak bisa di kembalikan!",
     icon: "warning",
     showCancelButton: true,

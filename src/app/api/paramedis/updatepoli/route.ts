@@ -1,16 +1,19 @@
-import prisma from "@/db"
-import { revalidatePath } from "next/cache"
-
-export async function POST(req: Request) {
-    const body = await req.json()
-    const update = await prisma.poliKlinik.update({
-        data: {
-            isAktif: body.status
+export async function PATCH(req: Request) {
+  const body = await req.json();
+  try {
+    const postApi = await fetch(
+      `${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/setting/updatepoli/${body.id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
         },
-        where: {
-            id: body.id
-        }
-    })
-    revalidatePath("/klinik/setting/paramedis/poliklinik")
-    return Response.json(update)
+        body: JSON.stringify(body),
+      }
+    );
+    return postApi;
+  } catch (error: any) {
+    return new Response(error.message, { status: 400 });
+  }
 }

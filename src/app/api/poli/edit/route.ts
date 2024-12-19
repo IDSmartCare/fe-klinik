@@ -2,7 +2,7 @@ export async function PATCH(req: Request) {
   const body = await req.json();
   try {
     const postApi = await fetch(
-      `${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/poli/editpoli/${body.id}`,
+      `${process.env.NEXT_PUBLIC_URL_BE_KLINIK}/poli/editstatuspoli/${body.id}`,
       {
         method: "PATCH",
         headers: {

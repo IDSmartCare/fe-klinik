@@ -58,7 +58,7 @@ const JadwalTableColumn = [
   }),
   columHelper.accessor((row) => row.id, {
     cell: (info) =>
-      info.row.original.slot != null && (
+      info.row.original.schedule.length > 0 && (
         <div className="flex gap-2 justify-center">
           {/* <div className="tooltip" data-tip="Edit Jadwal Dokter">
             <Link

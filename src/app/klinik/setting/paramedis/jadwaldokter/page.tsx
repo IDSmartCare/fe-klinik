@@ -29,6 +29,7 @@ const getData = async (idFasyankes: string) => {
 const PageMasterJadwalDokter = async () => {
   const session = await getServerSession(authOption);
   const data = await getData(session?.user.idFasyankes);
+  console.log(JSON.stringify(data, null, 2));
   return (
     <>
       <AlertHeaderComponent message="List Jadwal Dokter" />
