@@ -4,31 +4,8 @@ import { ToastAlert } from "@/app/helper/ToastAlert";
 import { typeFormJadwal } from "./interface/typeFormJadwal";
 import Link from "next/link";
 const columHelper = createColumnHelper<any>();
-const onChange = async (e: any, id: any) => {
-  try {
-    const fetchBody = await fetch("/api/paramedis/updatejadwal", {
-      method: "POST",
-      body: JSON.stringify({ status: e.target.checked, id }),
-      headers: {
-        "conten-type": "application/json",
-      },
-    });
-    const res = await fetchBody.json();
-    if (res.id) {
-      ToastAlert({ icon: "success", title: "Ok" });
-    } else {
-      ToastAlert({ icon: "error", title: "Error" });
-    }
-  } catch (error: any) {
-    ToastAlert({ icon: "error", title: error.message });
-  }
-};
 
 const JadwalTableColumn = [
-  // columHelper.accessor((row) => row.hari, {
-  //   cell: (info) => info.getValue(),
-  //   header: "Hari",
-  // }),
   columHelper.accessor((row) => row.name, {
     cell: (info) => info.getValue(),
     header: "Dokter",
@@ -37,45 +14,11 @@ const JadwalTableColumn = [
     cell: (info) => info.getValue(),
     header: "Poli",
   }),
-  // columHelper.accessor((row) => row.jamPraktek, {
-  //   cell: (info) => info.getValue(),
-  //   header: "Jam Praktek",
-  // }),
-  // columHelper.accessor((row) => [row.isAktif, row.id], {
-  //   cell: (info) => (
-  //     <input
-  //       type="checkbox"
-  //       onChange={(e) => onChange(e, info.getValue()[1])}
-  //       className="toggle toggle-xs toggle-primary"
-  //       defaultChecked={info.getValue()[0] ? true : false}
-  //     />
-  //   ),
-  //   header: "Status",
-  // }),
-  columHelper.accessor((row) => row.slot, {
-    cell: (info) => (info.getValue() ? info.getValue() + " Menit" : "-"),
-    header: "Durasi Konsultasi",
-  }),
+
   columHelper.accessor((row) => row.id, {
     cell: (info) =>
       info.row.original.schedule.length > 0 && (
         <div className="flex gap-2 justify-center">
-          {/* <div className="tooltip" data-tip="Edit Jadwal Dokter">
-            <Link
-              className="btn btn-outline btn-success btn-circle btn-xs"
-              href={`/klinik/setting/paramedis/jadwaldokter/edit/${info.getValue()}`}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 16 16"
-                fill="currentColor"
-                className="size-4"
-              >
-                <path d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z" />
-                <path d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
-              </svg>
-            </Link>
-          </div> */}
           <div className="tooltip" data-tip="Detail Jadwal Dokter">
             <Link
               className="btn btn-outline btn-primary btn-circle btn-xs"

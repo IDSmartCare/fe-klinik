@@ -51,14 +51,15 @@ const ModalEditJadwal = ({
     return () => observer.disconnect();
   }, []);
 
+  const selectedDay = availableDay.find(
+    (item: any) => item.id.toString() === modalId
+  );
+
   const [nextId, setNextId] = useState(1);
 
   useEffect(() => {
     if (!modalId || !availableDay) return;
 
-    const selectedDay = availableDay.find(
-      (item: any) => item.id.toString() === modalId
-    );
     if (selectedDay) {
       setTimeList(
         selectedDay.times.map((time: any, index: number) => ({
@@ -78,7 +79,7 @@ const ModalEditJadwal = ({
           .map((day: string) => ({ value: day, label: day }))
       );
     }
-  }, [modalId, availableDay, setValue]);
+  }, [modalId, availableDay, setValue, selectedDay]);
 
   const handleAddTime = () => {
     setTimeList((prev) => [
@@ -109,7 +110,7 @@ const ModalEditJadwal = ({
       data: {
         dokter_id: dataJadwal.id,
         slot: Number(data.slot?.value),
-        days: data.hari.map((day: { value: string }) => day.value),
+        days: selectedDay,
         times: timeList.map((time) => ({
           from: time.jamDari,
           to: time.jamSampai,
@@ -134,7 +135,7 @@ const ModalEditJadwal = ({
 
       ToastAlert({ icon: "success", title: "Berhasil!" });
       reset();
-      const modal: any = document?.getElementById("add-jadwal");
+      const modal: any = document?.getElementById("edit-jadwal");
       modal.close();
       setTimeList([{ id: 1, jamDari: "", jamSampai: "" }]);
       setNextId(2);
@@ -153,41 +154,13 @@ const ModalEditJadwal = ({
             ✕
           </button>
         </form>
-        <h3 className="font-bold text-lg">Edit Jadwal Dokter</h3>
+        <h3 className="font-bold text-lg">
+          Edit Jadwal Dokter (Hari {selectedDay?.day})
+        </h3>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-2 mt-5"
         >
-          <Controller
-            name="hari"
-            control={control}
-            rules={{ required: "Tidak boleh kosong!" }}
-            render={({ field }) => (
-              <Select
-                {...field}
-                isMulti
-                isClearable
-                placeholder="Pilih Hari"
-                options={[
-                  { label: "Senin", value: "Senin" },
-                  { label: "Selasa", value: "Selasa" },
-                  { label: "Rabu", value: "Rabu" },
-                  { label: "Kamis", value: "Kamis" },
-                  { label: "Jumat", value: "Jumat" },
-                  { label: "Sabtu", value: "Sabtu" },
-                  { label: "Minggu", value: "Minggu" },
-                ]}
-              />
-            )}
-          />
-          <span className="label-text-alt opacity-50 mt-[-5px]">
-            Anda dapat memilih lebih dari satu hari sesuai kebutuhan
-          </span>
-
-          <span className="label-text-alt text-error">
-            {errors.hari && <span>{errors.hari.message?.toString()}</span>}
-          </span>
-
           <div className="relative">
             <Controller
               name="slot"

@@ -33,19 +33,7 @@ const FormEditJadwal = ({
 
   // Counter for generating unique IDs
   const [nextId, setNextId] = useState(2);
-  const [selectedDays, setSelectedDays] = useState([]);
 
-  useEffect(() => {
-    // Initialize state for days and slots from API response
-    setSelectedDays(
-      data.availableDays.map((day: { day: string }) => ({
-        label: day.day,
-        value: day.day.toLowerCase(),
-      }))
-    );
-  }, [data]);
-
-  // Handle adding a new time entry to the list
   const handleAddTime = () => {
     setTimeList((prev) => [
       ...prev,
@@ -128,36 +116,6 @@ const FormEditJadwal = ({
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-2 mt-10 w-full md:w-4/12 border-gray-300 border-2 rounded-lg p-5  md:p-8"
       >
-        <Controller
-          name="hari"
-          control={control}
-          rules={{ required: "Tidak boleh kosong!" }}
-          render={({ field }) => (
-            <Select
-              {...field}
-              isMulti
-              isClearable
-              placeholder="Pilih Hari"
-              options={[
-                { label: "Senin", value: "mon" },
-                { label: "Selasa", value: "tue" },
-                { label: "Rabu", value: "wed" },
-                { label: "Kamis", value: "thu" },
-                { label: "Jumat", value: "fri" },
-                { label: "Sabtu", value: "sat" },
-                { label: "Minggu", value: "sun" },
-              ]}
-            />
-          )}
-        />
-        <span className="label-text-alt opacity-50 mt-[-5px]">
-          Anda dapat memilih lebih dari satu hari sesuai kebutuhan
-        </span>
-
-        <span className="label-text-alt text-error">
-          {errors.hari && <span>{errors.hari.message?.toString()}</span>}
-        </span>
-
         <div className="relative">
           <Controller
             name="slot"

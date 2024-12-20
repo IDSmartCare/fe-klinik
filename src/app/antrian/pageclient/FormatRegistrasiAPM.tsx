@@ -102,17 +102,18 @@ const FormRegistrasiAPM = ({
         return;
       }
 
-      // Sesuaikan format data dokter
-      const newArr = dataDokter.data?.flatMap((item: any) => {
-        return item.jam_praktek.map((jam: any) => ({
-          value: item.id,
-          label: `${item.name} -  ${item.unit} (${jam.from} - ${jam.to})`,
-          idHari: item.hari.id,
-          idJamPraktek: jam.id,
-        }));
+      const newArr = dataDokter.data?.flatMap((dokter: any) => {
+        return dokter.days.flatMap((day: any) => {
+          return day.times.map((jam: any) => ({
+            value: dokter.id,
+            label: `${dokter.name} - ${dokter.unit} (${jam.from} - ${jam.to})`,
+            idHari: day.id,
+            idJamPraktek: jam.id,
+          }));
+        });
       });
 
-      setDokter([...newArr]);
+      setDokter(newArr);
     };
 
     getDokter();

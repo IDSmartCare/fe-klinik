@@ -66,7 +66,7 @@ const DetailJadwalDokterColumn = [
     cell: (info) => {
       return (
         <div className="flex gap-2 justify-center">
-          <div className="tooltip" data-tip="Ubah Keyword">
+          <div className="tooltip" data-tip="Ubah Jadwal">
             <button
               className="btn btn-outline btn-success btn-circle btn-xs"
               onClick={() => {

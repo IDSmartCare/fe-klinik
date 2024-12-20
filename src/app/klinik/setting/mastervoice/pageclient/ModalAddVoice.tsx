@@ -26,8 +26,6 @@ const ModalAddVoice = ({ session }: { session: Session | null }) => {
     formData.append("idFasyankes", session?.user.idFasyankes);
     formData.append("namaFasyankes", session?.user.nameFasyankes);
 
-    console.log(formData);
-
     try {
       const postApi = await fetch(`/api/mastervoice/add`, {
         method: "POST",

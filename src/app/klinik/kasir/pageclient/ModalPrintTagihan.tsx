@@ -132,6 +132,12 @@ const ModalPrintTagihan = ({ tagihan }: { tagihan: any }) => {
                   *Biaya ini ditangguhkan oleh : {tagihan?.Pendaftaran.penjamin}
                 </Text>
               )}
+
+              {tagihan?.Pendaftaran.penjamin.includes("BPJS") && (
+                <Text style={styles.asuransi}>
+                  *Biaya ini ditangguhkan oleh : {tagihan?.Pendaftaran.penjamin}
+                </Text>
+              )}
             </Page>
           </Document>
         </PDFViewer>
