@@ -120,7 +120,8 @@ const NomorAntrianPage = () => {
 
   useEffect(() => {
     if (messageVoicePasien) {
-      const audioPath = `/audio/pasien/${messageVoicePasien}.MP3`;
+      // const audioPath = `/audio/pasien/${messageVoicePasien}.MP3`;  //FOR DEVELOPMENT
+      const audioPath = `/audio/pasien/${messageVoicePasien}.mp3`; // FOR PRODUCTION
       const audio = new Audio(audioPath);
       const poliAudio = poli ? new Audio(poli) : null;
       if (poliAudio) {
